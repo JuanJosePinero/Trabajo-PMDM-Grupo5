@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Container(
           decoration:
-              const BoxDecoration(color: Color.fromARGB(255, 251, 240, 255)),
+              const BoxDecoration(color: Color.fromARGB(255, 246, 230, 253)),
           height: height,
           child: Stack(
             children: <Widget>[
@@ -29,12 +29,60 @@ class _LoginPageState extends State<LoginPage> {
               // child: BezierContainer(),
               // ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 0),
-                child: Column(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                    SizedBox(height: height * .0),
+                      SizedBox(height: height * 0.1),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: const TextSpan(
+                          text: 'M',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.lightBlue,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: 'ind',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 30,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'C',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 30,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'ar',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 30,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'e',
+                              style: TextStyle(
+                                color: Colors.lightBlue,
+                                fontSize: 30,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        height: 100,
+                        width: 100,
+                        child: Image.asset('assets/screen_images/heart.gif'),
+                      ),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
@@ -52,11 +100,11 @@ class _LoginPageState extends State<LoginPage> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: const [
+                            colors: [
                               Color.fromARGB(255, 255, 255, 255),
-                              Color.fromARGB(255, 221, 240, 255),
-                              Color.fromARGB(255, 193, 227, 255),
-                              Color.fromARGB(255, 181, 221, 255),
+                              Color.fromARGB(255, 235, 246, 255),
+                              Color.fromARGB(255, 199, 228, 252),
+                              Color.fromARGB(255, 178, 218, 251),
                             ],
                           ),
                         ),
@@ -243,9 +291,12 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      
+                      SizedBox(
+                        height: 20,
+                      ),
                     ],
                   ),
+                ),
               ),
               Positioned(
                 top: 40,
