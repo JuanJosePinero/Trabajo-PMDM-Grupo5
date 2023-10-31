@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/screens/access/welcome.dart';
 
 void main() => runApp(const MindCare());
 
@@ -7,17 +8,9 @@ class MindCare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Mindcare',
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
-      ),
-    );
+    return const MaterialApp(
+        title: 'Mindcare',
+        debugShowCheckedModeBanner: false,
+        home: WelcomePage());
   }
 }
