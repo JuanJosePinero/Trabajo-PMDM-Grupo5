@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -10,12 +11,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  void click() {}
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Container(
+          decoration:
+              const BoxDecoration(color: Color.fromARGB(255, 251, 240, 255)),
           height: height,
           child: Stack(
             children: <Widget>[
@@ -25,367 +29,223 @@ class _LoginPageState extends State<LoginPage> {
               // child: BezierContainer(),
               // ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: SingleChildScrollView(
-                  child: Column(
+                padding: EdgeInsets.symmetric(horizontal: 0),
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(height: height * .2),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: const TextSpan(
-                          text: 'T',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.lightBlue,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'al',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 30,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'k',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 30,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'lin',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 30,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'e',
-                              style: TextStyle(
-                                color: Colors.lightBlue,
-                                fontSize: 30,
-                              ),
+                    SizedBox(height: height * .0),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                              12), // Cambia el valor para redondear las esquinas
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey
+                                  .withOpacity(0.5), // Color de la sombra
+                              spreadRadius: 5, // Radio de propagación
+                              blurRadius: 7, // Radio de desenfoque
+                              offset:
+                                  Offset(0, 3), // Desplazamiento de la sombra
                             ),
                           ],
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: 80,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: const [
+                              Color.fromARGB(255, 255, 255, 255),
+                              Color.fromARGB(255, 221, 240, 255),
+                              Color.fromARGB(255, 193, 227, 255),
+                              Color.fromARGB(255, 181, 221, 255),
+                            ],
                           ),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: 10,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 30,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "Email",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                  obscureText: false,
-                                  decoration: InputDecoration(
-                                    hintText: "email",
+                            const Text(
+                              "Hello!",
+                              style: TextStyle(
+                                  fontSize: 28, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              "Please Login to Your Account",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Container(
+                              width: 260,
+                              height: 60,
+                              child: const TextField(
+                                decoration: InputDecoration(
                                     suffixIcon: Icon(
                                       Icons.email,
                                       color: Colors.black54,
                                     ),
+                                    labelText: "Email Address",
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.red,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                        15,
-                                      ),
-                                    ),
-                                    fillColor: Color(
-                                      0xfff3f3f4,
-                                    ),
-                                    filled: true,
-                                  ),
-                                ),
-                              ],
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                    )),
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "Password",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    hintText: "password",
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Container(
+                              width: 260,
+                              height: 60,
+                              child: const TextField(
+                                obscureText: true,
+                                decoration: InputDecoration(
                                     suffixIcon: Icon(
-                                      Icons.visibility,
+                                      Icons.email,
                                       color: Colors.black54,
                                     ),
-                                    // icon: Icon(Icons.lock),
+                                    labelText: "Password",
                                     border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        15,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                    )),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: click,
+                                    child: const Text(
+                                      "Forget Password",
+                                      style:
+                                          TextStyle(color: Colors.deepOrange),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 250,
+                                decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.centerRight,
+                                        end: Alignment.centerLeft,
+                                        colors: [
+                                          Color.fromARGB(255, 119, 194, 255),
+                                          Color.fromARGB(255, 21, 118, 255),
+                                        ])),
+                                child: InkWell(
+                                  onTap: () {
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => Home(),
+                                    //   ),
+                                    // );
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: Text(
+                                      'Login',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 17,
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: 10,
+                              ),
+                              child: Row(
+                                children: const <Widget>[
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      child: Divider(
+                                        thickness: 1,
                                       ),
                                     ),
-                                    fillColor: Color(
-                                      0xfff3f3f4,
-                                    ),
-                                    filled: true,
                                   ),
-                                ),
+                                  Text(
+                                    'or login using',
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      child: Divider(
+                                        thickness: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                IconButton(
+                                    onPressed: click,
+                                    icon: const Icon(FontAwesomeIcons.facebook,
+                                        color: Colors.blue)),
+                                IconButton(
+                                    onPressed: click,
+                                    icon: const Icon(
+                                      FontAwesomeIcons.google,
+                                      color: Colors.redAccent,
+                                    )),
+                                IconButton(
+                                    onPressed: click,
+                                    icon: const Icon(
+                                      FontAwesomeIcons.twitter,
+                                      color: Colors.orangeAccent,
+                                    )),
+                                IconButton(
+                                    onPressed: click,
+                                    icon: const Icon(
+                                      FontAwesomeIcons.linkedinIn,
+                                      color: Colors.green,
+                                    ))
                               ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: MediaQuery.of(
-                          context,
-                        ).size.width,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 15,
-                        ),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(
-                              15,
-                            ),
-                          ),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color: Colors.grey.shade200,
-                                offset: Offset(2, 4),
-                                blurRadius: 5,
-                                spreadRadius: 2),
-                          ],
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: const [
-                              Colors.blue,
-                              Colors.lightBlue,
-                            ],
-                          ),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => Home(),
-                            //   ),
-                            // );
-                          },
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 10,
-                        ),
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Forgot Password ?',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                          vertical: 10,
-                        ),
-                        child: Row(
-                          children: const <Widget>[
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                child: Divider(
-                                  thickness: 1,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              'or',
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                child: Divider(
-                                  thickness: 2,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
+                            )
                           ],
                         ),
                       ),
-                      Container(
-                        height: 50,
-                        margin: EdgeInsets.symmetric(
-                          vertical: 20,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(
-                              10,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Color(0xff1959a9),
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(
-                                      5,
-                                    ),
-                                    topLeft: Radius.circular(
-                                      5,
-                                    ),
-                                  ),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'f',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Color(
-                                    0xFF0389F6,
-                                  ),
-                                  borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(
-                                      5,
-                                    ),
-                                    topRight: Radius.circular(
-                                      5,
-                                    ),
-                                  ),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'Log in with Facebook',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SignUpPage(),
-                          //   ),
-                          // );
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: 20,
-                          ),
-                          padding: EdgeInsets.all(
-                            15,
-                          ),
-                          alignment: Alignment.bottomCenter,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const <Widget>[
-                              Text(
-                                'Don\'t have an account ?',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Register',
-                                style: TextStyle(
-                                  color: Color(
-                                    0xFF0389F6,
-                                  ),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      
                     ],
                   ),
-                ),
               ),
               Positioned(
                 top: 40,
