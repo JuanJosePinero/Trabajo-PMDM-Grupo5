@@ -87,6 +87,7 @@ class _PasswordFieldState extends State<PasswordField> with RestorationMixin {
         hintText: widget.hintText,
         labelText: widget.labelText,
         helperText: widget.helperText,
+        icon: const Icon(Icons.key),
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {
@@ -208,6 +209,35 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
+              Row(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 0,
+                      top: 20,
+                      bottom: 10,
+                    ),
+                    child: Icon(
+                      Icons.keyboard_arrow_left,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: 0,
+                      top: 20,
+                      bottom: 10,
+                    ),
+                    child: Text(
+                      'Back',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               sizedBoxSpace,
               TextFormField(
                 restorationId: 'name_field',
@@ -248,7 +278,6 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 textInputAction: TextInputAction.next,
                 focusNode: _password,
                 fieldKey: _passwordFieldKey,
-                helperText: ('Text'),
                 labelText: ('Password'),
                 hintText: ('Insert a password'),
                 onFieldSubmitted: (value) {
@@ -263,6 +292,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 restorationId: 'retype_password_field',
                 focusNode: _retypePassword,
                 decoration: const InputDecoration(
+                  icon: Icon(Icons.key),
                   filled: true,
                   labelText: ('Repeat password'),
                 ),
