@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
+import 'package:mindcare_app/screens/access/forget_password.dart';
+import 'package:mindcare_app/screens/main/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -100,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
+                            colors: const [
                               Color.fromARGB(255, 255, 255, 255),
                               Color.fromARGB(255, 235, 246, 255),
                               Color.fromARGB(255, 199, 228, 252),
@@ -174,9 +176,17 @@ class _LoginPageState extends State<LoginPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   TextButton(
-                                    onPressed: click,
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ForgetPassword(),
+                                        ),
+                                      );
+                                    },
                                     child: const Text(
-                                      "Forget Password",
+                                      "Forgot Password?",
                                       style:
                                           TextStyle(color: Colors.deepOrange),
                                     ),
@@ -185,6 +195,15 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const MainScreen(),
+                                  ),
+                                );
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 width: 250,
@@ -199,14 +218,6 @@ class _LoginPageState extends State<LoginPage> {
                                           Color.fromARGB(255, 21, 118, 255),
                                         ])),
                                 child: InkWell(
-                                  onTap: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => Home(),
-                                    //   ),
-                                    // );
-                                  },
                                   child: const Padding(
                                     padding: EdgeInsets.all(12.0),
                                     child: Text(
