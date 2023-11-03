@@ -14,53 +14,10 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: const TextSpan(
-              text: 'T',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-              children: [
-                TextSpan(
-                  text: 'al',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                  ),
-                ),
-                TextSpan(
-                  text: 'k',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                  ),
-                ),
-                TextSpan(
-                  text: 'lin',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                  ),
-                ),
-                TextSpan(
-                  text: 'e',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.lightBlue,
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Colors.lightBlue,
+      // ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -81,8 +38,10 @@ class _WelcomePageState extends State<WelcomePage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.lightBlue,
-                Colors.blue,
+                Color.fromARGB(255, 236, 197, 252),
+                Color.fromARGB(255, 225, 207, 255),
+                Color.fromARGB(255, 169, 198, 255),
+                Color.fromARGB(255, 114, 191, 255),
               ],
             ),
           ),
@@ -90,6 +49,53 @@ class _WelcomePageState extends State<WelcomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              RichText(
+                textAlign: TextAlign.center,
+                text: const TextSpan(
+                  text: 'M',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.lightBlue,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'ind',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 40,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'C',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 40,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'ar',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 40,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'e',
+                      style: TextStyle(
+                        color: Colors.lightBlue,
+                        fontSize: 40,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 125,
+                width: 125,
+                child: Image.asset('assets/screen_images/heart.gif'),
+              ),
+              const SizedBox(height: 175),
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -104,14 +110,14 @@ class _WelcomePageState extends State<WelcomePage> {
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,
                   ),
-                  alignment: Alignment.center,
+                  alignment: Alignment.bottomCenter,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xff42a5f5),
+                        color: Color.fromARGB(255, 98, 98, 98),
                         offset: Offset(
                           2,
                           4,

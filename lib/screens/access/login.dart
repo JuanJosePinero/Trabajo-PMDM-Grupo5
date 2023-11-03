@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:mindcare_app/screens/access/forget_password.dart';
+import 'package:mindcare_app/screens/admin/admin_screen.dart';
 import 'package:mindcare_app/screens/main/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,14 +15,26 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   void click() {}
+  bool _obscureText = true;
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Container(
-          decoration:
-              const BoxDecoration(color: Color.fromARGB(255, 246, 230, 253)),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(255, 236, 197, 252),
+                Color.fromARGB(255, 225, 207, 255),
+                Color.fromARGB(255, 169, 198, 255),
+                Color.fromARGB(255, 114, 191, 255),
+              ],
+            ),
+          ),
           height: height,
           child: Stack(
             children: <Widget>[
@@ -156,18 +169,25 @@ class _LoginPageState extends State<LoginPage> {
                             Container(
                               width: 260,
                               height: 60,
-                              child: const TextField(
-                                obscureText: true,
+                              child: TextField(
+                                obscureText: _obscureText,
                                 decoration: InputDecoration(
-                                    suffixIcon: Icon(
-                                      Icons.email,
-                                      color: Colors.black54,
-                                    ),
-                                    labelText: "Password",
-                                    border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                    )),
+                                  labelText: "Password",
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(_obscureText
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText;
+                                      });
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
                             Padding(
@@ -199,8 +219,10 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const MainScreen(),
+                                    builder: (context) => const AdminScreen(),
+                                    // Tendriamos que verificar que si entra como admin lleve a una pestaña
+                                    // Y si entra como usuario te llevaria al bulider de abajo
+                                    //  builder: (context) => const MainScreen(),
                                   ),
                                 );
                               },

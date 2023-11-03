@@ -13,17 +13,21 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabInfo = [
-      _TabInfo(
+      const _TabInfo(
         ('home'),
         CupertinoIcons.home,
       ),
-      _TabInfo(
+      const _TabInfo(
         ('conversation'),
         CupertinoIcons.conversation_bubble,
       ),
-      _TabInfo(
+      const _TabInfo(
         ('profile'),
         CupertinoIcons.profile_circled,
+      ),
+      const _TabInfo(
+        ('settings'),
+        CupertinoIcons.settings,
       ),
     ];
 
