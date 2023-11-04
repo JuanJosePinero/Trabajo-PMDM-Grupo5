@@ -10,27 +10,45 @@ class CustomAppBar {
         style: TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
       ),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(30),
-        ),
-      ),
-      leading: InkWell(
-        onTap: () {},
-        child: const Icon(
-          Icons.subject,
-          color: Colors.white,
-        ),
+        borderRadius: BorderRadius.vertical(),
       ),
       actions: [
-        InkWell(
-          onTap: () {},
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.notifications,
-              size: 20,
-            ),
-          ),
+        PopupMenuButton<String>(
+          onSelected: (value) {
+            // Aquí puedes manejar las acciones correspondientes
+            if (value == 'notidications') {
+              // Realiza la acción de editar el perfil
+            } else if (value == 'edit_profile') {
+              // Realiza la acción de editar el perfil
+            } else if (value == 'logout') {
+              // Realiza la acción de cerrar sesión
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'notifications',
+                child: ListTile(
+                  leading: Icon(Icons.notifications),
+                  title: Text('Notificaciones'),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'edit_profile',
+                child: ListTile(
+                  leading: Icon(Icons.edit),
+                  title: Text('Editar Perfil'),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'logout',
+                child: ListTile(
+                  leading: Icon(Icons.exit_to_app),
+                  title: Text('Cerrar Sesión'),
+                ),
+              ),
+            ];
+          },
         ),
       ],
       bottom: PreferredSize(
@@ -46,18 +64,6 @@ class CustomAppBar {
                     backgroundColor: Colors.white,
                     child: Icon(Icons.person_outline_rounded),
                   ),
-                  // Container(
-                  //   height: 30,
-                  //   width: 30,
-                  //   decoration: const BoxDecoration(
-                  //       color: Colors.amber,
-                  //       borderRadius: BorderRadius.all(Radius.circular(20))),
-                  //   child: const Icon(
-                  //     Icons.edit,
-                  //     color: Colors.deepPurple,
-                  //     size: 20,
-                  //   ),
-                  // )
                 ],
               ),
               Container(
