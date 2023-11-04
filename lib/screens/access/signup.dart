@@ -11,7 +11,21 @@ class TextFieldDemo extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: const Text('Register'),
       ),
-      body: const TextFormFieldDemo(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(255, 236, 197, 252),
+              Color.fromARGB(255, 225, 207, 255),
+              Color.fromARGB(255, 169, 198, 255),
+              Color.fromARGB(255, 114, 191, 255),
+            ],
+          ),
+        ),
+        child: const TextFormFieldDemo(),
+      ),
     );
   }
 }
@@ -209,34 +223,42 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Row(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: 0,
-                      top: 20,
-                      bottom: 10,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
                     ),
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      color: Colors.black,
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(
+                            left: 0,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: const Icon(
+                            Icons.keyboard_arrow_left,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const Text(
+                          'Back',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: 0,
-                      top: 20,
-                      bottom: 10,
-                    ),
-                    child: Text(
-                      'Back',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               sizedBoxSpace,
               TextFormField(
