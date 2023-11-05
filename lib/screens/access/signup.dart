@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:mindcare_app/themes/themeColors.dart';
 
 class TextFieldDemo extends StatelessWidget {
   const TextFieldDemo({super.key});
@@ -12,17 +13,8 @@ class TextFieldDemo extends StatelessWidget {
         title: const Text('Register'),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 236, 197, 252),
-              Color.fromARGB(255, 225, 207, 255),
-              Color.fromARGB(255, 169, 198, 255),
-              Color.fromARGB(255, 114, 191, 255),
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: ThemeColors.getGradient(),
         ),
         child: const TextFormFieldDemo(),
       ),

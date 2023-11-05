@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar {
-  AppBar buildAppBar() {
+  AppBar adminAppBar() {
     return AppBar(
       backgroundColor: Colors.deepPurple,
       centerTitle: true,
@@ -30,21 +30,21 @@ class CustomAppBar {
                 value: 'notifications',
                 child: ListTile(
                   leading: Icon(Icons.notifications),
-                  title: Text('Notificaciones'),
+                  title: Text('Notidications'),
                 ),
               ),
               const PopupMenuItem<String>(
                 value: 'edit_profile',
                 child: ListTile(
                   leading: Icon(Icons.edit),
-                  title: Text('Editar Perfil'),
+                  title: Text('Edit Porfile'),
                 ),
               ),
               const PopupMenuItem<String>(
                 value: 'logout',
                 child: ListTile(
                   leading: Icon(Icons.exit_to_app),
-                  title: Text('Cerrar Sesión'),
+                  title: Text('Logout'),
                 ),
               ),
             ];
@@ -101,4 +101,24 @@ class CustomAppBar {
       ),
     );
   }
+
+  AppBar changePasswordAppBar(BuildContext context) {
+  return AppBar(
+    backgroundColor: Colors.deepPurple,
+    centerTitle: true,
+    leading: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+    title: const Text(
+      'Change Password',
+      style: TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
+    ),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(),
+    ),
+  );
+}
 }

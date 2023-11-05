@@ -5,6 +5,7 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:mindcare_app/screens/access/forget_password.dart';
 import 'package:mindcare_app/screens/admin/admin_screen.dart';
 import 'package:mindcare_app/screens/main/main_screen.dart';
+import 'package:mindcare_app/themes/themeColors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -23,17 +24,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 236, 197, 252),
-                Color.fromARGB(255, 225, 207, 255),
-                Color.fromARGB(255, 169, 198, 255),
-                Color.fromARGB(255, 114, 191, 255),
-              ],
-            ),
+          decoration: BoxDecoration(
+            gradient: ThemeColors.getGradient()
           ),
           height: height,
           child: Stack(

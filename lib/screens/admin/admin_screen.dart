@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/screens/admin/customAppBar.dart';
+import 'package:mindcare_app/themes/themeColors.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({Key? key});
@@ -7,19 +8,10 @@ class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar().buildAppBar(),
+      appBar: CustomAppBar().adminAppBar(),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 236, 197, 252),
-              Color.fromARGB(255, 225, 207, 255),
-              Color.fromARGB(255, 169, 198, 255),
-              Color.fromARGB(255, 114, 191, 255),
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: ThemeColors.getGradient()
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical, // Scroll vertical
@@ -31,6 +23,7 @@ class AdminScreen extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal, // Scroll horizontal
               child: DataTable(
+                // ignore: deprecated_member_use
                 dataRowHeight: 50,
                 headingRowColor: MaterialStateProperty.all(
                   const Color.fromARGB(255, 79, 144, 255),
@@ -38,12 +31,12 @@ class AdminScreen extends StatelessWidget {
                 sortColumnIndex: 2,
                 sortAscending: false,
                 columns: const [
-                  DataColumn(label: Text("Nombre")),
+                  DataColumn(label: Text("Name")),
                   DataColumn(label: Text("Email")),
-                  DataColumn(label: Text("Verificado")),
-                  DataColumn(label: Text("Activado")),
-                  DataColumn(label: Text("Editar")),
-                  DataColumn(label: Text("Borrar")),
+                  DataColumn(label: Text("Verified")),
+                  DataColumn(label: Text("Activated")),
+                  DataColumn(label: Text("Edit")),
+                  DataColumn(label: Text("Delete")),
                 ],
                 rows: const [
                   DataRow(cells: [

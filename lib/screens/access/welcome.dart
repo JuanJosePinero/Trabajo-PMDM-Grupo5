@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/themes/themeColors.dart';
 
 import 'login.dart';
 import 'signup.dart';
@@ -34,16 +35,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 spreadRadius: 2,
               ),
             ],
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 236, 197, 252),
-                Color.fromARGB(255, 225, 207, 255),
-                Color.fromARGB(255, 169, 198, 255),
-                Color.fromARGB(255, 114, 191, 255),
-              ],
-            ),
+            gradient: ThemeColors.getGradient()
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
