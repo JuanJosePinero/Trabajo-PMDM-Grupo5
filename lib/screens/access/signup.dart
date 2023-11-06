@@ -206,6 +206,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
   @override
   Widget build(BuildContext context) {
     const sizedBoxSpace = SizedBox(height: 24);
+    const bigSizedBoxSpace = SizedBox(height: 151);
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.values[_autoValidateModeIndex.value],
@@ -329,7 +330,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 'All fields must be filled',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              sizedBoxSpace,
+              bigSizedBoxSpace,
             ],
           ),
         ),
