@@ -6,6 +6,7 @@ import 'package:mindcare_app/screens/access/forget_password.dart';
 import 'package:mindcare_app/screens/admin/admin_screen.dart';
 import 'package:mindcare_app/screens/main/main_screen.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -24,9 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          decoration: BoxDecoration(
-            gradient: ThemeColors.getGradient()
-          ),
+          decoration: BoxDecoration(gradient: ThemeColors.getGradient()),
           height: height,
           child: Stack(
             children: <Widget>[
@@ -115,206 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            const Text(
-                              "Hello!",
-                              style: TextStyle(
-                                  fontSize: 28, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              "Please Login to Your Account",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Container(
-                              width: 260,
-                              height: 60,
-                              child: const TextField(
-                                decoration: InputDecoration(
-                                    suffixIcon: Icon(
-                                      Icons.email,
-                                      color: Colors.black54,
-                                    ),
-                                    labelText: "Email Address",
-                                    border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                    )),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 12,
-                            ),
-                            Container(
-                              width: 260,
-                              height: 60,
-                              child: TextField(
-                                obscureText: _obscureText,
-                                decoration: InputDecoration(
-                                  labelText: "Password",
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(_obscureText
-                                        ? Icons.visibility
-                                        : Icons.visibility_off),
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscureText = !_obscureText;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ForgetPassword(),
-                                        ),
-                                      );
-                                    },
-                                    child: const Text(
-                                      "Forgot Password?",
-                                      style:
-                                          TextStyle(color: Colors.deepOrange),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const AdminScreen(),
-                                    // Tendriamos que verificar que si entra como admin lleve a una pestaña
-                                    // Y si entra como usuario te llevaria al bulider de abajo
-                                    //  builder: (context) => const MainScreen(),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: 250,
-                                decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50)),
-                                    gradient: LinearGradient(
-                                        begin: Alignment.centerRight,
-                                        end: Alignment.centerLeft,
-                                        colors: [
-                                          Color.fromARGB(255, 119, 194, 255),
-                                          Color.fromARGB(255, 21, 118, 255),
-                                        ])),
-                                child: InkWell(
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(12.0),
-                                    child: Text(
-                                      'Login',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 17,
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                vertical: 10,
-                              ),
-                              child: Row(
-                                children: const <Widget>[
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      child: Divider(
-                                        thickness: 1,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'or login using',
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      child: Divider(
-                                        thickness: 2,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                IconButton(
-                                    onPressed: click,
-                                    icon: const Icon(FontAwesomeIcons.facebook,
-                                        color: Colors.blue)),
-                                IconButton(
-                                    onPressed: click,
-                                    icon: const Icon(
-                                      FontAwesomeIcons.google,
-                                      color: Colors.redAccent,
-                                    )),
-                                IconButton(
-                                    onPressed: click,
-                                    icon: const Icon(
-                                      FontAwesomeIcons.twitter,
-                                      color: Colors.orangeAccent,
-                                    )),
-                                IconButton(
-                                    onPressed: click,
-                                    icon: const Icon(
-                                      FontAwesomeIcons.linkedinIn,
-                                      color: Colors.green,
-                                    ))
-                              ],
-                            )
-                          ],
-                        ),
+                        child: loginBox(context),
                       ),
                       SizedBox(
                         height: 20,
@@ -363,6 +163,202 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Column loginBox(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        const Text(
+          "Hello!",
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        const Text(
+          "Please Login to Your Account",
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 15,
+          ),
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        Container(
+          width: 260,
+          height: 60,
+          child: const TextField(
+            decoration: InputDecoration(
+                suffixIcon: Icon(
+                  Icons.email,
+                  color: Colors.black54,
+                ),
+                labelText: "Email Address",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                )),
+          ),
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        Container(
+          width: 260,
+          height: 60,
+          child: TextField(
+            obscureText: _obscureText,
+            decoration: InputDecoration(
+              labelText: "Password",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                    _obscureText ? Icons.visibility : Icons.visibility_off),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ForgetPassword(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  "Forgot Password?",
+                  style: TextStyle(color: Colors.deepOrange),
+                ),
+              )
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminScreen(),
+                // Tendriamos que verificar que si entra como admin lleve a una pestaña
+                // Y si entra como usuario te llevaria al bulider de abajo
+                //  builder: (context) => const MainScreen(),
+              ),
+            );
+          },
+          child: Container(
+            alignment: Alignment.center,
+            width: 250,
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                gradient: LinearGradient(
+                    begin: Alignment.centerRight,
+                    end: Alignment.centerLeft,
+                    colors: [
+                      Color.fromARGB(255, 119, 194, 255),
+                      Color.fromARGB(255, 21, 118, 255),
+                    ])),
+            child: InkWell(
+              child: const Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 17,
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(
+            vertical: 10,
+          ),
+          child: Row(
+            children: const <Widget>[
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ),
+                  child: Divider(
+                    thickness: 1,
+                  ),
+                ),
+              ),
+              Text(
+                'or login using',
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                  ),
+                  child: Divider(
+                    thickness: 2,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                onPressed: click,
+                icon:
+                    const Icon(FontAwesomeIcons.facebook, color: Colors.blue)),
+            IconButton(
+                onPressed: click,
+                icon: const Icon(
+                  FontAwesomeIcons.google,
+                  color: Colors.redAccent,
+                )),
+            IconButton(
+                onPressed: click,
+                icon: const Icon(
+                  FontAwesomeIcons.twitter,
+                  color: Colors.orangeAccent,
+                )),
+            IconButton(
+                onPressed: click,
+                icon: const Icon(
+                  FontAwesomeIcons.linkedinIn,
+                  color: Colors.green,
+                ))
+          ],
+        ),
+      ],
     );
   }
 }

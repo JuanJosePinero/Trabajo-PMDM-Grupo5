@@ -35,7 +35,6 @@ class AdminScreen extends StatelessWidget {
                   DataColumn(label: Text("Email")),
                   DataColumn(label: Text("Verified")),
                   DataColumn(label: Text("Activated")),
-                  DataColumn(label: Text("Edit")),
                   DataColumn(label: Text("Delete")),
                 ],
                 rows: const [
@@ -44,7 +43,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("andres@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.check), showEditIcon: true),
-                    DataCell(Icon(Icons.edit)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   DataRow(cells: [
@@ -52,7 +50,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.check_box), showEditIcon: true),
-                    DataCell(Icon(Icons.edit_square)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   DataRow(cells: [
@@ -60,7 +57,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.check_box), showEditIcon: true),
-                    DataCell(Icon(Icons.edit_square)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   DataRow(cells: [
@@ -68,7 +64,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.check_box), showEditIcon: true),
-                    DataCell(Icon(Icons.edit_square)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   DataRow(cells: [
@@ -76,7 +71,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.check_box), showEditIcon: true),
-                    DataCell(Icon(Icons.edit_square)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   
@@ -85,7 +79,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.check), showEditIcon: true),
-                    DataCell(Icon(Icons.edit_note)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   DataRow(cells: [
@@ -93,7 +86,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.close), showEditIcon: true),
-                    DataCell(Icon(Icons.edit)),
                     DataCell(Icon(Icons.delete_forever_outlined)),
                   ]),
                   DataRow(cells: [
@@ -101,7 +93,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check_circle), showEditIcon: true),
                     DataCell(Icon(Icons.check), showEditIcon: true),
-                    DataCell(Icon(Icons.edit)),
                     DataCell(Icon(Icons.delete_forever)),
                   ]),
                   DataRow(cells: [
@@ -110,7 +101,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Icon(Icons.disabled_by_default_outlined),
                         showEditIcon: true),
                     DataCell(Icon(Icons.check), showEditIcon: true),
-                    DataCell(Icon(Icons.edit)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   DataRow(cells: [
@@ -118,7 +108,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Text("ramos@gmail.com")),
                     DataCell(Icon(Icons.check), showEditIcon: true),
                     DataCell(Icon(Icons.disabled_by_default), showEditIcon: true),
-                    DataCell(Icon(Icons.edit)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                   DataRow(cells: [
@@ -127,7 +116,6 @@ class AdminScreen extends StatelessWidget {
                     DataCell(Icon(Icons.check_box_outline_blank),
                         showEditIcon: true),
                     DataCell(Icon(Icons.check), showEditIcon: true),
-                    DataCell(Icon(Icons.edit)),
                     DataCell(Icon(Icons.delete)),
                   ]),
                 ],
