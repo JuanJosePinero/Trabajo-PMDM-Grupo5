@@ -206,19 +206,19 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
   @override
   Widget build(BuildContext context) {
     const sizedBoxSpace = SizedBox(height: 24);
-    const bigSizedBoxSpace = SizedBox(height: 151);
+    const bigSizedBoxSpace = SizedBox(height: 103);
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.values[_autoValidateModeIndex.value],
-      child: Scrollbar(
+      child: Container(
         child: SingleChildScrollView(
-          restorationId: 'text_field_demo_scroll_view',
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
+              sizedBoxSpace,
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
+                  horizontal: 1,
                 ),
                 child: InkWell(
                   onTap: () {
@@ -253,6 +253,10 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                   ),
                 ),
               ),
+              sizedBoxSpace,
+
+              //METER AQUÍ GIF O ALGO BONITO PARA EL REGISTER
+
               sizedBoxSpace,
               TextFormField(
                 restorationId: 'name_field',
