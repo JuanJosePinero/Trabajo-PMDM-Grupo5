@@ -19,53 +19,47 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   void click() {}
- bool _obscureText = true;
+  bool _obscureText = true;
 
-  final UserService _userService = UserService(); // Necesitas importar UserService
+  final UserService _userService =
+      UserService(); // Necesitas importar UserService
 
   // Método para verificar las credenciales ingresadas
   void login() async {
     String email = ''; // Obtener el valor del campo de texto del email
-    String password = ''; // Obtener el valor del campo de texto de la contraseña
+    String password =
+        ''; // Obtener el valor del campo de texto de la contraseña
+    String result = '';
 
     List<UserData> users = await _userService.getUsers();
 
-    UserData? user = users.firstWhere(
-      (user) => user.email == email && user.password == password,
-    );
-
-    if (user != null) {
-      if (user.type == 'a') {
+    UserData? user;
+    _userService.login(email, password).then((result) {
+      if (result == 'success') {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => AdminScreen()),
         );
-      } else if (user.type == 'u') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Login failed!'),
+              content: const Text('Invalid credentials'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
         );
       }
-    } else {
-      // Manejar credenciales inválidas
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Inicio de sesión fallido'),
-            content: const Text('Credenciales inválidas'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
+    });
   }
 
   @override

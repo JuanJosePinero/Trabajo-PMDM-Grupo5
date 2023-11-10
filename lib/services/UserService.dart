@@ -105,9 +105,11 @@ class UserService extends ChangeNotifier {
     );
     final Map<String, dynamic> decode = json.decode(resp.body);
     var user = Users.fromJson(decode);
-    for (var i in user.data!) {
-      if (i.deleted == 0) {
-        users.add(i);
+    if (user.data != null) {
+      for (var i in user.data!) {
+        if (i.deleted == 0) {
+          users.add(i);
+        }
       }
     }
     isLoading = false;
