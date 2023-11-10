@@ -5,6 +5,8 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:mindcare_app/screens/access/forget_password.dart';
 import 'package:mindcare_app/screens/admin/admin_screen.dart';
 import 'package:mindcare_app/screens/main/main_screen.dart';
+import 'package:mindcare_app/screens/main/notActived.dart';
+import 'package:mindcare_app/screens/main/notVerified.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mindcare_app/services/UserService.dart';
@@ -20,45 +22,59 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   void click() {}
   bool _obscureText = true;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  final UserService _userService =
-      UserService(); // Necesitas importar UserService
+  final UserService _userService = UserService();
 
-  // Método para verificar las credenciales ingresadas
   void login() async {
-    String email = ''; // Obtener el valor del campo de texto del email
-    String password =
-        ''; // Obtener el valor del campo de texto de la contraseña
-    String result = '';
+    String email = emailController.text;
+    String password = passwordController.text;
 
-    List<UserData> users = await _userService.getUsers();
+    _userService.login(email, password).then((value) {
 
-    UserData? user;
-    _userService.login(email, password).then((result) {
-      if (result == 'success') {
+    if (value == 'success') {
+      if (UserService.userType == 'a') {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => AdminScreen()),
         );
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Login failed!'),
-              content: const Text('Invalid credentials'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
+      } else if (UserService.userType == 'u') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
             );
-          },
+          } 
+    }else if(value == 'Email not confimed') {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => notVerified()),
         );
-      }
+    } else if(value == 'User not activated') {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => notActived()),
+        );
+    } else {
+      // Mostrar mensaje de error
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Login failed!'),
+            content: const Text('Invalid credentials'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
     });
   }
 
@@ -236,16 +252,19 @@ class _LoginPageState extends State<LoginPage> {
         Container(
           width: 260,
           height: 60,
-          child: const TextField(
+          child: TextField(
+            controller:
+                emailController, // Asociar el controlador de texto del email
             decoration: InputDecoration(
-                suffixIcon: Icon(
-                  Icons.email,
-                  color: Colors.black54,
-                ),
-                labelText: "Email Address",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                )),
+              suffixIcon: Icon(
+                Icons.email,
+                color: Colors.black54,
+              ),
+              labelText: "Email Address",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+            ),
           ),
         ),
         const SizedBox(
@@ -255,6 +274,8 @@ class _LoginPageState extends State<LoginPage> {
           width: 260,
           height: 60,
           child: TextField(
+            controller:
+                passwordController, // Asociar el controlador de texto de la contraseña
             obscureText: _obscureText,
             decoration: InputDecoration(
               labelText: "Password",
@@ -263,7 +284,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               suffixIcon: IconButton(
                 icon: Icon(
-                    _obscureText ? Icons.visibility : Icons.visibility_off),
+                  _obscureText ? Icons.visibility : Icons.visibility_off,
+                ),
                 onPressed: () {
                   setState(() {
                     _obscureText = !_obscureText;

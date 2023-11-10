@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print, unused_local_variable
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -12,6 +11,7 @@ class UserService extends ChangeNotifier {
   final storage = const FlutterSecureStorage();
   static String userEmail = '';
   static String userId = '';
+  static String userType = '';
   bool isLoading = true;
   final List<UserData> users = [];
   String user = '';
@@ -45,7 +45,13 @@ class UserService extends ChangeNotifier {
       await storage.write(key: 'token', value: decoded['data']['token']);
       await storage.write(
           key: 'name', value: decoded['data']['name'].toString());
-    } else {}
+    } else {
+      if (decoded['data']['error'] == "The email has already been taken") {
+        return "The email has already been taken";
+      } else {
+        return decoded['message'];
+      }
+    }
   }
 
   Future<String?> login(String email, String password) async {
@@ -69,11 +75,18 @@ class UserService extends ChangeNotifier {
     if (decoded['success'] == true) {
       UserService.userId = decoded['data']['id'].toString();
       UserService.userEmail = email;
+      UserService.userType = decoded['data']['type'];
       await storage.write(key: 'token', value: decoded['data']['token']);
       await storage.write(key: 'id', value: decoded['data']['id'].toString());
       return 'success';
     } else {
-      return decoded['message'];
+      if (decoded['data']['error'] == "Email don't confirmed") {
+        return 'Email not confimed';
+      } else if (decoded['data']['error'] == "User don't activated") {
+        return 'User not activated';
+      } else {
+        return decoded['message'];
+      }
     }
   }
 

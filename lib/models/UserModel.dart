@@ -90,4 +90,34 @@ class UserData {
     data['updated_at'] = updatedAt;
     return data;
   }
+
+  // Getters
+  int? get getId => id;
+  String? get getName => name;
+  String? get getEmail => email;
+  int? get getEmailConfirmed => emailConfirmed;
+  DateTime? get getEmailVerifiedAt => emailVerifiedAt;
+  int? get getActived => actived;
+  String? get getType => type;
+  int? get getCode => code;
+  String? get getPassword => password;
+  int? get getRememberToken => rememberToken;
+  int? get getDeleted => deleted;
+  DateTime? get getCreatedAt => createdAt;
+  DateTime? get getUpdatedAt => updatedAt;
+
+  // Setters
+  set setId(int? value) => id = value;
+  set setName(String? value) => name = value;
+  set setEmail(String? value) => email = value;
+  set setEmailConfirmed(int? value) => emailConfirmed = value;
+  set setEmailVerifiedAt(DateTime? value) => emailVerifiedAt = value;
+  set setActived(int? value) => actived = value;
+  set setType(String? value) => type = value;
+  set setCode(int? value) => code = value;
+  set setPassword(String? value) => password = value;
+  set setRememberToken(int? value) => rememberToken = value;
+  set setDeleted(int? value) => deleted = value;
+  set setCreatedAt(DateTime? value) => createdAt = value;
+  set setUpdatedAt(DateTime? value) => updatedAt = value;
 }
