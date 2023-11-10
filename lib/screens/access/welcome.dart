@@ -161,7 +161,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     ),
                   ),
                   child: const Text(
-                    'Register now',
+                    'Register',
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,

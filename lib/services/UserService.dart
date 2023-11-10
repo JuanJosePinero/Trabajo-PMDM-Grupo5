@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mindcare_app/models/UserModel.dart';
+
+import '../models/UserModel.dart';
 
 class UserService extends ChangeNotifier {
   final String baseURL = 'mindcare.allsites.es';
@@ -156,7 +157,6 @@ class UserService extends ChangeNotifier {
     final url = Uri.http(baseURL, '/deactivate', {'user_id': id});
     String? token = await readToken();
     isLoading = true;
-
     notifyListeners();
     final resp = await http.post(
       url,

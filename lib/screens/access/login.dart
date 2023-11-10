@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
@@ -7,6 +7,8 @@ import 'package:mindcare_app/screens/admin/admin_screen.dart';
 import 'package:mindcare_app/screens/main/main_screen.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mindcare_app/services/UserService.dart';
+import 'package:mindcare_app/models/UserModel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -17,7 +19,54 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   void click() {}
-  bool _obscureText = true;
+ bool _obscureText = true;
+
+  final UserService _userService = UserService(); // Necesitas importar UserService
+
+  // Método para verificar las credenciales ingresadas
+  void login() async {
+    String email = ''; // Obtener el valor del campo de texto del email
+    String password = ''; // Obtener el valor del campo de texto de la contraseña
+
+    List<UserData> users = await _userService.getUsers();
+
+    UserData? user = users.firstWhere(
+      (user) => user.email == email && user.password == password,
+    );
+
+    if (user != null) {
+      if (user.type == 'a') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AdminScreen()),
+        );
+      } else if (user.type == 'u') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+      }
+    } else {
+      // Manejar credenciales inválidas
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Inicio de sesión fallido'),
+            content: const Text('Credenciales inválidas'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,17 +302,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AdminScreen(),
-                // Tendriamos que verificar que si entra como admin lleve a una pestaña
-                // Y si entra como usuario te llevaria al bulider de abajo
-                //  builder: (context) => const MainScreen(),
-              ),
-            );
-          },
+          onTap: login,
           child: Container(
             alignment: Alignment.center,
             width: 250,
