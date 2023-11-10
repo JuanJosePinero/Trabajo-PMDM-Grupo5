@@ -211,6 +211,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
       key: _formKey,
       autovalidateMode: AutovalidateMode.values[_autoValidateModeIndex.value],
       child: Container(
+        height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
