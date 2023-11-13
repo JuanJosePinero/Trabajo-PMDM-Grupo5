@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, use_build_context_synchronously
+
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
@@ -8,9 +8,9 @@ import 'package:mindcare_app/screens/main/main_screen.dart';
 import 'package:mindcare_app/screens/main/notActived.dart';
 import 'package:mindcare_app/screens/main/notVerified.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mindcare_app/services/UserService.dart';
-// import 'package:mindcare_app/models/UserModel.dart';
+import 'package:mindcare_app/models/UserModel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -30,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   void login() async {
     String email = emailController.text;
     String password = passwordController.text;
+    print(email + password);
 
     _userService.login(email, password).then((value) {
 
@@ -37,23 +38,23 @@ class _LoginPageState extends State<LoginPage> {
       if (UserService.userType == 'a') {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AdminScreen()),
+          MaterialPageRoute(builder: (context) => const AdminScreen()),
         );
       } else if (UserService.userType == 'u') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MainScreen()),
+              MaterialPageRoute(builder: (context) => const MainScreen()),
             );
           } 
     }else if(value == 'Email not confimed') {
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => notVerified()),
+          MaterialPageRoute(builder: (context) => const notVerified()),
         );
     } else if(value == 'User not activated') {
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => notActived()),
+          MaterialPageRoute(builder: (context) => const notActived()),
         );
     } else {
       // Mostrar mensaje de error
@@ -94,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
               // child: BezierContainer(),
               // ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,8 +143,8 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 20),
-                      Container(
+                      const SizedBox(height: 20),
+                      SizedBox(
                         height: 100,
                         width: 100,
                         child: Image.asset('assets/screen_images/heart.gif'),
@@ -159,13 +160,13 @@ class _LoginPageState extends State<LoginPage> {
                               spreadRadius: 5, // Radio de propagación
                               blurRadius: 7, // Radio de desenfoque
                               offset:
-                                  Offset(0, 3), // Desplazamiento de la sombra
+                                  const Offset(0, 3), // Desplazamiento de la sombra
                             ),
                           ],
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: const [
+                            colors: [
                               Color.fromARGB(255, 255, 255, 255),
                               Color.fromARGB(255, 235, 246, 255),
                               Color.fromARGB(255, 199, 228, 252),
@@ -175,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: loginBox(context),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                     ],
@@ -190,23 +191,23 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pop(context);
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                     ),
                     child: Row(
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                             left: 0,
                             top: 10,
                             bottom: 10,
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.keyboard_arrow_left,
                             color: Colors.black,
                           ),
                         ),
-                        Text(
+                        const Text(
                           'Back',
                           style: TextStyle(
                             fontSize: 15,
@@ -249,13 +250,13 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(
           height: 30,
         ),
-        Container(
+        SizedBox(
           width: 260,
           height: 60,
           child: TextField(
             controller:
                 emailController, // Asociar el controlador de texto del email
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               suffixIcon: Icon(
                 Icons.email,
                 color: Colors.black54,
@@ -270,7 +271,7 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(
           height: 12,
         ),
-        Container(
+        SizedBox(
           width: 260,
           height: 60,
           child: TextField(
@@ -279,7 +280,7 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: _obscureText,
             decoration: InputDecoration(
               labelText: "Password",
-              border: OutlineInputBorder(
+              border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               suffixIcon: IconButton(
@@ -331,8 +332,8 @@ class _LoginPageState extends State<LoginPage> {
                       Color.fromARGB(255, 119, 194, 255),
                       Color.fromARGB(255, 21, 118, 255),
                     ])),
-            child: InkWell(
-              child: const Padding(
+            child: const InkWell(
+              child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Text(
                   'Login',
@@ -349,11 +350,11 @@ class _LoginPageState extends State<LoginPage> {
           height: 17,
         ),
         Container(
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             vertical: 10,
           ),
-          child: Row(
-            children: const <Widget>[
+          child: const Row(
+            children: <Widget>[
               SizedBox(
                 width: 20,
               ),

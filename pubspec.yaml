@@ -33,6 +33,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_secure_storage: ^9.0.0
+  flutter_slidable: ^3.0.1
   font_awesome_icon_class: ^0.0.6
   google_sign_in: ^6.1.5
   http: ^1.1.0

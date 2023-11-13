@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mindcare_app/screens/admin/customAppBar.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:mindcare_app/services/UserService.dart';
@@ -55,68 +56,85 @@ class _AdminScreenState extends State<AdminScreen> {
         decoration: BoxDecoration(
           gradient: ThemeColors.getGradient(),
         ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width,
-              maxWidth: double.infinity,
-            ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                dataRowHeight: 50,
-                headingRowColor: MaterialStateProperty.all(
-                  const Color.fromARGB(255, 79, 144, 255),
-                ),
-                sortColumnIndex: 0,
-                sortAscending: true,
-                columns: const [
-                  DataColumn(label: Text("Name")),
-                  DataColumn(label: Text("Activate")),
-                  DataColumn(label: Text("Edit")),
-                  DataColumn(label: Text("Delete")),
-                ],
-                rows: _users.map((user) {
-                  return DataRow(cells: [
-                    DataCell(
-                      Container(
-                        constraints: const BoxConstraints(maxWidth: 200),
-                        child: Tooltip(
-                          message: user.name ?? 'Unknown',
-                          child: Text(
-                            _truncateName(user.name) ?? 'Unknown',
-                            overflow: TextOverflow.ellipsis,
-                          ),
+        child: FutureBuilder<List<UserData>>(
+          future: _userService.getUsers(), // Llamada a getUsers
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('Error fetching data'));
+            } else {
+              List<UserData> users = snapshot.data ?? [];
+
+              return ListView.builder(
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  UserData user = users[index];
+                  return Slidable(
+                    key: ValueKey(index),
+                    startActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      dismissible: DismissiblePane(onDismissed: () {}),
+                      children: [
+                        SlidableAction(
+                          backgroundColor: const Color(0xFFFE4A49),
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                          onPressed: (BuildContext context) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Hello from Delete!')),
+                            );
+                            _userService.postDelete(user.id.toString());
+                          },
                         ),
-                      ),
+                        SlidableAction(
+                          backgroundColor: const Color(0xFF21B7CA),
+                          foregroundColor: Colors.white,
+                          icon: Icons.share,
+                          label: 'Share',
+                          onPressed: (BuildContext context) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Hello from Share!')),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    DataCell(IconButton(
-                      iconSize: 30,
-                      icon: const Icon(Icons.check),
-                      onPressed: () {
-                        _activateUser(user.id);
-                      },
-                    )),
-                    DataCell(IconButton(
-                      iconSize: 30,
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        _editUser(user.id);
-                      },
-                    )),
-                    DataCell(IconButton(
-                      iconSize: 30,
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        _deleteUser(user.id);
-                      },
-                    )),
-                  ]);
-                }).toList(),
-              ),
-            ),
-          ),
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          flex: 2,
+                          backgroundColor: const Color(0xFF7BC043),
+                          foregroundColor: Colors.white,
+                          icon: Icons.archive,
+                          label: 'Archive',
+                          onPressed: (BuildContext context) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Hello from Archive!')),
+                            );
+                          },
+                        ),
+                        SlidableAction(
+                          backgroundColor: const Color(0xFF0392CF),
+                          foregroundColor: Colors.white,
+                          icon: Icons.save,
+                          label: 'Save',
+                          onPressed: (BuildContext context) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Hello from Save!')),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    child: ListTile(title: Text(user.name ?? 'Unknown')),
+                  );
+                },
+              );
+            }
+          },
         ),
       ),
     );

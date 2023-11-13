@@ -184,7 +184,7 @@ class UserService extends ChangeNotifier {
   }
 
   Future postDelete(String id) async {
-    final url = Uri.http(baseURL, '/deleted/$id');
+    final url = Uri.http(baseURL, '/deleteUser/$id');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();
@@ -206,7 +206,7 @@ class UserService extends ChangeNotifier {
       'user_id': id,
       'name': name,
     };
-    final url = Uri.http(baseURL, '/updated/$id');
+    final url = Uri.http(baseURL, '/updatedUser/$id');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();

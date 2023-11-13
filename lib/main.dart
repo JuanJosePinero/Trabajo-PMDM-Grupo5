@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/screens/access/loadingScreen.dart';
-import 'package:mindcare_app/screens/access/welcome.dart';
 
 void main() => runApp(const MindCare());
 
