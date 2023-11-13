@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:mindcare_app/screens/access/login.dart';
+import 'package:mindcare_app/services/UserService.dart';
+
 import 'package:mindcare_app/themes/themeColors.dart';
+
+final TextEditingController passwordController = TextEditingController();
 
 class TextFieldDemo extends StatelessWidget {
   const TextFieldDemo({super.key});
@@ -31,7 +36,6 @@ class TextFormFieldDemo extends StatefulWidget {
 
 class PersonData {
   String? name = '';
-  String? phoneNumber = '';
   String? email = '';
   String password = '';
 }
@@ -84,7 +88,7 @@ class _PasswordFieldState extends State<PasswordField> with RestorationMixin {
       key: widget.fieldKey,
       restorationId: 'password_text_field',
       obscureText: _obscureText.value,
-      maxLength: 8,
+      controller: passwordController,
       onSaved: widget.onSaved,
       validator: widget.validator,
       onFieldSubmitted: widget.onFieldSubmitted,
@@ -115,23 +119,24 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
     with RestorationMixin {
   PersonData person = PersonData();
 
-  late FocusNode _phoneNumber, _email, _lifeStory, _password, _retypePassword;
+  late FocusNode _name, _email, _password, _retypePassword;
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _phoneNumber = FocusNode();
+    _name = FocusNode();
     _email = FocusNode();
-    _lifeStory = FocusNode();
     _password = FocusNode();
     _retypePassword = FocusNode();
   }
 
   @override
   void dispose() {
-    _phoneNumber.dispose();
+    _name.dispose();
     _email.dispose();
-    _lifeStory.dispose();
     _password.dispose();
     _retypePassword.dispose();
     super.dispose();
@@ -166,8 +171,22 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
           AutovalidateMode.always.index; // Start validating on every change.
       showInSnackBar(('ERROR'));
     } else {
-      form.save();
+      // form.save();
+
+      String? name = nameController.text;
+      String? mail = emailController.text;
+      String? password = passwordController.text;
+      String? cpassword = passwordController.text;
+
+      UserService userService = UserService();
+      userService.register(name, mail, password, cpassword);
+
       showInSnackBar('Registered');
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
     }
   }
 
@@ -210,6 +229,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.values[_autoValidateModeIndex.value],
+      // ignore: sized_box_for_whitespace
       child: Container(
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
@@ -263,6 +283,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 restorationId: 'name_field',
                 textInputAction: TextInputAction.next,
                 textCapitalization: TextCapitalization.words,
+                controller: nameController,
                 decoration: const InputDecoration(
                   filled: true,
                   icon: Icon(Icons.person),
@@ -271,7 +292,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 ),
                 onSaved: (value) {
                   person.name = value;
-                  _phoneNumber.requestFocus();
+                  _email.requestFocus();
                 },
                 validator: _validateName,
               ),
@@ -280,6 +301,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 restorationId: 'email_field',
                 textInputAction: TextInputAction.next,
                 focusNode: _email,
+                controller: emailController,
                 decoration: const InputDecoration(
                   filled: true,
                   icon: Icon(Icons.email),
@@ -290,6 +312,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 validator: _validateMail,
                 onSaved: (value) {
                   person.email = value;
+                  _password.requestFocus();
                 },
               ),
               sizedBoxSpace,
@@ -300,6 +323,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                 fieldKey: _passwordFieldKey,
                 labelText: ('Password'),
                 hintText: ('Insert a password'),
+                validator: _validatePassword,
                 onFieldSubmitted: (value) {
                   setState(() {
                     person.password = value;
@@ -316,7 +340,6 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
                   filled: true,
                   labelText: ('Repeat password'),
                 ),
-                maxLength: 8,
                 obscureText: true,
                 validator: _validatePassword,
                 onFieldSubmitted: (value) {
