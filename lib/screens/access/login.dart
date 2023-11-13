@@ -8,9 +8,9 @@ import 'package:mindcare_app/screens/main/main_screen.dart';
 import 'package:mindcare_app/screens/main/notActived.dart';
 import 'package:mindcare_app/screens/main/notVerified.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mindcare_app/services/UserService.dart';
-import 'package:mindcare_app/models/UserModel.dart';
+// import 'package:mindcare_app/models/UserModel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
