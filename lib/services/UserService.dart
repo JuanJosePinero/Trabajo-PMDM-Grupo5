@@ -118,13 +118,8 @@ class UserService extends ChangeNotifier {
     );
     final Map<String, dynamic> decode = json.decode(resp.body);
     var user = Users.fromJson(decode);
-    if (user.data != null) {
-      for (var i in user.data!) {
-        if (i.deleted == 0) {
-          users.add(i);
-        }
-      }
-    }
+    users.clear();
+    users.addAll(user.data!.where((userData) => userData.deleted == 0));
     isLoading = false;
     notifyListeners();
     return users;
@@ -206,7 +201,7 @@ class UserService extends ChangeNotifier {
       'user_id': id,
       'name': name,
     };
-    final url = Uri.http(baseURL, '/updatedUser/$id');
+    final url = Uri.http(baseURL, '/updateUser/$id');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();

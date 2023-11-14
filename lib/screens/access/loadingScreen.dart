@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mindcare_app/screens/access/welcome.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
-import 'login.dart';
-import 'signup.dart';
-
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({Key? key}) : super(key: key);
 

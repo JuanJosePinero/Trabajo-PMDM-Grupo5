@@ -29,23 +29,33 @@ class _AdminScreenState extends State<AdminScreen> {
     });
   }
 
-  String? _truncateName(String? name) {
-    if (name != null && name.length > 12) {
-      return '${name.substring(0, 12)}...';
-    }
-    return name;
-  }
-
-  void _activateUser(int? id) {
+  void _activateUser(String id) {
     // Lógica para activar el usuario
+    _userService.postActivate(id);
+    // users.actived = 1;
   }
 
-  void _editUser(int? id) {
+  void _desactivateUser(String id) {
+    // Lógica para desactivar el usuario
+    _userService.postDeactivate(id);
+  }
+
+  void _editUser(String id, String name) {
     // Lógica para editar el usuario
+    _userService.postUpdate(id, name);
   }
 
-  void _deleteUser(int? id) {
+  void _deleteUser(String id) {
     // Lógica para eliminar el usuario
+    _userService.postDelete(id);
+  }
+
+  Widget buildListTileSubtitle(int? actived) {
+    if (actived == 1) {
+      return const Text('Account activated');
+    } else {
+      return const Text('Account deactivated');
+    }
   }
 
   @override
@@ -71,66 +81,116 @@ class _AdminScreenState extends State<AdminScreen> {
                 itemBuilder: (context, index) {
                   UserData user = users[index];
                   return Slidable(
-                    key: ValueKey(index),
-                    startActionPane: ActionPane(
-                      motion: const ScrollMotion(),
-                      dismissible: DismissiblePane(onDismissed: () {}),
-                      children: [
-                        SlidableAction(
-                          backgroundColor: const Color(0xFFFE4A49),
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete,
-                          label: 'Delete',
-                          onPressed: (BuildContext context) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Hello from Delete!')),
-                            );
-                            _userService.postDelete(user.id.toString());
-                          },
-                        ),
-                        SlidableAction(
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.share,
-                          label: 'Share',
-                          onPressed: (BuildContext context) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Hello from Share!')),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    endActionPane: ActionPane(
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                          flex: 2,
-                          backgroundColor: const Color(0xFF7BC043),
-                          foregroundColor: Colors.white,
-                          icon: Icons.archive,
-                          label: 'Archive',
-                          onPressed: (BuildContext context) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Hello from Archive!')),
-                            );
-                          },
-                        ),
-                        SlidableAction(
-                          backgroundColor: const Color(0xFF0392CF),
-                          foregroundColor: Colors.white,
-                          icon: Icons.save,
-                          label: 'Save',
-                          onPressed: (BuildContext context) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Hello from Save!')),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    child: ListTile(title: Text(user.name ?? 'Unknown')),
-                  );
+                      key: ValueKey(index),
+                      startActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        dismissible: DismissiblePane(onDismissed: () {}),
+                        children: [
+                          SlidableAction(
+                            backgroundColor: const Color(0xFFFE4A49),
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                            label: 'Delete',
+                            onPressed: (BuildContext context) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      const Icon(Icons.check,
+                                          color: Colors.green),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                          '${user.name ?? "User"} has been deleted!'),
+                                    ],
+                                  ),
+                                ),
+                              );
+                              _deleteUser('a');
+                              _userService.postDelete(user.id.toString());
+                            },
+                          ),
+                          SlidableAction(
+                            backgroundColor:
+                                const Color.fromARGB(255, 33, 151, 202),
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                            label: 'Edit',
+                            onPressed: (BuildContext context) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      const Icon(Icons.check,
+                                          color: Colors.green),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                          '${user.name ?? "User"} has been edited!'),
+                                    ],
+                                  ),
+                                ),
+                              );
+                              // _editUser('a', user.name);
+                            },
+                          ),
+                        ],
+                      ),
+                      endActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        children: [
+                          if (user.actived == 1)
+                            SlidableAction(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 255, 165, 80),
+                              foregroundColor: Colors.white,
+                              icon: Icons.not_interested_outlined,
+                              label: 'Desactivate',
+                              onPressed: (BuildContext context) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Row(
+                                      children: [
+                                        const Icon(Icons.check,
+                                            color: Colors.green),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                            '${user.name ?? "User"} has been desactivated!'),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                                _desactivateUser('a');
+                              },
+                            ),
+                          if (user.actived == 0)
+                            SlidableAction(
+                              flex: 2,
+                              backgroundColor: const Color(0xFF7BC043),
+                              foregroundColor: Colors.white,
+                              icon: Icons.verified_outlined,
+                              label: 'Activate',
+                              onPressed: (BuildContext context) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Row(
+                                      children: [
+                                        const Icon(Icons.check,
+                                            color: Colors.green),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                            '${user.name ?? "User"} has been activated!'),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                                _activateUser('a');
+                              },
+                            ),
+                        ],
+                      ),
+                      child: ListTile(
+                        title: Text(user.name ?? 'Unknown'),
+                        subtitle: buildListTileSubtitle(user.actived),
+                      ));
                 },
               );
             }
