@@ -147,11 +147,8 @@ class UserService extends ChangeNotifier {
     return user;
   }
 
-  Future postActivate(String id) async {
+  Future<bool> postActivate(String id, String token) async {
     final url = Uri.http(baseURL, '/public/api/activate');
-    String? token = await readToken();
-    isLoading = true;
-    notifyListeners();
     final resp = await http.post(
       url,
       headers: {
@@ -159,18 +156,18 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
-      body: json.encode({'id': userId}),
+      body: json.encode({'id': id}),
     );
 
-    final Map<String, dynamic> decode = json.decode(resp.body);
-    if (decode['success'] == true) {
+    final Map<String, dynamic> decoded = json.decode(resp.body);
+    if (decoded['success'] == true) {
       return true;
     } else {
       return false;
     }
   }
 
-  Future postDeactivate(String id) async {
+  Future<bool> postDeactivate(String id, String token) async {
     final url = Uri.http(baseURL, '/public/api/deactivate');
     String? token = await readToken();
     isLoading = true;
@@ -182,18 +179,18 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
-      body: json.encode({'id': userId}),
+      body: json.encode({'id': id}),
     );
 
-    final Map<String, dynamic> decode = json.decode(resp.body);
-    if (decode['success'] == true) {
+    final Map<String, dynamic> decoded = json.decode(resp.body);
+    if (decoded['success'] == true) {
       return true;
     } else {
       return false;
     }
   }
 
-  Future postDelete(String id) async {
+  Future postDelete(String id, String token) async {
     final url = Uri.http(baseURL, '/public/api/deleteUser');
     String? token = await readToken();
     isLoading = true;
@@ -205,11 +202,11 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
-      body: json.encode({'id': userId}),
+      body: json.encode({'id': id}),
     );
 
-    final Map<String, dynamic> decode = json.decode(resp.body);
-    if (decode['success'] == true) {
+    final Map<String, dynamic> decoded = json.decode(resp.body);
+    if (decoded['success'] == true) {
       return true;
     } else {
       return false;

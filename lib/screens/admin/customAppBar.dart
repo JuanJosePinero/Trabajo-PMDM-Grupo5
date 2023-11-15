@@ -18,11 +18,25 @@ class CustomAppBar {
           onSelected: (value) {
             // Aquí puedes manejar las acciones correspondientes
             if (value == 'notidications') {
-              // Realiza la acción de editar el perfil
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Color.fromARGB(255, 255, 200, 0)),
+                    SizedBox(width: 8),
+                    Text('You dont have notifications'),
+                  ],
+                ),
+              );
             } else if (value == 'edit_profile') {
-              // Realiza la acción de editar el perfil
-            } else if (value == 'logout') {
-              // Realiza la acción de cerrar sesión
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Color.fromARGB(255, 255, 200, 0)),
+                    SizedBox(width: 8),
+                    Text("You can't edit your account"),
+                  ],
+                ),
+              );
             }
           },
           itemBuilder: (BuildContext context) {
@@ -39,13 +53,6 @@ class CustomAppBar {
                 child: ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('Edit Porfile'),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'logout',
-                child: ListTile(
-                  leading: Icon(Icons.exit_to_app),
-                  title: Text('Logout'),
                 ),
               ),
             ];
@@ -73,21 +80,21 @@ class CustomAppBar {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Admin name',
+                      'Admin',
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: Colors.white),
                     ),
                     Text(
-                      'admin@mail.com',
+                      'adming@mail.com',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
                       ),
                     ),
                     Text(
-                      'other atributte',
+                      'only the admin can watch this page',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
