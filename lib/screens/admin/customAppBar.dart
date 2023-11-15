@@ -7,7 +7,8 @@ class CustomAppBar {
       centerTitle: true,
       title: const Text(
         'Admin Settings',
-        style: TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
+        style:
+            TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
       ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(),
@@ -103,22 +104,38 @@ class CustomAppBar {
   }
 
   AppBar changePasswordAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.deepPurple,
+      centerTitle: true,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      title: const Text(
+        'Change Password',
+        style:
+            TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(),
+      ),
+    );
+  }
+
+  AppBar changeRegisterAppBar(BuildContext context) {
   return AppBar(
     backgroundColor: Colors.deepPurple,
     centerTitle: true,
-    leading: IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
     title: const Text(
-      'Change Password',
+      'Register',
       style: TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
     ),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(),
     ),
+    automaticallyImplyLeading: false, // Esto evita que se muestre la flecha de retroceso
   );
 }
 }
