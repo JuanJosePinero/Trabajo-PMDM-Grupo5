@@ -5,6 +5,8 @@ import 'package:mindcare_app/services/UserService.dart';
 
 import 'package:mindcare_app/themes/themeColors.dart';
 
+import '../admin/customAppBar.dart';
+
 final TextEditingController passwordController = TextEditingController();
 
 class TextFieldDemo extends StatelessWidget {
@@ -13,10 +15,7 @@ class TextFieldDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Register'),
-      ),
+      appBar: CustomAppBar().changeRegisterAppBar(context),
       body: Container(
         decoration: BoxDecoration(
           gradient: ThemeColors.getGradient(),
@@ -143,35 +142,38 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
   }
 
   void showInSnackBarError(String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Row(
-        children: [
-          const Icon(Icons.dangerous_outlined, color: Color.fromARGB(255, 255, 0, 0)),
-          const SizedBox(width: 8),
-          Text(message),
-        ],
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.dangerous_outlined,
+                color: Color.fromARGB(255, 255, 0, 0)),
+            const SizedBox(width: 8),
+            Text(message),
+          ],
+        ),
+        backgroundColor: const Color.fromARGB(
+            255, 93, 93, 93), // Puedes ajustar el color según tus preferencias
       ),
-      backgroundColor: const Color.fromARGB(255, 93, 93, 93), // Puedes ajustar el color según tus preferencias
-    ),
-  );
-}
+    );
+  }
 
-void showInSnackBarSuccess(String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Row(
-        children: [
-          const Icon(Icons.check_circle_outline, color: Color.fromARGB(255, 0, 255, 21)),
-          const SizedBox(width: 8),
-          Text(message),
-        ],
+  void showInSnackBarSuccess(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle_outline,
+                color: Color.fromARGB(255, 0, 255, 21)),
+            const SizedBox(width: 8),
+            Text(message),
+          ],
+        ),
+        backgroundColor: const Color.fromARGB(
+            255, 93, 93, 93), // Puedes ajustar el color según tus preferencias
       ),
-      backgroundColor: const Color.fromARGB(255, 93, 93, 93), // Puedes ajustar el color según tus preferencias
-    ),
-  );
-}
-
+    );
+  }
 
   @override
   String get restorationId => 'text_field_demo';
@@ -205,7 +207,8 @@ void showInSnackBarSuccess(String message) {
       UserService userService = UserService();
       userService.register(name, mail, password, cpassword);
 
-      showInSnackBarSuccess('Registered.\nCheck your email to verify your account');
+      showInSnackBarSuccess(
+          'Registered.\nCheck your email to verify your account');
 
       Navigator.push(
         context,
@@ -298,10 +301,11 @@ void showInSnackBarSuccess(String message) {
                   ),
                 ),
               ),
-              sizedBoxSpace,
-
-              //METER AQUÍ GIF O ALGO BONITO PARA EL REGISTER
-
+              SizedBox(
+                height: 125,
+                width: 125,
+                child: Image.asset('assets/screen_images/heart.gif'),
+              ),
               sizedBoxSpace,
               TextFormField(
                 restorationId: 'name_field',
@@ -382,7 +386,6 @@ void showInSnackBarSuccess(String message) {
                 'All fields must be filled',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              bigSizedBoxSpace,
             ],
           ),
         ),
