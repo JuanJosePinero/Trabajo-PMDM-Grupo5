@@ -138,6 +138,7 @@ class AdminScreenState extends State<AdminScreen> {
                                     ),
                                   ),
                                 );
+                                // String token =  _userService.readToken().toString();
                                 _userService.postDeactivate(user.id.toString());
                               },
                             ),

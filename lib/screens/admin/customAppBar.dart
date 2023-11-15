@@ -125,17 +125,17 @@ class CustomAppBar {
   }
 
   AppBar changeRegisterAppBar(BuildContext context) {
-  return AppBar(
-    backgroundColor: Colors.deepPurple,
-    centerTitle: true,
-    title: const Text(
-      'Register',
-      style: TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
-    ),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(),
-    ),
-    automaticallyImplyLeading: false, // Esto evita que se muestre la flecha de retroceso
-  );
-}
+    return AppBar(
+      backgroundColor: Colors.deepPurple,
+      centerTitle: true,
+      title: const Text(
+        'Register',
+        style:
+            TextStyle(fontSize: 17, color: Colors.white, letterSpacing: 0.53),
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(),
+      ),
+    );
+  }
 }

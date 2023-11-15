@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -149,7 +148,7 @@ class UserService extends ChangeNotifier {
   }
 
   Future postActivate(String id) async {
-    final url = Uri.http(baseURL, '/activate', {'user_id': id});
+    final url = Uri.http(baseURL, '/public/api/activate');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();
@@ -164,15 +163,15 @@ class UserService extends ChangeNotifier {
     );
 
     final Map<String, dynamic> decode = json.decode(resp.body);
-    if(decode['success'] == true){
+    if (decode['success'] == true) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
 
   Future postDeactivate(String id) async {
-    final url = Uri.http(baseURL, '/deactivate', {'user_id': id});
+    final url = Uri.http(baseURL, '/public/api/deactivate');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();
@@ -187,15 +186,15 @@ class UserService extends ChangeNotifier {
     );
 
     final Map<String, dynamic> decode = json.decode(resp.body);
-    if(decode['success'] == true){
+    if (decode['success'] == true) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
 
   Future postDelete(String id) async {
-    final url = Uri.http(baseURL, '/deleteUser/$id');
+    final url = Uri.http(baseURL, '/public/api/deleteUser');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();
@@ -210,9 +209,9 @@ class UserService extends ChangeNotifier {
     );
 
     final Map<String, dynamic> decode = json.decode(resp.body);
-    if(decode['success'] == true){
+    if (decode['success'] == true) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
@@ -225,7 +224,7 @@ class UserService extends ChangeNotifier {
       'user_id': id,
       'name': name,
     };
-    final url = Uri.http(baseURL, '/updateUser/$id');
+    final url = Uri.http(baseURL, '/public/api/updateUser/$id');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();
