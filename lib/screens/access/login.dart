@@ -1,16 +1,10 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:mindcare_app/screens/access/forget_password.dart';
 import 'package:mindcare_app/screens/admin/admin_screen.dart';
 import 'package:mindcare_app/screens/main/main_screen.dart';
-import 'package:mindcare_app/screens/main/notActived.dart';
-import 'package:mindcare_app/screens/main/notVerified.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mindcare_app/services/UserService.dart';
-import 'package:mindcare_app/models/UserModel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -33,49 +27,54 @@ class _LoginPageState extends State<LoginPage> {
     print(email + password);
 
     _userService.login(email, password).then((value) {
-
-    if (value == 'success') {
-      if (UserService.userType == 'a') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminScreen()),
-        );
-      } else if (UserService.userType == 'u') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MainScreen()),
-            );
-          } 
-    }else if(value == 'Email not confimed') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const notVerified()),
-        );
-    } else if(value == 'User not activated') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const notActived()),
-        );
-    } else {
-      // Mostrar mensaje de error
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Login failed!'),
-            content: const Text('Invalid credentials'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
+      if (value == 'success') {
+        if (UserService.userType == 'a') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AdminScreen()),
           );
-        },
-      );
-    }
+        } else if (UserService.userType == 'u') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+          );
+        }
+      } else if (value == 'Email not confimed') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Email not confirmed! \nCheck your email to verify your account.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else if (value == 'User not activated') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('User not activated! \nAdmin must activate your account.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else {
+        // Mostrar mensaje de error
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Login failed!'),
+              content: const Text('Invalid credentials'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     });
   }
 
@@ -89,11 +88,6 @@ class _LoginPageState extends State<LoginPage> {
           height: height,
           child: Stack(
             children: <Widget>[
-              // Positioned(
-              // top: -height * .15,
-              // right: -MediaQuery.of(context).size.width * .4,
-              // child: BezierContainer(),
-              // ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SingleChildScrollView(
@@ -159,8 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                                   .withOpacity(0.5), // Color de la sombra
                               spreadRadius: 5, // Radio de propagación
                               blurRadius: 7, // Radio de desenfoque
-                              offset:
-                                  const Offset(0, 3), // Desplazamiento de la sombra
+                              offset: const Offset(
+                                  0, 3), // Desplazamiento de la sombra
                             ),
                           ],
                           gradient: const LinearGradient(

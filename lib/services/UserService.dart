@@ -160,7 +160,15 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
+      body: json.encode({'id': userId}),
     );
+
+    final Map<String, dynamic> decode = json.decode(resp.body);
+    if(decode['success'] == true){
+      return true;
+    }else {
+      return false;
+    }
   }
 
   Future postDeactivate(String id) async {
@@ -175,7 +183,15 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
+      body: json.encode({'id': userId}),
     );
+
+    final Map<String, dynamic> decode = json.decode(resp.body);
+    if(decode['success'] == true){
+      return true;
+    }else {
+      return false;
+    }
   }
 
   Future postDelete(String id) async {
@@ -190,7 +206,15 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
+      body: json.encode({'id': userId}),
     );
+
+    final Map<String, dynamic> decode = json.decode(resp.body);
+    if(decode['success'] == true){
+      return true;
+    }else {
+      return false;
+    }
   }
 
   Future postUpdate(

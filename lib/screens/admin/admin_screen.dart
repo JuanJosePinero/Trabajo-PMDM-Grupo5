@@ -9,11 +9,12 @@ class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
 
   @override
-  _AdminScreenState createState() => _AdminScreenState();
+  AdminScreenState createState() => AdminScreenState();
 }
 
-class _AdminScreenState extends State<AdminScreen> {
+class AdminScreenState extends State<AdminScreen> {
   final UserService _userService = UserService();
+  // ignore: unused_field
   late List<UserData> _users = [];
 
   @override
@@ -27,27 +28,6 @@ class _AdminScreenState extends State<AdminScreen> {
     setState(() {
       _users = users;
     });
-  }
-
-  void _activateUser(String id) {
-    // Lógica para activar el usuario
-    _userService.postActivate(id);
-    // users.actived = 1;
-  }
-
-  void _desactivateUser(String id) {
-    // Lógica para desactivar el usuario
-    _userService.postDeactivate(id);
-  }
-
-  void _editUser(String id, String name) {
-    // Lógica para editar el usuario
-    _userService.postUpdate(id, name);
-  }
-
-  void _deleteUser(String id) {
-    // Lógica para eliminar el usuario
-    _userService.postDelete(id);
   }
 
   Widget buildListTileSubtitle(int? actived) {
@@ -105,7 +85,6 @@ class _AdminScreenState extends State<AdminScreen> {
                                   ),
                                 ),
                               );
-                              _deleteUser('a');
                               _userService.postDelete(user.id.toString());
                             },
                           ),
@@ -129,7 +108,8 @@ class _AdminScreenState extends State<AdminScreen> {
                                   ),
                                 ),
                               );
-                              // _editUser('a', user.name);
+                              _userService.postUpdate(
+                                  user.id.toString(), user.name.toString());
                             },
                           ),
                         ],
@@ -158,7 +138,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                     ),
                                   ),
                                 );
-                                _desactivateUser('a');
+                                _userService.postDeactivate(user.id.toString());
                               },
                             ),
                           if (user.actived == 0)
@@ -182,7 +162,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                     ),
                                   ),
                                 );
-                                _activateUser('a');
+                                _userService.postActivate(user.id.toString());
                               },
                             ),
                         ],

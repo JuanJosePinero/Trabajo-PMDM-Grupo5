@@ -142,12 +142,36 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
     super.dispose();
   }
 
-  void showInSnackBar(String value) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(value),
-    ));
-  }
+  void showInSnackBarError(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.dangerous_outlined, color: Color.fromARGB(255, 255, 0, 0)),
+          const SizedBox(width: 8),
+          Text(message),
+        ],
+      ),
+      backgroundColor: const Color.fromARGB(255, 93, 93, 93), // Puedes ajustar el color según tus preferencias
+    ),
+  );
+}
+
+void showInSnackBarSuccess(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.check_circle_outline, color: Color.fromARGB(255, 0, 255, 21)),
+          const SizedBox(width: 8),
+          Text(message),
+        ],
+      ),
+      backgroundColor: const Color.fromARGB(255, 93, 93, 93), // Puedes ajustar el color según tus preferencias
+    ),
+  );
+}
+
 
   @override
   String get restorationId => 'text_field_demo';
@@ -169,7 +193,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
     if (!form.validate()) {
       _autoValidateModeIndex.value =
           AutovalidateMode.always.index; // Start validating on every change.
-      showInSnackBar(('ERROR'));
+      showInSnackBarError(('Error. Try again'));
     } else {
       // form.save();
 
@@ -181,7 +205,7 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
       UserService userService = UserService();
       userService.register(name, mail, password, cpassword);
 
-      showInSnackBar('Registered');
+      showInSnackBarSuccess('Registered.\nCheck your email to verify your account');
 
       Navigator.push(
         context,
