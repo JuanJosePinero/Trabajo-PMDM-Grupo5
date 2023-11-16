@@ -34,7 +34,7 @@ class AdminScreenState extends State<AdminScreen> {
     if (index != -1) {
       String token = await userService.readToken();
       bool success;
-      if(user.deleted == 0){
+      if (user.deleted == 0) {
         success = await userService.postDelete(user.id.toString(), token);
       }
       if (user.actived == 0) {
@@ -111,19 +111,52 @@ class AdminScreenState extends State<AdminScreen> {
                           foregroundColor: Colors.white,
                           icon: Icons.edit,
                           label: 'Edit',
-                          onPressed: (BuildContext context) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Row(
-                                  children: [
-                                    const Icon(Icons.check, color: Colors.green),
-                                    const SizedBox(width: 8),
-                                    Text('${user.name ?? "User"} has been edited!'),
-                                  ],
+                          onPressed: (BuildContext context) async {
+                            TextEditingController nameController =
+                                TextEditingController(text: user.name ?? '');
+                            String? newName = await showDialog<String>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Edit name'),
+                                content: TextField(
+                                  controller: nameController,
+                                  decoration: const InputDecoration(labelText: 'New Name'),
                                 ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      String newName = nameController.text;
+                                      // Realiza las acciones que necesites con el nuevo nombre.
+                                      print('New Name: $newName');
+                                      Navigator.of(context).pop(newName);
+                                    },
+                                    child: const Text('Save'),
+                                  ),
+                                ],
                               ),
                             );
-                            // userService.postUpdate(user.id.toString(), user.name.toString());
+
+                            // if (newName != null) {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(
+                            //       content: Row(
+                            //         children: [
+                            //           const Icon(Icons.check, color: Colors.green),
+                            //           const SizedBox(width: 8),
+                            //           Text('$newName has been edited!'),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   );
+                            //   // Puedes usar newName para actualizar los datos del usuario
+                            //   // userService.postUpdate(user.id.toString(), newName);
+                            // }
                           },
                         ),
                       ],
