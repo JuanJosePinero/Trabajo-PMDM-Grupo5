@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -148,11 +147,8 @@ class UserService extends ChangeNotifier {
     return user;
   }
 
-  Future postActivate(String id) async {
-    final url = Uri.http(baseURL, '/activate', {'user_id': id});
-    String? token = await readToken();
-    isLoading = true;
-    notifyListeners();
+  Future<bool> postActivate(String id, String token) async {
+    final url = Uri.http(baseURL, '/public/api/activate');
     final resp = await http.post(
       url,
       headers: {
@@ -160,19 +156,19 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
-      body: json.encode({'id': userId}),
+      body: json.encode({'id': id}),
     );
 
-    final Map<String, dynamic> decode = json.decode(resp.body);
-    if(decode['success'] == true){
+    final Map<String, dynamic> decoded = json.decode(resp.body);
+    if (decoded['success'] == true) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
 
-  Future postDeactivate(String id) async {
-    final url = Uri.http(baseURL, '/deactivate', {'user_id': id});
+  Future<bool> postDeactivate(String id, String token) async {
+    final url = Uri.http(baseURL, '/public/api/deactivate');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();
@@ -183,19 +179,19 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
-      body: json.encode({'id': userId}),
+      body: json.encode({'id': id}),
     );
 
-    final Map<String, dynamic> decode = json.decode(resp.body);
-    if(decode['success'] == true){
+    final Map<String, dynamic> decoded = json.decode(resp.body);
+    if (decoded['success'] == true) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
 
-  Future postDelete(String id) async {
-    final url = Uri.http(baseURL, '/deleteUser/$id');
+  Future postDelete(String id, String token) async {
+    final url = Uri.http(baseURL, '/public/api/deleteUser');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();
@@ -206,13 +202,13 @@ class UserService extends ChangeNotifier {
         'Accept': 'application/json',
         "Authorization": "Bearer $token",
       },
-      body: json.encode({'id': userId}),
+      body: json.encode({'id': id}),
     );
 
-    final Map<String, dynamic> decode = json.decode(resp.body);
-    if(decode['success'] == true){
+    final Map<String, dynamic> decoded = json.decode(resp.body);
+    if (decoded['success'] == true) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
@@ -225,7 +221,7 @@ class UserService extends ChangeNotifier {
       'user_id': id,
       'name': name,
     };
-    final url = Uri.http(baseURL, '/updateUser/$id');
+    final url = Uri.http(baseURL, '/public/api/updateUser/$id');
     String? token = await readToken();
     isLoading = true;
     notifyListeners();

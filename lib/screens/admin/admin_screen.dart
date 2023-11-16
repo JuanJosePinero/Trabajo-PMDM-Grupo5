@@ -13,9 +13,8 @@ class AdminScreen extends StatefulWidget {
 }
 
 class AdminScreenState extends State<AdminScreen> {
-  final UserService _userService = UserService();
-  // ignore: unused_field
-  late List<UserData> _users = [];
+  final UserService userService = UserService();
+  late List<UserData> users = [];
 
   @override
   void initState() {
@@ -24,10 +23,31 @@ class AdminScreenState extends State<AdminScreen> {
   }
 
   Future<void> _fetchUsers() async {
-    final users = await _userService.getUsers();
+    final user = await userService.getUsers();
     setState(() {
-      _users = users;
+      users = user;
     });
+  }
+
+  Future<void> toggleAction(UserData user) async {
+    final index = users.indexOf(user);
+    if (index != -1) {
+      String token = await userService.readToken();
+      bool success;
+      if (user.deleted == 0) {
+        success = await userService.postDelete(user.id.toString(), token);
+      }
+      if (user.actived == 0) {
+        success = await userService.postActivate(user.id.toString(), token);
+      } else {
+        success = await userService.postDeactivate(user.id.toString(), token);
+      }
+      if (success) {
+        setState(() {
+          users[index].actived = users[index].actived == 0 ? 1 : 0;
+        });
+      }
+    }
   }
 
   Widget buildListTileSubtitle(int? actived) {
@@ -47,7 +67,7 @@ class AdminScreenState extends State<AdminScreen> {
           gradient: ThemeColors.getGradient(),
         ),
         child: FutureBuilder<List<UserData>>(
-          future: _userService.getUsers(), // Llamada a getUsers
+          future: userService.getUsers(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -61,116 +81,143 @@ class AdminScreenState extends State<AdminScreen> {
                 itemBuilder: (context, index) {
                   UserData user = users[index];
                   return Slidable(
-                      key: ValueKey(index),
-                      startActionPane: ActionPane(
-                        motion: const ScrollMotion(),
-                        dismissible: DismissiblePane(onDismissed: () {}),
-                        children: [
+                    key: ValueKey(index),
+                    startActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      dismissible: DismissiblePane(onDismissed: () {}),
+                      children: [
+                        SlidableAction(
+                          backgroundColor: const Color(0xFFFE4A49),
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                          onPressed: (BuildContext context) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Row(
+                                  children: [
+                                    const Icon(Icons.check, color: Colors.green),
+                                    const SizedBox(width: 8),
+                                    Text('${user.name ?? "User"} has been deleted!'),
+                                  ],
+                                ),
+                              ),
+                            );
+                            toggleAction(user);
+                          },
+                        ),
+                        SlidableAction(
+                          backgroundColor: const Color.fromARGB(255, 33, 151, 202),
+                          foregroundColor: Colors.white,
+                          icon: Icons.edit,
+                          label: 'Edit',
+                          onPressed: (BuildContext context) async {
+                            TextEditingController nameController =
+                                TextEditingController(text: user.name ?? '');
+                            String? newName = await showDialog<String>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Edit name'),
+                                content: TextField(
+                                  controller: nameController,
+                                  decoration: const InputDecoration(labelText: 'New Name'),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      String newName = nameController.text;
+                                      // Realiza las acciones que necesites con el nuevo nombre.
+                                      print('New Name: $newName');
+                                      Navigator.of(context).pop(newName);
+                                    },
+                                    child: const Text('Save'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            // if (newName != null) {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(
+                            //       content: Row(
+                            //         children: [
+                            //           const Icon(Icons.check, color: Colors.green),
+                            //           const SizedBox(width: 8),
+                            //           Text('$newName has been edited!'),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   );
+                            //   // Puedes usar newName para actualizar los datos del usuario
+                            //   // userService.postUpdate(user.id.toString(), newName);
+                            // }
+                          },
+                        ),
+                      ],
+                    ),
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        if (user.actived == 1)
                           SlidableAction(
-                            backgroundColor: const Color(0xFFFE4A49),
+                            backgroundColor: const Color.fromARGB(255, 255, 165, 80),
                             foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            label: 'Delete',
+                            icon: Icons.not_interested_outlined,
+                            label: 'Desactivate',
                             onPressed: (BuildContext context) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Row(
                                     children: [
-                                      const Icon(Icons.check,
-                                          color: Colors.green),
+                                      const Icon(Icons.check, color: Colors.green),
                                       const SizedBox(width: 8),
-                                      Text(
-                                          '${user.name ?? "User"} has been deleted!'),
+                                      Text('${user.name ?? "User"} has been deactivated!'),
                                     ],
                                   ),
                                 ),
                               );
-                              _userService.postDelete(user.id.toString());
+                              toggleAction(user);
                             },
                           ),
+                        if (user.actived == 0)
                           SlidableAction(
-                            backgroundColor:
-                                const Color.fromARGB(255, 33, 151, 202),
+                            flex: 2,
+                            backgroundColor: const Color(0xFF7BC043),
                             foregroundColor: Colors.white,
-                            icon: Icons.edit,
-                            label: 'Edit',
+                            icon: Icons.verified_outlined,
+                            label: 'Activate',
                             onPressed: (BuildContext context) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Row(
                                     children: [
-                                      const Icon(Icons.check,
-                                          color: Colors.green),
+                                      const Icon(Icons.check, color: Colors.green),
                                       const SizedBox(width: 8),
-                                      Text(
-                                          '${user.name ?? "User"} has been edited!'),
+                                      Text('${user.name ?? "User"} has been activated!'),
                                     ],
                                   ),
                                 ),
                               );
-                              _userService.postUpdate(
-                                  user.id.toString(), user.name.toString());
+                              toggleAction(user);
                             },
                           ),
-                        ],
-                      ),
-                      endActionPane: ActionPane(
-                        motion: const ScrollMotion(),
-                        children: [
-                          if (user.actived == 1)
-                            SlidableAction(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 255, 165, 80),
-                              foregroundColor: Colors.white,
-                              icon: Icons.not_interested_outlined,
-                              label: 'Desactivate',
-                              onPressed: (BuildContext context) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Row(
-                                      children: [
-                                        const Icon(Icons.check,
-                                            color: Colors.green),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                            '${user.name ?? "User"} has been desactivated!'),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                                _userService.postDeactivate(user.id.toString());
-                              },
-                            ),
-                          if (user.actived == 0)
-                            SlidableAction(
-                              flex: 2,
-                              backgroundColor: const Color(0xFF7BC043),
-                              foregroundColor: Colors.white,
-                              icon: Icons.verified_outlined,
-                              label: 'Activate',
-                              onPressed: (BuildContext context) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Row(
-                                      children: [
-                                        const Icon(Icons.check,
-                                            color: Colors.green),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                            '${user.name ?? "User"} has been activated!'),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                                _userService.postActivate(user.id.toString());
-                              },
-                            ),
-                        ],
-                      ),
-                      child: ListTile(
-                        title: Text(user.name ?? 'Unknown'),
-                        subtitle: buildListTileSubtitle(user.actived),
-                      ));
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(user.name ?? 'Unknown'),
+                      subtitle: buildListTileSubtitle(user.actived),
+                      onTap: () {
+                        // Llama a toggleAction cuando se selecciona un usuario
+                        toggleAction(user);
+                      },
+                    ),
+                  );
                 },
               );
             }
