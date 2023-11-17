@@ -216,15 +216,14 @@ class UserService extends ChangeNotifier {
   Future postUpdate(
     String id,
     String name,
+    String token,
   ) async {
     final Map<String, dynamic> updateData = {
       'user_id': id,
       'name': name,
     };
-    final url = Uri.http(baseURL, '/public/api/updateUser/$id');
-    String? token = await readToken();
-    isLoading = true;
-    notifyListeners();
+    final url = Uri.http(baseURL, '/public/api/updateUser');
+
     final response = await http.post(url,
         headers: {
           'Content-type': 'application/json',
@@ -234,11 +233,10 @@ class UserService extends ChangeNotifier {
         body: json.encode(updateData));
     final Map<String, dynamic> decoded = json.decode(response.body);
 
-    if (response.statusCode == 200) {
-      print('success');
+    if (decoded['success'] == true) {
+      return true;
     } else {
-      print('error');
-      print(decoded.toString());
+      return false;
     }
   }
 }

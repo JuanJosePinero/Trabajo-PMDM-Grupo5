@@ -5,6 +5,8 @@ import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:mindcare_app/services/UserService.dart';
 import 'package:mindcare_app/models/UserModel.dart';
 
+TextEditingController nameEditingController = TextEditingController();
+
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
 
@@ -29,8 +31,60 @@ class AdminScreenState extends State<AdminScreen> {
     });
   }
 
+  Future<void> toggleEditAction(UserData user) async {
+    TextEditingController newNameController = TextEditingController();
+    newNameController.text =
+        user.name ?? ''; // Establecer el nombre actual como valor inicial
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Modificar nombre'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Ajustar el tamaño del contenido
+            children: [
+              TextField(
+                controller: newNameController,
+                decoration: const InputDecoration(labelText: 'Nuevo nombre:'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                String newUserName = newNameController.text.trim();
+                if (newUserName.isNotEmpty) {
+                  String token = await userService.readToken();
+                  bool success = await userService.postUpdate(
+                      user.id.toString(), newUserName, token);
+
+                  if (success) {
+                    setState(() {
+                      user.name = newUserName;
+                    });
+                  }
+
+                  Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+                }
+              },
+              child: const Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> toggleAction(UserData user) async {
     final index = users.indexOf(user);
+
     if (index != -1) {
       String token = await userService.readToken();
       bool success;
@@ -96,9 +150,11 @@ class AdminScreenState extends State<AdminScreen> {
                               SnackBar(
                                 content: Row(
                                   children: [
-                                    const Icon(Icons.check, color: Colors.green),
+                                    const Icon(Icons.check,
+                                        color: Colors.green),
                                     const SizedBox(width: 8),
-                                    Text('${user.name ?? "User"} has been deleted!'),
+                                    Text(
+                                        '${user.name ?? "User"} has been deleted!'),
                                   ],
                                 ),
                               ),
@@ -107,20 +163,22 @@ class AdminScreenState extends State<AdminScreen> {
                           },
                         ),
                         SlidableAction(
-                          backgroundColor: const Color.fromARGB(255, 33, 151, 202),
+                          backgroundColor:
+                              const Color.fromARGB(255, 33, 151, 202),
                           foregroundColor: Colors.white,
                           icon: Icons.edit,
                           label: 'Edit',
                           onPressed: (BuildContext context) async {
-                            TextEditingController nameController =
+                            nameEditingController =
                                 TextEditingController(text: user.name ?? '');
                             String? newName = await showDialog<String>(
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text('Edit name'),
                                 content: TextField(
-                                  controller: nameController,
-                                  decoration: const InputDecoration(labelText: 'New Name'),
+                                  controller: nameEditingController,
+                                  decoration: const InputDecoration(
+                                      labelText: 'New Name'),
                                 ),
                                 actions: <Widget>[
                                   TextButton(
@@ -131,10 +189,9 @@ class AdminScreenState extends State<AdminScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      String newName = nameController.text;
                                       // Realiza las acciones que necesites con el nuevo nombre.
-                                      print('New Name: $newName');
-                                      Navigator.of(context).pop(newName);
+                                      Navigator.of(context).pop();
+                                      toggleEditAction(user);
                                     },
                                     child: const Text('Save'),
                                   ),
@@ -166,7 +223,8 @@ class AdminScreenState extends State<AdminScreen> {
                       children: [
                         if (user.actived == 1)
                           SlidableAction(
-                            backgroundColor: const Color.fromARGB(255, 255, 165, 80),
+                            backgroundColor:
+                                const Color.fromARGB(255, 255, 165, 80),
                             foregroundColor: Colors.white,
                             icon: Icons.not_interested_outlined,
                             label: 'Desactivate',
@@ -175,9 +233,11 @@ class AdminScreenState extends State<AdminScreen> {
                                 SnackBar(
                                   content: Row(
                                     children: [
-                                      const Icon(Icons.check, color: Colors.green),
+                                      const Icon(Icons.check,
+                                          color: Colors.green),
                                       const SizedBox(width: 8),
-                                      Text('${user.name ?? "User"} has been deactivated!'),
+                                      Text(
+                                          '${user.name ?? "User"} has been deactivated!'),
                                     ],
                                   ),
                                 ),
@@ -197,9 +257,11 @@ class AdminScreenState extends State<AdminScreen> {
                                 SnackBar(
                                   content: Row(
                                     children: [
-                                      const Icon(Icons.check, color: Colors.green),
+                                      const Icon(Icons.check,
+                                          color: Colors.green),
                                       const SizedBox(width: 8),
-                                      Text('${user.name ?? "User"} has been activated!'),
+                                      Text(
+                                          '${user.name ?? "User"} has been activated!'),
                                     ],
                                   ),
                                 ),

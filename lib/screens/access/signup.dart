@@ -252,7 +252,6 @@ class TextFormFieldDemoState extends State<TextFormFieldDemo>
   @override
   Widget build(BuildContext context) {
     const sizedBoxSpace = SizedBox(height: 24);
-    const bigSizedBoxSpace = SizedBox(height: 103);
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.values[_autoValidateModeIndex.value],
