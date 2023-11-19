@@ -87,7 +87,7 @@ class CustomAppBar {
                           color: Colors.white),
                     ),
                     Text(
-                      'adming@mail.com',
+                      'admin@gmail.com',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,

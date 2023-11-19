@@ -40,22 +40,22 @@ class AdminScreenState extends State<AdminScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Modificar nombre'),
+          title: const Text('Change name'),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Ajustar el tamaño del contenido
+            mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: newNameController,
-                decoration: const InputDecoration(labelText: 'Nuevo nombre:'),
+                decoration: const InputDecoration(labelText: 'New name:'),
               ),
             ],
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+                Navigator.of(context).pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () async {
@@ -63,18 +63,34 @@ class AdminScreenState extends State<AdminScreen> {
                 if (newUserName.isNotEmpty) {
                   String token = await userService.readToken();
                   bool success = await userService.postUpdate(
-                      user.id.toString(), newUserName, token);
+                    user.id.toString(),
+                    newUserName, // Utiliza el nuevo nombre obtenido del controlador
+                    token,
+                  );
+                  print(newUserName+'....'+token+'.....'+success.toString());
 
                   if (success) {
                     setState(() {
                       user.name = newUserName;
                     });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            const Icon(Icons.error, color: Colors.red),
+                            const SizedBox(width: 8),
+                            Text('Error updating ${user.name ?? "User"}'),
+                          ],
+                        ),
+                      ),
+                    );
                   }
 
-                  Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+                  Navigator.of(context).pop();
                 }
               },
-              child: const Text('Confirmar'),
+              child: const Text('Confirm'),
             ),
           ],
         );
@@ -169,51 +185,7 @@ class AdminScreenState extends State<AdminScreen> {
                           icon: Icons.edit,
                           label: 'Edit',
                           onPressed: (BuildContext context) async {
-                            nameEditingController =
-                                TextEditingController(text: user.name ?? '');
-                            String? newName = await showDialog<String>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Edit name'),
-                                content: TextField(
-                                  controller: nameEditingController,
-                                  decoration: const InputDecoration(
-                                      labelText: 'New Name'),
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      // Realiza las acciones que necesites con el nuevo nombre.
-                                      Navigator.of(context).pop();
-                                      toggleEditAction(user);
-                                    },
-                                    child: const Text('Save'),
-                                  ),
-                                ],
-                              ),
-                            );
-
-                            // if (newName != null) {
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //     SnackBar(
-                            //       content: Row(
-                            //         children: [
-                            //           const Icon(Icons.check, color: Colors.green),
-                            //           const SizedBox(width: 8),
-                            //           Text('$newName has been edited!'),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   );
-                            //   // Puedes usar newName para actualizar los datos del usuario
-                            //   // userService.postUpdate(user.id.toString(), newName);
-                            // }
+                            await toggleEditAction(user);
                           },
                         ),
                       ],
