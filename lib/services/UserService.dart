@@ -213,24 +213,18 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Future postUpdate(
-    String id,
-    String name,
-    String token,
-  ) async {
-    final Map<String, dynamic> updateData = {
-      'user_id': id,
-      'name': name,
-    };
+  Future<bool> postUpdate(String userId, String newname, String token) async {
     final url = Uri.http(baseURL, '/public/api/updateUser');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode({'id': userId, 'name': newname}),
+    );
 
-    final response = await http.post(url,
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-          "Authorization": "Bearer $token",
-        },
-        body: json.encode(updateData));
     final Map<String, dynamic> decoded = json.decode(response.body);
 
     if (decoded['success'] == true) {

@@ -31,72 +31,54 @@ class AdminScreenState extends State<AdminScreen> {
     });
   }
 
-  Future<void> toggleEditAction(UserData user) async {
-    TextEditingController newNameController = TextEditingController();
-    newNameController.text =
-        user.name ?? ''; // Establecer el nombre actual como valor inicial
+  Future<void> modifyName(UserData user) async {
+  TextEditingController newNameController = TextEditingController();
+  newNameController.text = user.name ?? ''; // Establecer el nombre actual como valor inicial
 
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Change name'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: newNameController,
-                decoration: const InputDecoration(labelText: 'New name:'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                String newUserName = newNameController.text.trim();
-                if (newUserName.isNotEmpty) {
-                  String token = await userService.readToken();
-                  bool success = await userService.postUpdate(
-                    user.id.toString(),
-                    newUserName, // Utiliza el nuevo nombre obtenido del controlador
-                    token,
-                  );
-                  print(newUserName+'....'+token+'.....'+success.toString());
-
-                  if (success) {
-                    setState(() {
-                      user.name = newUserName;
-                    });
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Row(
-                          children: [
-                            const Icon(Icons.error, color: Colors.red),
-                            const SizedBox(width: 8),
-                            Text('Error updating ${user.name ?? "User"}'),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Confirm'),
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Modificar nombre'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min, // Ajustar el tamaño del contenido
+          children: [
+            TextField(
+              controller: newNameController,
+              decoration: const InputDecoration(labelText: 'Nuevo nombre:'),
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+            },
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              String newUserName = newNameController.text.trim();
+              if (newUserName.isNotEmpty) {
+                String token = await userService.readToken();
+                bool success = await userService.postUpdate(user.id.toString(), newUserName, token);
+
+                if (success) {
+                  setState(() {
+                    user.name = newUserName;
+                  });
+                }
+
+                Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+              }
+            },
+            child: const Text('Confirmar'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Future<void> toggleAction(UserData user) async {
     final index = users.indexOf(user);
@@ -185,7 +167,7 @@ class AdminScreenState extends State<AdminScreen> {
                           icon: Icons.edit,
                           label: 'Edit',
                           onPressed: (BuildContext context) async {
-                            await toggleEditAction(user);
+                            await modifyName(user);
                           },
                         ),
                       ],
