@@ -14,19 +14,19 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabInfo = [
       const _TabInfo(
-        ('home'),
-        CupertinoIcons.home,
+        ('Diary'),
+        CupertinoIcons.book_circle,
       ),
+      // const _TabInfo(
+      //   ('conversation'),
+      //   CupertinoIcons.conversation_bubble,
+      // ),
       const _TabInfo(
-        ('conversation'),
-        CupertinoIcons.conversation_bubble,
-      ),
-      const _TabInfo(
-        ('profile'),
+        ('Profile'),
         CupertinoIcons.profile_circled,
       ),
       const _TabInfo(
-        ('settings'),
+        ('Settings'),
         CupertinoIcons.settings,
       ),
     ];

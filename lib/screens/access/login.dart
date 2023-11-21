@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:mindcare_app/screens/access/forget_password.dart';
 import 'package:mindcare_app/screens/admin/admin_screen.dart';
-import 'package:mindcare_app/screens/main/main_screen.dart';
+import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:mindcare_app/services/UserService.dart';
 
