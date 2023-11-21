@@ -70,10 +70,10 @@ class _CupertinoDemoTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(),
-      backgroundColor: CupertinoColors.systemBackground,
-      child: Stack(
+    Widget content;
+
+    if (title == 'Diary') {
+      content = Stack(
         children: [
           Center(
             child: Column(
@@ -93,10 +93,30 @@ class _CupertinoDemoTab extends StatelessWidget {
             child: _FloatingActionButtonGroup(),
           ),
         ],
-      ),
+      );
+    } else {
+      content = Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              semanticLabel: title,
+              size: 100,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(),
+      backgroundColor: CupertinoColors.systemBackground,
+      child: content,
     );
   }
 }
+
 
 class _FloatingActionButtonGroup extends StatefulWidget {
   @override
