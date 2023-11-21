@@ -69,7 +69,7 @@ class AdminScreenState extends State<AdminScreen> {
                   });
                 }
 
-                Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+                Navigator.of(context).pop(); 
               }
             },
             child: const Text('Confirmar'),
