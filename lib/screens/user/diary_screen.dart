@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../themes/themeColors.dart';
 import '../admin/customAppBar.dart';
 import 'cards/emotion_card.dart';
 import 'cards/event_card.dart';
@@ -94,20 +94,24 @@ class DiaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(),
-      backgroundColor: CupertinoColors.systemBackground,
-      child: Stack(
-        children: [
-          // Lista de tarjetas en un ListView
-          ListView(
-            children: [],
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: ThemeColors.getGradient(),
+        ),
+        child: Stack(
+          children: [
+            // Lista de tarjetas en un ListView
+            ListView(
+              children: [],
+            ),
 
-          Positioned(
-            bottom: 80.0,
-            right: 20.0,
-            child: _FloatingActionButtonGroup(),
-          ),
-        ],
+            Positioned(
+              bottom: 80.0,
+              right: 20.0,
+              child: _FloatingActionButtonGroup(),
+            ),
+          ],
+        ),
       ),
     );
   }

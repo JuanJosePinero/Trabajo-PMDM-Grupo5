@@ -1,9 +1,167 @@
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/themes/themeColors.dart';
+
 class MoodCard extends StatelessWidget {
-  const MoodCard({super.key});
+  const MoodCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Text('Hola');
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Mood Details'),
+      ),
+      body: _buildMoodDetails(),
+    );
+  }
+
+  Widget _buildMoodDetails() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: ThemeColors.getGradient(),
+      ),
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AddImageCustomButton(
+              onPressed: () {
+                // Lógica para añadir imagen
+              },
+              text: 'Select your mood',
+            ),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
+                const Icon(Icons.mood),
+                const SizedBox(width: 12.0),
+                const Text(
+                  'Mood:',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const SizedBox(width: 8.0),
+                Center(
+                  child: Expanded(
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      child: IntrinsicWidth(
+                        child: TextField(
+                          controller: TextEditingController(text: 'Your mood'),
+                          readOnly: true,
+                          style: const TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
+                const Icon(Icons.calendar_month_outlined),
+                const SizedBox(width: 12.0),
+                const Text(
+                  'Date:',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const SizedBox(width: 8.0),
+                Text(
+                  _getFormattedDate(),
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
+                const Icon(Icons.access_time),
+                const SizedBox(width: 12.0),
+                const Text(
+                  'Hour:',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const SizedBox(width: 8.0),
+                Text(
+                  _getFormattedTime(),
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+              ],
+            ),
+            const SizedBox(height: 50.0),
+            const Row(
+              children: [
+                Icon(Icons.info_outline),
+                SizedBox(width: 12.0),
+                Text(
+                  'Information card:',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(width: 8.0),
+              ],
+            ),
+            const Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "The Mood Card is a snapshot of your overall mood and mental well-being. It provides a space to capture your predominant emotional state and offers insights into the factors influencing your mood. Whether you're feeling upbeat, calm, or reflective, the Mood Card assists you in tracking and recognizing patterns in your emotional landscape, fostering self-awareness and emotional intelligence.",
+                    style: TextStyle(fontSize: 11.0),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getFormattedDate() {
+    final DateTime now = DateTime.now();
+    final String formattedDate = "${now.day}/${now.month}/${now.year}";
+    return formattedDate;
+  }
+
+  String _getFormattedTime() {
+    final DateTime now = DateTime.now();
+    final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
+    return formattedTime;
+  }
+}
+
+class AddImageCustomButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String text;
+
+  const AddImageCustomButton(
+      {required this.onPressed, required this.text, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.25,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[300], // Color grisaceo
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+              color: Colors.grey, // Borde de líneas discontinuas de color gris
+              style: BorderStyle.solid,
+            ),
+            borderRadius: BorderRadius.circular(0),
+          ),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.black),
+        ),
+      ),
+    );
   }
 }

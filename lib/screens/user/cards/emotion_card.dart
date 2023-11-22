@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: EmotionCard(),
-    );
-  }
-}
-
 class EmotionCard extends StatelessWidget {
   const EmotionCard({Key? key}) : super(key: key);
 
@@ -44,7 +31,7 @@ class EmotionCard extends StatelessWidget {
               onPressed: () {
                 // Lógica para añadir imagen
               },
-              text: 'Add Image',
+              text: 'Choose your emotion',
             ),
             const SizedBox(height: 16.0),
             Row(
