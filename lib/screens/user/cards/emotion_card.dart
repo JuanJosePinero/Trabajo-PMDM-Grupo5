@@ -47,16 +47,26 @@ class EmotionCard extends StatelessWidget {
               text: 'Add Image',
             ),
             const SizedBox(height: 16.0),
-            const Row(
+            Row(
               children: [
-                Text('Name:', style: TextStyle(fontSize: 20),),
-                SizedBox(width: 8.0),
-                Expanded(
-                  child: AnimatedSize(
-                    duration: Duration(milliseconds: 300),
-                    child: IntrinsicWidth(
-                      child: TextField(
-                        // Configura el controlador, estilo y otras propiedades según tus necesidades
+                const Icon(Icons.mood),
+                const SizedBox(width: 12.0),
+                const Text(
+                  'Emotion:',
+                  style: TextStyle(fontSize: 20),
+                ),
+                const SizedBox(width: 8.0),
+                Center(
+                  child: Expanded(
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      child: IntrinsicWidth(
+                        child: TextField(
+                          controller:
+                              TextEditingController(text: 'Your emotions'),
+                          readOnly: true,
+                          style: const TextStyle(fontSize: 16.0),
+                        ),
                       ),
                     ),
                   ),
@@ -66,8 +76,12 @@ class EmotionCard extends StatelessWidget {
             const SizedBox(height: 16.0),
             Row(
               children: [
-                const SizedBox(width: 0.0),
-                const Text('Hour:', style: TextStyle(fontSize: 20),),
+                const Icon(Icons.calendar_month_outlined),
+                const SizedBox(width: 12.0),
+                const Text(
+                  'Date:',
+                  style: TextStyle(fontSize: 20),
+                ),
                 const SizedBox(width: 8.0),
                 Text(
                   _getFormattedDate(),
@@ -78,12 +92,38 @@ class EmotionCard extends StatelessWidget {
             const SizedBox(height: 16.0),
             Row(
               children: [
-                const SizedBox(width: 0.0),
-                const Text('Hour:', style: TextStyle(fontSize: 20),),
+                const Icon(Icons.access_time),
+                const SizedBox(width: 12.0),
+                const Text(
+                  'Hour:',
+                  style: TextStyle(fontSize: 20),
+                ),
                 const SizedBox(width: 8.0),
                 Text(
                   _getFormattedTime(),
                   style: const TextStyle(fontSize: 16.0),
+                ),
+              ],
+            ),
+            const SizedBox(height: 50.0),
+            const Row(
+              children: [
+                Icon(Icons.info_outline),
+                SizedBox(width: 12.0),
+                Text(
+                  'Information card:',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(width: 8.0),
+              ],
+            ),
+            const Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "The Emotion Card is a personalized reflection of your daily emotional experiences. This card allows you to document and explore the array of emotions you have felt throughout the day. Whether it's joy, sadness, excitement, or tranquility, the Emotion Card serves as a visual and emotional diary, offering you the opportunity to delve into and better understand the complex tapestry of your feelings.",
+                    style: TextStyle(fontSize: 11.0),
+                  ),
                 ),
               ],
             ),
@@ -95,15 +135,13 @@ class EmotionCard extends StatelessWidget {
 
   String _getFormattedDate() {
     final DateTime now = DateTime.now();
-    final String formattedDate =
-        "${now.day}/${now.month}/${now.year}";
+    final String formattedDate = "${now.day}/${now.month}/${now.year}";
     return formattedDate;
   }
 
   String _getFormattedTime() {
     final DateTime now = DateTime.now();
-    final String formattedTime =
-        "${now.hour}:${now.minute}:${now.second}";
+    final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
     return formattedTime;
   }
 }
