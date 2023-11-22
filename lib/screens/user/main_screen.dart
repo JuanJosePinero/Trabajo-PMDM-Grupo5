@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mindcare_app/screens/user/cards/emotion_card.dart';
 import 'package:mindcare_app/screens/user/cards/event_card.dart';
 import 'package:mindcare_app/screens/user/cards/mood_card.dart';
+import 'package:mindcare_app/screens/user/diary_screen.dart';
 
 class _TabInfo {
   const _TabInfo(this.title, this.icon);
@@ -70,32 +71,13 @@ class _CupertinoDemoTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
-
+    print(title);
     if (title == 'Diary') {
-      content = Stack(
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  semanticLabel: title,
-                  size: 100,
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 70.0,
-            right: 20.0,
-            child: _FloatingActionButtonGroup(),
-          ),
-        ],
-      );
+      return const DiaryScreen();
+    } else if (title == 'Profile') {
+      print('Hol?!!?!');
     } else {
-      content = Center(
+      Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -109,14 +91,15 @@ class _CupertinoDemoTab extends StatelessWidget {
       );
     }
 
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(),
+    return const CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(),
       backgroundColor: CupertinoColors.systemBackground,
-      child: content,
+      child: Center(
+        child: Text('Page under construction'),
+      ),
     );
   }
 }
-
 
 class _FloatingActionButtonGroup extends StatefulWidget {
   @override
@@ -137,9 +120,9 @@ class _FloatingActionButtonGroupState
           _CustomFloatingActionButton(
             onPressed: () {
               Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const EmotionCard()),
-          );
+                context,
+                MaterialPageRoute(builder: (context) => const EmotionCard()),
+              );
             },
             tooltip: 'Emotions',
             heroTag: null,
@@ -154,9 +137,9 @@ class _FloatingActionButtonGroupState
           _CustomFloatingActionButton(
             onPressed: () {
               Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MoodCard()),
-          );
+                context,
+                MaterialPageRoute(builder: (context) => const MoodCard()),
+              );
             },
             tooltip: 'Mood',
             heroTag: null,
@@ -171,9 +154,9 @@ class _FloatingActionButtonGroupState
           _CustomFloatingActionButton(
             onPressed: () {
               Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const EventCard()),
-          );
+                context,
+                MaterialPageRoute(builder: (context) => const EventCard()),
+              );
             },
             tooltip: 'Events',
             heroTag: null,
@@ -226,9 +209,11 @@ class _CustomFloatingActionButton extends StatelessWidget {
         ),
         const SizedBox(height: 1),
         Text(
-        label,
-        style: const TextStyle(fontSize: 12), // Ajusta el tamaño del texto según tus preferencias
-      ),
+          label,
+          style: const TextStyle(
+              fontSize:
+                  12), // Ajusta el tamaño del texto según tus preferencias
+        ),
       ],
     );
   }
