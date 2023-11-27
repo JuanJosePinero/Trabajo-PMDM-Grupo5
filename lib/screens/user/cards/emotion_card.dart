@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
 class EmotionCard extends StatelessWidget {
@@ -10,18 +11,18 @@ class EmotionCard extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Emotion Details'),
       ),
-      body: _buildEmotionDetails(),
+      body: _buildEmotionDetails(context),
     );
   }
 
-  Widget _buildEmotionDetails() {
+  Widget _buildEmotionDetails(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         gradient: ThemeColors.getGradient(),
       ),
       child: Container(
-        width: double.infinity, // Ocupa todo el ancho de la pantalla
-        height: double.infinity, // Ocupa todo el alto de la pantalla
+        width: double.infinity,
+        height: double.infinity,
         padding: const EdgeInsets.all(30.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +93,7 @@ class EmotionCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 50.0),
+            const SizedBox(height: 32.0),
             const Row(
               children: [
                 Icon(Icons.info_outline),
@@ -114,10 +115,45 @@ class EmotionCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 32.0),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  _saveCard(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                child: const Text(
+                  'Save Card',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _saveCard(BuildContext context) {
+    // Muestra un SnackBar durante 2 segundos
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Card saved successfully'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    // Espera 2 segundos y luego navega a MainScreen
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    });
   }
 
   String _getFormattedDate() {
@@ -149,7 +185,7 @@ class AddImageCustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[300], // Color grisaceo
+          backgroundColor: Colors.grey[300], // Color grisáceo
           shape: RoundedRectangleBorder(
             side: const BorderSide(
               color: Colors.grey, // Borde de líneas discontinuas de color gris

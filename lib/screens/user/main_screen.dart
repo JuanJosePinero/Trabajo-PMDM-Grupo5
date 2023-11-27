@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mindcare_app/screens/user/cards/emotion_card.dart';
-import 'package:mindcare_app/screens/user/cards/event_card.dart';
-import 'package:mindcare_app/screens/user/cards/mood_card.dart';
 import 'package:mindcare_app/screens/user/diary_screen.dart';
 
 class _TabInfo {

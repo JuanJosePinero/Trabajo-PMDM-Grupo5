@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
 class MoodCard extends StatelessWidget {
@@ -10,11 +11,11 @@ class MoodCard extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Mood Details'),
       ),
-      body: _buildMoodDetails(),
+      body: _buildMoodDetails(context),
     );
   }
 
-  Widget _buildMoodDetails() {
+  Widget _buildMoodDetails(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         gradient: ThemeColors.getGradient(),
@@ -91,7 +92,7 @@ class MoodCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 50.0),
+            const SizedBox(height: 32.0),
             const Row(
               children: [
                 Icon(Icons.info_outline),
@@ -113,10 +114,45 @@ class MoodCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 32.0),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  _saveCard(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                child: const Text(
+                  'Save Card',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _saveCard(BuildContext context) {
+    // Muestra un SnackBar durante 2 segundos
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Card saved successfully'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    // Espera 2 segundos y luego navega a MainScreen
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    });
   }
 
   String _getFormattedDate() {
