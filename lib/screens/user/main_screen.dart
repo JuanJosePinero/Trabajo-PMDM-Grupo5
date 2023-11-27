@@ -71,32 +71,29 @@ class _CupertinoDemoTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(title);
-    if (title == 'Diary') {
-      return const DiaryScreen();
-    } else if (title == 'Profile') {
-      print('Hol?!!?!');
-    } else {
-      Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              semanticLabel: title,
-              size: 100,
-            ),
-          ],
+    {
+      if (title == 'Diary') {
+        return const DiaryScreen();
+      } else if (title == 'Profile') {
+        return const Center(
+          //Cuando creemos la página que irá aquí, que no se nos olvide añadir el
+          //navigationBar: const CupertinoNavigationBar(),
+          child: Text('Page under construction (Profile)'),
+        );
+      } else if (title == 'Settings') {
+        return const Center(
+          //Cuando creemos la página que irá aquí, que no se nos olvide añadir el
+          //navigationBar: const CupertinoNavigationBar(),
+          child: Text('Page under construction (Settings)'),
+        );
+      }
+      return const CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(),
+        backgroundColor: CupertinoColors.systemBackground,
+        child: Center(
+          child: Text('Page under construction'),
         ),
       );
     }
-
-    return const CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(),
-      backgroundColor: CupertinoColors.systemBackground,
-      child: Center(
-        child: Text('Page under construction'),
-      ),
-    );
   }
 }
