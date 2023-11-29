@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../user/cards/emotion_card.dart';
-import '../user/cards/event_card.dart';
-import '../user/cards/mood_card.dart';
-
 class CustomAppBar {
   AppBar adminAppBar() {
     return AppBar(

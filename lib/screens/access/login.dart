@@ -24,7 +24,6 @@ class _LoginPageState extends State<LoginPage> {
   void login() async {
     String email = emailController.text;
     String password = passwordController.text;
-    print(email + password);
 
     _userService.login(email, password).then((value) {
       if (value == 'success') {
@@ -34,10 +33,21 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (context) => const AdminScreen()),
           );
         } else if (UserService.userType == 'u') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-          );
+          print(_userService.deleted);
+          if (_userService.deleted == 0) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainScreen()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Error: User is deleted'),
+                backgroundColor: Colors.red,
+              ),
+            );
+            
+          }
         }
       } else if (value == 'Email not confimed') {
         ScaffoldMessenger.of(context).showSnackBar(

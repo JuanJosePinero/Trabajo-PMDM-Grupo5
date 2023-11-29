@@ -6,6 +6,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/UserModel.dart';
 
 class UserService extends ChangeNotifier {
+
+  int _deleted = 0; // Supongo que 0 significa no eliminado y 1 significa eliminado.
+
+  int get deleted => _deleted;
+
+  setDeleted(int value) {
+    _deleted = value;
+  }
+  
   final String baseURL = 'mindcare.allsites.es';
   final storage = const FlutterSecureStorage();
   static String userEmail = '';
