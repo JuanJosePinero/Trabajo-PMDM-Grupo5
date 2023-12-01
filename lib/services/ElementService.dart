@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart'; 
 import 'package:mindcare_app/models/ElementModel.dart';
+import 'package:mindcare_app/services/UserService.dart';
 
 class ElementService extends ChangeNotifier {
   final String baseURL = 'mindcare.allsites.es';
@@ -10,9 +11,9 @@ class ElementService extends ChangeNotifier {
   bool isLoading = true;
   final List<ElementData> elements = [];
 
-  Future<ElementResponse> getElements(int userId) async {
+  Future<ElementResponse> getElements() async {
     try {
-      final url = Uri.http(baseURL, '/public/api/elements', {'id': userId.toString()});
+      final url = Uri.http(baseURL, '/public/api/elements', {'id': UserService.userId.toString()});
       String? authToken = await readToken();
       isLoading = true;
       notifyListeners();

@@ -111,10 +111,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
   Future<void> _loadElements() async {
     try {
-      int userId =
-          222; // Reemplaza esto con el método real para obtener el userId
-
-      ElementResponse response = await _elementService.getElements(userId);
+      ElementResponse response = await _elementService.getElements();
       setState(() {
         _elements = response.data ?? [];
       });
@@ -124,7 +121,6 @@ class _DiaryScreenState extends State<DiaryScreen> {
   }
 
   Future<void> _refresh() async {
-    // Implementa la lógica de recarga aquí
     await _loadElements();
   }
 
@@ -152,9 +148,37 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         width: 3.0,
                       ),
                     ),
-                    child: ListTile(
-                      title: Text(_elements[index].name ?? ''),
-                      subtitle: Text(_elements[index].description ?? ''),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          // Imagen a la izquierda
+                          Image.asset(
+                            'assets/screen_images/default_img.png',
+                            fit: BoxFit.cover,
+                            width: 80.0,
+                            height: 80.0,
+                          ),
+                          const SizedBox(width: 16.0),
+                          // Texto a la derecha
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _elements[index].name ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(_elements[index].description ?? ''),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -171,6 +195,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
     );
   }
 }
+
 
 Color _getBorderColor(String? elementType) {
   switch (elementType) {

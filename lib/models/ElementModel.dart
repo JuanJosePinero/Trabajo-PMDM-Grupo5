@@ -2,7 +2,6 @@ class ElementData {
   int? id;
   String? type;
   String? name;
-  int? userId;
   String? description;
   String? image;
   String? date;
@@ -12,7 +11,6 @@ class ElementData {
     this.id,
     this.type,
     this.name,
-    this.userId,
     this.description,
     this.image,
     this.date,
@@ -23,7 +21,6 @@ class ElementData {
     id = json['id'];
     type = json['type'];
     name = json['name'];
-    userId = json['user_id'];
     description = json['description'];
     image = json['image'];
     date = json['date'];
@@ -35,7 +32,6 @@ class ElementData {
     data['id'] = id;
     data['type'] = type;
     data['name'] = name;
-    data['user_id'] = userId;
     data['description'] = description;
     data['image'] = image;
     data['date'] = date;
