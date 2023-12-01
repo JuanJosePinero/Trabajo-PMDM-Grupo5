@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/models/ElementModel.dart';
+import 'package:mindcare_app/services/ElementService.dart';
 
 import '../../themes/themeColors.dart';
 import '../admin/customAppBar.dart';
@@ -27,7 +29,7 @@ class _FloatingActionButtonGroupState
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const EmotionCard()),
+                MaterialPageRoute(builder: (context) => EmotionCard()),
               );
             },
             tooltip: 'Emotions',
@@ -87,8 +89,44 @@ class _FloatingActionButtonGroupState
   }
 }
 
-class DiaryScreen extends StatelessWidget {
-  const DiaryScreen({super.key});
+class DiaryScreen extends StatefulWidget {
+  const DiaryScreen({Key? key}) : super(key: key);
+
+  @override
+  _DiaryScreenState createState() => _DiaryScreenState();
+}
+
+class _DiaryScreenState extends State<DiaryScreen> {
+  late ElementService _elementService;
+  List<ElementData> _elements = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _elementService = ElementService();
+
+    // Llama a getElements al iniciar
+    _loadElements();
+  }
+
+  Future<void> _loadElements() async {
+    try {
+      int userId =
+          222; // Reemplaza esto con el método real para obtener el userId
+
+      ElementResponse response = await _elementService.getElements(userId);
+      setState(() {
+        _elements = response.data ?? [];
+      });
+    } catch (error) {
+      print('Error al cargar elementos: $error');
+    }
+  }
+
+  Future<void> _refresh() async {
+    // Implementa la lógica de recarga aquí
+    await _loadElements();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +138,28 @@ class DiaryScreen extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Lista de tarjetas en un ListView
-            ListView(
-              children: [],
+            RefreshIndicator(
+              onRefresh: _refresh,
+              child: ListView.builder(
+                itemCount: _elements.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: _getBackgroundColor(_elements[index].type),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(
+                        color: _getBorderColor(_elements[index].type),
+                        width: 3.0,
+                      ),
+                    ),
+                    child: ListTile(
+                      title: Text(_elements[index].name ?? ''),
+                      subtitle: Text(_elements[index].description ?? ''),
+                    ),
+                  );
+                },
+              ),
             ),
-
             Positioned(
               bottom: 80.0,
               right: 20.0,
@@ -114,5 +169,31 @@ class DiaryScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Color _getBorderColor(String? elementType) {
+  switch (elementType) {
+    case 'mood':
+      return Colors.yellow;
+    case 'emotion':
+      return Colors.red;
+    case 'event':
+      return Colors.green;
+    default:
+      return Colors.grey;
+  }
+}
+
+Color _getBackgroundColor(String? elementType) {
+  switch (elementType) {
+    case 'mood':
+      return Colors.yellow[50] ?? Colors.transparent;
+    case 'emotion':
+      return Colors.red[50] ?? Colors.transparent;
+    case 'event':
+      return Colors.green[50] ?? Colors.transparent;
+    default:
+      return Colors.grey[50] ?? Colors.transparent;
   }
 }
