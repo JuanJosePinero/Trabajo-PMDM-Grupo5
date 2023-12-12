@@ -3,11 +3,9 @@ import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
 class EmotionCard extends StatelessWidget {
-
   bool _isButtonDisabled = false;
-  
+
   EmotionCard({Key? key}) : super(key: key);
-  
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +122,8 @@ class EmotionCard extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: _isButtonDisabled ? null : () => _saveCard(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _isButtonDisabled ? Colors.grey : Colors.blue,
+                  backgroundColor:
+                      _isButtonDisabled ? Colors.grey : Colors.blue,
                 ),
                 child: const Text(
                   'Save Card',
@@ -141,19 +140,43 @@ class EmotionCard extends StatelessWidget {
   }
 
   void _saveCard(BuildContext context) {
-    // Muestra un SnackBar durante 2 segundos
+    // if (      ) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Row(
+        content: Column(
           children: [
-            Icon(Icons.check, color: Colors.green), // Icono de tick verde
-            SizedBox(width: 8.0),
-            Text('Card saved successfully'),
+            SizedBox(height: 4),
+            Center(child: Text('Please fill the fields')),
+            SizedBox(height: 40),
           ],
         ),
         duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
       ),
     );
+    // } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Column(
+          children: [
+            SizedBox(height: 4),
+            Center(child: Text('Event saved successfully')),
+            SizedBox(height: 40),
+          ],
+        ),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    Future.delayed(const Duration(seconds: 1), () {
+      // whatHappenedController.clear();
+      // talkAboutItController.clear();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    });
   }
 
   String _getFormattedDate() {

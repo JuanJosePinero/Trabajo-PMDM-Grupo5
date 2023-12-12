@@ -138,21 +138,44 @@ class MoodCard extends StatelessWidget {
   }
 
   void _saveCard(BuildContext context) {
-    // Muestra un SnackBar durante 2 segundos
+    // if (whatHappenEmpty()) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Card saved successfully'),
+        content: Column(
+          children: [
+            SizedBox(height: 4),
+            Center(child: Text('Please fill the fields')),
+            SizedBox(height: 40),
+          ],
+        ),
         duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    // } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Column(
+          children: [
+            SizedBox(height: 4),
+            Center(child: Text('Event saved successfully')),
+            SizedBox(height: 40),
+          ],
+        ),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
       ),
     );
 
-    // Espera 2 segundos y luego navega a MainScreen
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
+      // whatHappenedController.clear();
+      // talkAboutItController.clear();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     });
+    // }
   }
 
   String _getFormattedDate() {

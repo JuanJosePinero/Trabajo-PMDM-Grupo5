@@ -3,6 +3,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
+final TextEditingController whatHappenedController = TextEditingController();
+final TextEditingController talkAboutItController = TextEditingController();
+
 class EventCard extends StatelessWidget {
   const EventCard({Key? key}) : super(key: key);
 
@@ -46,7 +49,7 @@ class EventCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: TextField(
-                        controller: TextEditingController(),
+                        controller: whatHappenedController,
                         style: const TextStyle(fontSize: 16.0),
                       ),
                     ),
@@ -64,6 +67,7 @@ class EventCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: TextFormField(
+                        controller: talkAboutItController,
                         minLines: 6,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
@@ -151,22 +155,50 @@ class EventCard extends StatelessWidget {
     );
   }
 
-  void _saveCard(BuildContext context) {
-    // Muestra un SnackBar durante 2 segundos
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Card saved successfully'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  bool whatHappenEmpty() {
+    if (whatHappenedController.text.isEmpty) return true;
+    return false;
+  }
 
-    // Espera 2 segundos y luego navega a MainScreen
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()), // Asegúrate de tener la clase MainScreen
+  void _saveCard(BuildContext context) {
+    if (whatHappenEmpty()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Column(
+            children: [
+              SizedBox(height: 4),
+              Center(child: Text('Please fill the fields')),
+              SizedBox(height: 40),
+            ],
+          ),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
-    });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Column(
+            children: [
+              SizedBox(height: 4),
+              Center(child: Text('Event saved successfully')),
+              SizedBox(height: 40),
+            ],
+          ),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      Future.delayed(const Duration(seconds: 1), () {
+        whatHappenedController.clear();
+        talkAboutItController.clear();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      });
+    }
   }
 
   String _getFormattedDate() {
@@ -179,39 +211,5 @@ class EventCard extends StatelessWidget {
     final DateTime now = DateTime.now();
     final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
     return formattedTime;
-  }
-}
-
-class AddImageCustomButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
-
-  const AddImageCustomButton(
-      {required this.onPressed, required this.text, Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.25,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[300], // Color grisáceo
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(
-              color: Colors.grey, // Borde de líneas discontinuas de color gris
-              style: BorderStyle.solid,
-            ),
-            borderRadius: BorderRadius.circular(0),
-          ),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.black),
-        ),
-      ),
-    );
   }
 }
