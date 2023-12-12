@@ -30,7 +30,7 @@ class MoodCard extends StatelessWidget {
           children: [
             AddImageCustomButton(
               onPressed: () {
-                // Lógica para añadir imagen
+                _showHorizontalButtonDialog(context);
               },
               text: 'Select your mood',
             ),
@@ -133,6 +133,63 @@ class MoodCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showHorizontalButtonDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(16),
+            width: 300, // Adjust the width as needed
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Select an Option',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                _buildHorizontalButtonList(),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHorizontalButtonList() {
+    return SizedBox(
+      height: 100, // Adjust the height as needed
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 5, // Adjust the number of items as needed
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ElevatedButton(
+              onPressed: () {
+                // Handle button click here
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Button $index clicked')),
+                );
+              },
+              child: Text('Button $index'),
+            ),
+          );
+        },
       ),
     );
   }
