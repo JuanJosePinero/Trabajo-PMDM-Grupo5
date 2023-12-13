@@ -58,6 +58,21 @@ class MoodCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                ElevatedButton(
+                  onPressed: () {
+                    _showHorizontalButtonDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                  ),
+                  child: const Text(
+                    'Choose Mood',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 16.0),
@@ -143,24 +158,24 @@ class MoodCard extends StatelessWidget {
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             width: 300, // Adjust the width as needed
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Select an Option',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildHorizontalButtonList(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             ),
@@ -183,10 +198,10 @@ class MoodCard extends StatelessWidget {
               onPressed: () {
                 // Handle button click here
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Button $index clicked')),
+                  SnackBar(content: Text('Mood $index clicked')),
                 );
               },
-              child: Text('Button $index'),
+              child: Text('Mood $index'),
             ),
           );
         },

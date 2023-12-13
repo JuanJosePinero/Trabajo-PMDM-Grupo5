@@ -155,23 +155,22 @@ class _DiaryScreenState extends State<DiaryScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  // Imagen a la izquierda
-                                  Image.network(
-                                    _elements[index].image ?? '',
-                                    fit: BoxFit.cover,
-                                    width: 80.0,
-                                    height: 80.0,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        'assets/screen_images/default_img.png',
-                                        fit: BoxFit.cover,
-                                        width: 80.0,
-                                        height: 80.0,
-                                      );
-                                    },
-                                  ),
+                                  if (_elements[index].type != 'event')
+                                    Image.network(
+                                      _elements[index].image ?? '',
+                                      fit: BoxFit.cover,
+                                      width: 80.0,
+                                      height: 80.0,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Image.asset(
+                                          'assets/screen_images/default_img.png',
+                                          fit: BoxFit.cover,
+                                          width: 80.0,
+                                          height: 80.0,
+                                        );
+                                      },
+                                    ),
                                   const SizedBox(width: 16.0),
-                                  // Texto a la derecha
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -219,23 +218,22 @@ class _DiaryScreenState extends State<DiaryScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  // Imagen a la izquierda
-                                  Image.network(
-                                    _elements[index].image ?? '',
-                                    fit: BoxFit.cover,
-                                    width: 80.0,
-                                    height: 80.0,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        'assets/screen_images/default_img.png',
-                                        fit: BoxFit.cover,
-                                        width: 80.0,
-                                        height: 80.0,
-                                      );
-                                    },
-                                  ),
+                                  if (_elements[index].type != 'event')
+                                    Image.network(
+                                      _elements[index].image ?? '',
+                                      fit: BoxFit.cover,
+                                      width: 80.0,
+                                      height: 80.0,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Image.asset(
+                                          'assets/screen_images/default_img.png',
+                                          fit: BoxFit.cover,
+                                          width: 80.0,
+                                          height: 80.0,
+                                        );
+                                      },
+                                    ),
                                   const SizedBox(width: 16.0),
-                                  // Texto a la derecha
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
