@@ -36,29 +36,28 @@ class EventCard extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    const Row(children: [
-                      Icon(Icons.smart_button),
-                      Text(
-                        ' What happened:',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ]),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: TextField(
-                        controller: whatHappenedController,
-                        style: const TextStyle(fontSize: 16.0),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
+                    // const Row(children: [
+                    //   Text(
+                    //     'You need to write a description below\n',
+                    //     style: TextStyle(fontSize: 16),
+                    //   ),
+                    // ]),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.grey[300],
+                    //     borderRadius: BorderRadius.circular(8.0),
+                    //   ),
+                    //   child: TextField(
+                    //     controller: whatHappenedController,
+                    //     style: const TextStyle(fontSize: 16.0),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 16.0),
                     const Row(children: [
                       Icon(Icons.text_decrease),
                       Text(
-                        ' Wanna talk about it?',
-                        style: TextStyle(fontSize: 20),
+                        'Write a description about your event',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ]),
                     Container(
@@ -68,7 +67,7 @@ class EventCard extends StatelessWidget {
                       ),
                       child: TextFormField(
                         controller: talkAboutItController,
-                        minLines: 6,
+                        minLines: 8,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         style: const TextStyle(fontSize: 16.0),
@@ -76,7 +75,7 @@ class EventCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 48.0),
                 Row(
                   children: [
                     const Icon(Icons.calendar_month_outlined),
@@ -92,23 +91,7 @@ class EventCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
-                Row(
-                  children: [
-                    const Icon(Icons.access_time),
-                    const SizedBox(width: 12.0),
-                    const Text(
-                      'Hour:',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      _getFormattedTime(),
-                      style: const TextStyle(fontSize: 16.0),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32.0),
+                const SizedBox(height: 48.0),
                 const Row(
                   children: [
                     Icon(Icons.info_outline),
@@ -130,7 +113,7 @@ class EventCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 32.0),
+                const SizedBox(height: 48.0),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
@@ -145,8 +128,10 @@ class EventCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
+
                   ),
                 ),
+                const SizedBox(height: 20.0),
               ],
             ),
           ),
