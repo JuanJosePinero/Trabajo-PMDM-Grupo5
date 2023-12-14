@@ -1,10 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
+import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
+import 'package:mindcare_app/models/ElementModel.dart';
 
-class MoodCard extends StatelessWidget {
-  const MoodCard({Key? key}) : super(key: key);
+class MoodCard extends StatefulWidget {
+  MoodCard({Key? key}) : super(key: key);
 
+  @override
+  _MoodCardState createState() => _MoodCardState();
+}
+
+class _MoodCardState extends State<MoodCard> {
+  late ElementService _elementService;
+  List<ElementData> _elements = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _elementService = ElementService();
+
+    // Llama a getElements al iniciar
+    _loadElements();
+  }
+
+  Future<void> _loadElements() async {
+    try {
+      ElementResponse response = await _elementService.getElements();
+      setState(() {
+        _elements = response.data ?? [];
+      });
+    } catch (error) {
+      print('Error al cargar elementos: $error');
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +93,7 @@ class MoodCard extends StatelessWidget {
                     _showHorizontalButtonDialog(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
                   ),
                   child: const Text(
                     'Choose Mood',
@@ -169,7 +199,7 @@ class MoodCard extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                _buildHorizontalButtonList(),
+                _buildHorizontalButtonList(context),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
@@ -185,32 +215,36 @@ class MoodCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHorizontalButtonList() {
-    return SizedBox(
-      height: 100, // Adjust the height as needed
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 5, // Adjust the number of items as needed
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ElevatedButton(
-              onPressed: () {
-                // Handle button click here
+  Widget _buildHorizontalButtonList(BuildContext context) {
+  // Filtrar los elementos para incluir solo los de tipo "mood"
+  final List<ElementData> moodElements = _elements.where((element) => element.type == 'mood').toList();
+
+  return SizedBox(
+    height: 100, // Ajusta la altura según sea necesario
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: moodElements.length, // Usamos la lista filtrada
+      itemBuilder: (BuildContext context, int index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: ElevatedButton(
+            onPressed: () {
+              final name = moodElements[index].name;
+              if (name != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Mood $index clicked')),
+                  SnackBar(content: Text(name)),
                 );
-              },
-              child: Text('Mood $index'),
-            ),
-          );
-        },
-      ),
-    );
-  }
+              }
+            },
+            child: Text(moodElements[index].name ?? ''),
+          ),
+        );
+      },
+    ),
+  );
+}
 
   void _saveCard(BuildContext context) {
-    // if (whatHappenEmpty()) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Column(
@@ -224,7 +258,7 @@ class MoodCard extends StatelessWidget {
         behavior: SnackBarBehavior.floating,
       ),
     );
-    // } else {
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Column(
@@ -240,14 +274,11 @@ class MoodCard extends StatelessWidget {
     );
 
     Future.delayed(const Duration(seconds: 1), () {
-      // whatHappenedController.clear();
-      // talkAboutItController.clear();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     });
-    // }
   }
 
   String _getFormattedDate() {
@@ -279,10 +310,10 @@ class AddImageCustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[300], // Color grisaceo
+          backgroundColor: Colors.grey[300],
           shape: RoundedRectangleBorder(
             side: const BorderSide(
-              color: Colors.grey, // Borde de líneas discontinuas de color gris
+              color: Colors.grey,
               style: BorderStyle.solid,
             ),
             borderRadius: BorderRadius.circular(0),
