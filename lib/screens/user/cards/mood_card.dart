@@ -58,11 +58,12 @@ class _MoodCardState extends State<MoodCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            AddImageCustomButton(
-              onPressed: () {
-                _showHorizontalButtonDialog(context);
-              },
-              text: 'Select your mood',
+            Center(
+              child: SizedBox(
+                height: 200,
+                width: 200,
+                child: Image.asset('assets/screen_images/default_create.jpg'),
+              ),
             ),
             const SizedBox(height: 16.0),
             Row(
@@ -74,38 +75,26 @@ class _MoodCardState extends State<MoodCard> {
                   style: TextStyle(fontSize: 20),
                 ),
                 const SizedBox(width: 8.0),
-                Center(
-                  child: Expanded(
-                    child: AnimatedSize(
-                      duration: const Duration(milliseconds: 300),
-                      child: IntrinsicWidth(
-                        child: TextField(
-                          controller: TextEditingController(text: 'Your mood'),
-                          readOnly: true,
-                          style: const TextStyle(fontSize: 16.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _showHorizontalButtonDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                  ),
-                  child: const Text(
-                    'Choose Mood',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.0,
-                    ),
+                Expanded(
+                  child: DropdownButton<String>(
+                    hint: const Text('Select a mood'),
+                    value: _selectedMood,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedMood = newValue;
+                      });
+                    },
+                    items: _moodList.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 32.0),
             Row(
               children: [
                 const Icon(Icons.calendar_month_outlined),
@@ -117,22 +106,6 @@ class _MoodCardState extends State<MoodCard> {
                 const SizedBox(width: 8.0),
                 Text(
                   _getFormattedDate(),
-                  style: const TextStyle(fontSize: 16.0),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            Row(
-              children: [
-                const Icon(Icons.access_time),
-                const SizedBox(width: 12.0),
-                const Text(
-                  'Hour:',
-                  style: TextStyle(fontSize: 20),
-                ),
-                const SizedBox(width: 8.0),
-                Text(
-                  _getFormattedTime(),
                   style: const TextStyle(fontSize: 16.0),
                 ),
               ],
@@ -292,6 +265,17 @@ class _MoodCardState extends State<MoodCard> {
     final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
     return formattedTime;
   }
+
+  String? _selectedMood; 
+  List<String> _moodList = [
+    'Happy',
+    'Sad',
+    'Angry',
+    'Calm',
+    'Excited',
+    'Stressed',
+    'Tired',
+  ]; 
 }
 
 class AddImageCustomButton extends StatelessWidget {

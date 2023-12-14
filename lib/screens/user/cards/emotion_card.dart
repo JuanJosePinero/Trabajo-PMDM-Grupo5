@@ -1,12 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/models/ElementModel.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
+import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
-class EmotionCard extends StatelessWidget {
-  bool _isButtonDisabled = false;
-
+class EmotionCard extends StatefulWidget {
   EmotionCard({Key? key}) : super(key: key);
 
+  @override
+  _EmotionCardState createState() => _EmotionCardState();
+}
+
+class _EmotionCardState extends State<EmotionCard> {
+late ElementService _elementService;
+  List<ElementData> _elements = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _elementService = ElementService();
+
+    // Llama a getElements al iniciar
+    _loadElements();
+  }
+
+  Future<void> _loadElements() async {
+    try {
+      ElementResponse response = await _elementService.getElements();
+      setState(() {
+        _elements = response.data ?? [];
+      });
+    } catch (error) {
+      print('Error al cargar elementos: $error');
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,12 +58,13 @@ class EmotionCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            AddImageCustomButton(
-              onPressed: () {
-                // Lógica para añadir imagen
-              },
-              text: 'Choose your emotion',
-            ),
+            Center(
+            child: SizedBox(
+                height: 200,
+                width: 200,
+                child: Image.asset('assets/screen_images/default_create.jpg'),
+              ),
+              ),
             const SizedBox(height: 16.0),
             Row(
               children: [
@@ -46,24 +75,26 @@ class EmotionCard extends StatelessWidget {
                   style: TextStyle(fontSize: 20),
                 ),
                 const SizedBox(width: 8.0),
-                Center(
-                  child: Expanded(
-                    child: AnimatedSize(
-                      duration: const Duration(milliseconds: 300),
-                      child: IntrinsicWidth(
-                        child: TextField(
-                          controller:
-                              TextEditingController(text: 'Your emotions'),
-                          readOnly: true,
-                          style: const TextStyle(fontSize: 16.0),
-                        ),
-                      ),
-                    ),
+                Expanded(
+                  child: DropdownButton<String>(
+                    hint: const Text('Select a emotion'),
+                    value: _selectedEmotion,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedEmotion = newValue;
+                      });
+                    },
+                    items: _emotionList.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 32.0),
             Row(
               children: [
                 const Icon(Icons.calendar_month_outlined),
@@ -75,22 +106,6 @@ class EmotionCard extends StatelessWidget {
                 const SizedBox(width: 8.0),
                 Text(
                   _getFormattedDate(),
-                  style: const TextStyle(fontSize: 16.0),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            Row(
-              children: [
-                const Icon(Icons.access_time),
-                const SizedBox(width: 12.0),
-                const Text(
-                  'Hour:',
-                  style: TextStyle(fontSize: 20),
-                ),
-                const SizedBox(width: 8.0),
-                Text(
-                  _getFormattedTime(),
                   style: const TextStyle(fontSize: 16.0),
                 ),
               ],
@@ -120,10 +135,11 @@ class EmotionCard extends StatelessWidget {
             const SizedBox(height: 32.0),
             Center(
               child: ElevatedButton(
-                onPressed: _isButtonDisabled ? null : () => _saveCard(context),
+                onPressed: () {
+                  _saveCard(context);
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _isButtonDisabled ? Colors.grey : Colors.blue,
+                  backgroundColor: Colors.blue,
                 ),
                 child: const Text(
                   'Save Card',
@@ -190,6 +206,17 @@ class EmotionCard extends StatelessWidget {
     final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
     return formattedTime;
   }
+
+   String? _selectedEmotion; 
+  List<String> _emotionList = [
+    'Happy',
+    'Sad',
+    'Angry',
+    'Calm',
+    'Excited',
+    'Stressed',
+    'Tired',
+  ];
 }
 
 class AddImageCustomButton extends StatelessWidget {
