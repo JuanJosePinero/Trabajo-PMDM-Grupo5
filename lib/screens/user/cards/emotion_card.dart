@@ -12,7 +12,7 @@ class EmotionCard extends StatefulWidget {
 }
 
 class _EmotionCardState extends State<EmotionCard> {
-late ElementService _elementService;
+  late ElementService _elementService;
   List<ElementData> _elements = [];
 
   @override
@@ -34,7 +34,7 @@ late ElementService _elementService;
       print('Error al cargar elementos: $error');
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,12 +59,12 @@ late ElementService _elementService;
           mainAxisSize: MainAxisSize.min,
           children: [
             Center(
-            child: SizedBox(
+              child: SizedBox(
                 height: 200,
                 width: 200,
                 child: Image.asset('assets/screen_images/default_create.jpg'),
               ),
-              ),
+            ),
             const SizedBox(height: 16.0),
             Row(
               children: [
@@ -84,7 +84,8 @@ late ElementService _elementService;
                         _selectedEmotion = newValue;
                       });
                     },
-                    items: _emotionList.map<DropdownMenuItem<String>>((String value) {
+                    items: _emotionList
+                        .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
@@ -207,7 +208,7 @@ late ElementService _elementService;
     return formattedTime;
   }
 
-   String? _selectedEmotion; 
+  String? _selectedEmotion;
   List<String> _emotionList = [
     'Happy',
     'Sad',
