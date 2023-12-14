@@ -148,120 +148,9 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         width: 3.0,
                       ),
                     ),
-                    child: _elements[index].description != null &&
-                            _elements[index].description!.length > 18
-                        ? ExpansionTile(
-                            title: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  if (_elements[index].type != 'event')
-                                    Image.network(
-                                      _elements[index].image ?? '',
-                                      fit: BoxFit.cover,
-                                      width: 80.0,
-                                      height: 80.0,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Image.asset(
-                                          'assets/screen_images/default_img.png',
-                                          fit: BoxFit.cover,
-                                          width: 80.0,
-                                          height: 80.0,
-                                        );
-                                      },
-                                    ),
-                                  const SizedBox(width: 16.0),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          _elements[index].name ??
-                                              'No name available',
-                                          style: const TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8.0),
-                                        Text(_elements[index].date ??
-                                            'No date available'),
-                                        Text(
-                                          (_elements[index].description ??
-                                                          'No description available')
-                                                      .length >
-                                                  18
-                                              ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
-                                              : _elements[index].description ??
-                                                  'No description available',
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  _elements[index].description ??
-                                      'No description available',
-                                  maxLines: null, // Muestra todo el texto
-                                ),
-                              ),
-                            ],
-                          )
-                        : ListTile(
-                            title: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  if (_elements[index].type != 'event')
-                                    Image.network(
-                                      _elements[index].image ?? '',
-                                      fit: BoxFit.cover,
-                                      width: 80.0,
-                                      height: 80.0,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Image.asset(
-                                          'assets/screen_images/default_img.png',
-                                          fit: BoxFit.cover,
-                                          width: 80.0,
-                                          height: 80.0,
-                                        );
-                                      },
-                                    ),
-                                  const SizedBox(width: 16.0),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          _elements[index].name ??
-                                              'No name available',
-                                          style: const TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8.0),
-                                        Text(_elements[index].date ??
-                                            'No date available'),
-                                        const SizedBox(height: 8.0),
-                                        Text(
-                                          _elements[index].description ??
-                                              'No description available',
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                    child: _elements[index].type != 'event'
+                        ? _buildCardContentWithImage(index)
+                        : _buildCardContentForEvent(index),
                   );
                 },
               ),
@@ -276,30 +165,209 @@ class _DiaryScreenState extends State<DiaryScreen> {
       ),
     );
   }
-}
 
-Color _getBorderColor(String? elementType) {
-  switch (elementType) {
-    case 'mood':
-      return Colors.yellow;
-    case 'emotion':
-      return Colors.red;
-    case 'event':
-      return Colors.green;
-    default:
-      return Colors.grey;
+  Widget _buildCardContentWithImage(int index) {
+    return _elements[index].description != null &&
+            _elements[index].description!.length > 18
+        ? ExpansionTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Image.network(
+                    _elements[index].image ?? '',
+                    fit: BoxFit.cover,
+                    width: 80.0,
+                    height: 80.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/default_img.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _elements[index].name ?? 'No name available',
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(_getFormattedDate(_elements[index].date) ?? 'No date available',),
+                        Text(
+                          (_elements[index].description ??
+                                  'No description available')
+                              .length > 18
+                              ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
+                              : _elements[index].description ??
+                                  'No description available',
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  _elements[index].description ?? 'No description available',
+                  maxLines: null, // Muestra todo el texto
+                ),
+              ),
+            ],
+          )
+        : ListTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Image.network(
+                    _elements[index].image ?? '',
+                    fit: BoxFit.cover,
+                    width: 80.0,
+                    height: 80.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/default_img.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _elements[index].name ?? 'No name available',
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(_getFormattedDate(_elements[index].date) ?? 'No date available',),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          _elements[index].description ??
+                              'No description available',
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
   }
-}
 
-Color _getBackgroundColor(String? elementType) {
-  switch (elementType) {
-    case 'mood':
-      return Colors.yellow[50] ?? Colors.transparent;
-    case 'emotion':
-      return Colors.red[50] ?? Colors.transparent;
-    case 'event':
-      return Colors.green[50] ?? Colors.transparent;
-    default:
-      return Colors.grey[50] ?? Colors.transparent;
+  Widget _buildCardContentForEvent(int index) {
+    return _elements[index].description != null &&
+            _elements[index].description!.length > 18
+        ? ExpansionTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Event Card', style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    _getFormattedDate(_elements[index].date) ?? 'No date available',
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    (_elements[index].description ??
+                            'No description available')
+                        .length > 18
+                        ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
+                        : _elements[index].description ??
+                            'No description available',
+                  )
+                ],
+              ),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  _elements[index].description ?? 'No description available',
+                  maxLines: null, // Muestra todo el texto
+                ),
+              ),
+            ],
+          )
+        : ListTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   const Text('Event Card', style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    _getFormattedDate(_elements[index].date) ?? 'No date available',
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    _elements[index].description ??
+                        'No description available',
+                  ),
+                ],
+              ),
+            ),
+          );
+  }
+
+  String? _getFormattedDate(String? date) {
+    if (date == null) return null;
+    final DateTime dateTime = DateTime.parse(date);
+    final String formattedDate = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+    return formattedDate;
+  }
+
+
+  Color _getBorderColor(String? elementType) {
+    switch (elementType) {
+      case 'mood':
+        return Colors.yellow;
+      case 'emotion':
+        return Colors.red;
+      case 'event':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Color _getBackgroundColor(String? elementType) {
+    switch (elementType) {
+      case 'mood':
+        return Colors.yellow[50] ?? Colors.transparent;
+      case 'emotion':
+        return Colors.red[50] ?? Colors.transparent;
+      case 'event':
+        return Colors.green[50] ?? Colors.transparent;
+      default:
+        return Colors.grey[50] ?? Colors.transparent;
+    }
   }
 }
