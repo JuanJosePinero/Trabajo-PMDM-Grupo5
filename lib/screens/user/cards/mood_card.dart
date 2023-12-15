@@ -14,6 +14,8 @@ class MoodCard extends StatefulWidget {
 class _MoodCardState extends State<MoodCard> {
   late ElementService _elementService;
   List<ElementData> _elements = [];
+  List<ElementData> _moods = [];
+  String _moodImage = 'assets/screen_images/default_create.jpg';
 
   @override
   void initState() {
@@ -22,6 +24,18 @@ class _MoodCardState extends State<MoodCard> {
 
     // Llama a getElements al iniciar
     _loadElements();
+    _loadMoods();
+  }
+
+  Future<void> _loadMoods() async {
+    try {
+      ElementResponse response = await _elementService.getMoods();
+      setState(() {
+        _moods = response.data ?? [];
+      });
+    } catch (error) {
+      print('Error al cargar los moods: $error');
+    }
   }
 
   Future<void> _loadElements() async {
@@ -62,7 +76,7 @@ class _MoodCardState extends State<MoodCard> {
               child: SizedBox(
                 height: 200,
                 width: 200,
-                child: Image.asset('assets/screen_images/default_create.jpg'),
+                child: Image.asset(_moodImage),
               ),
             ),
             const SizedBox(height: 16.0),
@@ -76,18 +90,21 @@ class _MoodCardState extends State<MoodCard> {
                 ),
                 const SizedBox(width: 8.0),
                 Expanded(
-                  child: DropdownButton<String>(
+                  child: DropdownButton<ElementData>(
                     hint: const Text('Select a mood'),
                     value: _selectedMood,
-                    onChanged: (String? newValue) {
+                    onChanged: (ElementData? newValue) {
                       setState(() {
                         _selectedMood = newValue;
+                        _updateImageFromMood(newValue?.description);
                       });
                     },
-                    items: _moodList.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+                    items: _moods.map((ElementData mood) {
+                      return DropdownMenuItem<ElementData>(
+                        value: mood,
+                        child: Text(
+                          _truncateText(mood.description ?? 'No description available', 18), // Truncate description to 18 characters
+                        ),
                       );
                     }).toList(),
                   ),
@@ -155,6 +172,23 @@ class _MoodCardState extends State<MoodCard> {
     );
   }
 
+  String _getFormattedDate() {
+    final DateTime now = DateTime.now();
+    final String formattedDate = "${now.day}/${now.month}/${now.year}";
+    return formattedDate;
+  }
+
+  ElementData? _selectedMood;
+
+  // Método para truncar el texto y agregar puntos suspensivos
+  String _truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return '${text.substring(0, maxLength)}...';
+    }
+  }
+
   void _showHorizontalButtonDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -189,33 +223,45 @@ class _MoodCardState extends State<MoodCard> {
   }
 
   Widget _buildHorizontalButtonList(BuildContext context) {
-  // Filtrar los elementos para incluir solo los de tipo "mood"
-  final List<ElementData> moodElements = _elements.where((element) => element.type == 'mood').toList();
+    // Filtrar los elementos para incluir solo los de tipo "mood"
+    final List<ElementData> moodElements = _elements.where((element) => element.type == 'mood').toList();
 
-  return SizedBox(
-    height: 100, // Ajusta la altura según sea necesario
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: moodElements.length, // Usamos la lista filtrada
-      itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: ElevatedButton(
-            onPressed: () {
-              final name = moodElements[index].name;
-              if (name != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(name)),
-                );
-              }
-            },
-            child: Text(moodElements[index].name ?? ''),
-          ),
-        );
-      },
-    ),
-  );
-}
+    return SizedBox(
+      height: 100, // Ajusta la altura según sea necesario
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: moodElements.length, // Usamos la lista filtrada
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ElevatedButton(
+              onPressed: () {
+                final name = moodElements[index].name;
+                if (name != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(name)),
+                  );
+                }
+              },
+              child: Text(moodElements[index].name ?? ''),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _updateImageFromMood(String? moodDescription) {
+    // Busca el mood correspondiente por descripción
+    final mood = _moods.firstWhere((mood) => mood.description == moodDescription, orElse: () => ElementData());
+
+    // Actualiza la imagen si se encontró el mood
+    if (mood.image != null) {
+      setState(() {
+        _moodImage = mood.image!;
+      });
+    }
+  }
 
   void _saveCard(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -252,62 +298,5 @@ class _MoodCardState extends State<MoodCard> {
         MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     });
-  }
-
-  String _getFormattedDate() {
-    final DateTime now = DateTime.now();
-    final String formattedDate = "${now.day}/${now.month}/${now.year}";
-    return formattedDate;
-  }
-
-  String _getFormattedTime() {
-    final DateTime now = DateTime.now();
-    final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
-    return formattedTime;
-  }
-
-  String? _selectedMood; 
-  List<String> _moodList = [
-    'Happy',
-    'Sad',
-    'Angry',
-    'Calm',
-    'Excited',
-    'Stressed',
-    'Tired',
-  ]; 
-}
-
-class AddImageCustomButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
-
-  const AddImageCustomButton(
-      {required this.onPressed, required this.text, Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.25,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[300],
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(
-              color: Colors.grey,
-              style: BorderStyle.solid,
-            ),
-            borderRadius: BorderRadius.circular(0),
-          ),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.black),
-        ),
-      ),
-    );
   }
 }
