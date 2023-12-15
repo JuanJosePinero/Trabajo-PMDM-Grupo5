@@ -187,8 +187,6 @@ class _EmotionCardState extends State<EmotionCard> {
     );
 
     Future.delayed(const Duration(seconds: 1), () {
-      // whatHappenedController.clear();
-      // talkAboutItController.clear();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainScreen()),

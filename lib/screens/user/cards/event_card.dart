@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
+import 'package:mindcare_app/services/ElementService.dart';
+import 'package:mindcare_app/services/UserService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
 final TextEditingController whatHappenedController = TextEditingController();
-final TextEditingController talkAboutItController = TextEditingController();
 
 class EventCard extends StatelessWidget {
   const EventCard({Key? key}) : super(key: key);
@@ -66,7 +67,7 @@ class EventCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: TextFormField(
-                        controller: talkAboutItController,
+                        controller: whatHappenedController,
                         minLines: 8,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
@@ -128,7 +129,6 @@ class EventCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-
                   ),
                 ),
                 const SizedBox(height: 20.0),
@@ -161,6 +161,10 @@ class EventCard extends StatelessWidget {
         ),
       );
     } else {
+      String descriptionText = whatHappenedController.text;
+      ElementService().newElement(
+          UserService.userId, 'u', 'event', _getFormattedDate2(),
+          description: descriptionText);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Column(
@@ -177,7 +181,6 @@ class EventCard extends StatelessWidget {
 
       Future.delayed(const Duration(seconds: 1), () {
         whatHappenedController.clear();
-        talkAboutItController.clear();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -189,6 +192,12 @@ class EventCard extends StatelessWidget {
   String _getFormattedDate() {
     final DateTime now = DateTime.now();
     final String formattedDate = "${now.day}/${now.month}/${now.year}";
+    return formattedDate;
+  }
+
+  String _getFormattedDate2() {
+    final DateTime now = DateTime.now();
+    final String formattedDate = "${now.year}-${now.month}-${now.day}";
     return formattedDate;
   }
 

@@ -51,32 +51,40 @@ class ElementService extends ChangeNotifier {
     }
   }
 
-  Future addElement(
-    int id_user,
+  Future newElement(
+    String id_user,
     String type_user,
     String type,
-    String description,
-    DateTime date,
-    int mood_id,
-    int emotion_id,
-  ) async {
+    String date, {
+    int? mood_id,
+    int? emotion_id,
+    String? description,
+  }) async {
     final Map<String, dynamic> elementData = {
       'id_user': id_user,
       'type_user': type_user,
       'type': type,
-      'description': description,
       'date': date,
-      'mood_id': mood_id,
-      'emotion_id': emotion_id,
     };
+    if (mood_id != null) {
+      elementData['mood_id'] = mood_id;
+    }
+    if (description != null) {
+      elementData['description'] = description;
+    }
+    if (emotion_id != null) {
+      elementData['emotion_id'] = emotion_id;
+    }
+    print(elementData);
 
     final url = Uri.http(baseURL, '/public/api/newElement', {});
     String? authToken = await readToken();
 
     final response = await http.post(url,
         headers: {
+          'Content-type': 'application/json',
           'Accept': 'application/json',
-          "Authorization": "Bearer $authToken",
+          'Authorization': 'Bearer $authToken',
         },
         body: json.encode(elementData));
 
@@ -87,18 +95,18 @@ class ElementService extends ChangeNotifier {
       ElementService.type = decoded['data']['type'].toString();
       return 'success';
     } else {
-      // Control de errores de email, pasar a control de errores de objeto.
-      // if (decoded['data']['error'] == "Email don't confirmed") {
-      //   return 'Email not confimed';
-      // } else if (decoded['data']['error'] == "User don't activated") {
-      //   return 'User not activated';
-      // } else {
-      //   return decoded['message'];
-      // }
+      print('error');
+      return 'error';
     }
   }
 
   Future<String> readToken() async {
     return await storage.read(key: 'token') ?? '';
+  }
+
+  String _getFormattedDate() {
+    final DateTime now = DateTime.now();
+    final String formattedDate = "${now.day}/${now.month}/${now.year}";
+    return formattedDate;
   }
 }
