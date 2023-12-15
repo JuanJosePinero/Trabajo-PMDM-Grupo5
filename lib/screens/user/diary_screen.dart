@@ -274,31 +274,52 @@ class _DiaryScreenState extends State<DiaryScreen> {
   }
 
   Widget _buildCardContentForEvent(int index) {
-    return _elements[index].description != null &&
+  return _elements[index].description != null &&
             _elements[index].description!.length > 18
         ? ExpansionTile(
             title: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  const Text('Event Card', style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    _getFormattedDate(_elements[index].date) ?? 'No date available',
+                  Image.network(
+                    _elements[index].image ?? '',
+                    fit: BoxFit.cover,
+                    width: 80.0,
+                    height: 80.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/default_img.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
                   ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    (_elements[index].description ??
-                            'No description available')
-                        .length > 18
-                        ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
-                        : _elements[index].description ??
-                            'No description available',
-                  )
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                         'Event Card',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(_getFormattedDate(_elements[index].date) ?? 'No date available',),
+                        Text(
+                          (_elements[index].description ??
+                                  'No description available')
+                              .length > 18
+                              ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
+                              : _elements[index].description ??
+                                  'No description available',
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -315,27 +336,51 @@ class _DiaryScreenState extends State<DiaryScreen> {
         : ListTile(
             title: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                   const Text('Event Card', style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    _getFormattedDate(_elements[index].date) ?? 'No date available',
+                  Image.network(
+                    _elements[index].image ?? '',
+                    fit: BoxFit.cover,
+                    width: 80.0,
+                    height: 80.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/default_img.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
                   ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    _elements[index].description ??
-                        'No description available',
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Event Card',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(_getFormattedDate(_elements[index].date) ?? 'No date available',),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          _elements[index].description ??
+                              'No description available',
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
           );
-  }
+}
+
+
 
   String? _getFormattedDate(String? date) {
     if (date == null) return null;
