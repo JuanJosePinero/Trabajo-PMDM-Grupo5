@@ -75,7 +75,6 @@ class ElementService extends ChangeNotifier {
     if (emotion_id != null) {
       elementData['emotion_id'] = emotion_id;
     }
-    print(elementData);
 
     final url = Uri.http(baseURL, '/public/api/newElement', {});
     String? authToken = await readToken();
@@ -95,8 +94,79 @@ class ElementService extends ChangeNotifier {
       ElementService.type = decoded['data']['type'].toString();
       return 'success';
     } else {
-      print('error');
       return 'error';
+    }
+  }
+
+  Future<ElementResponse> getEmotions() async {
+    try {
+      final url = Uri.http(baseURL, '/public/api/emotions', {});
+      String? authToken = await readToken();
+      isLoading = true;
+      notifyListeners();
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        ElementResponse elementResponse = ElementResponse.fromJson(json);
+        elements.clear();
+        elements.addAll(elementResponse.data!);
+        isLoading = false;
+        notifyListeners();
+        return elementResponse;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        throw Exception(
+            'Failed to load emotions. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      isLoading = false;
+      notifyListeners();
+      throw Exception('Error: $error');
+    }
+  }
+
+  Future<ElementResponse> getMoods() async {
+    try {
+      final url = Uri.http(baseURL, '/public/api/moods', {});
+      String? authToken = await readToken();
+      isLoading = true;
+      notifyListeners();
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        ElementResponse elementResponse = ElementResponse.fromJson(json);
+        elements.clear();
+        elements.addAll(elementResponse.data!);
+        isLoading = false;
+        notifyListeners();
+        return elementResponse;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        throw Exception(
+            'Failed to load moods. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      isLoading = false;
+      notifyListeners();
+      throw Exception('Error: $error');
     }
   }
 
