@@ -187,7 +187,6 @@ class _EmotionCardState extends State<EmotionCard> {
     } else {
       final DateTime now = DateTime.now();
       final String formattedDate = "${now.year}-${now.month}-${now.day}";
-      print(formattedDate);
       ElementService().newElement(
           UserService.userId, 'u', 'emotion', formattedDate,
           emotion_id: 5);
