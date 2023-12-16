@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mindcare_app/models/ElementModel.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/services/ElementService.dart';
+import 'package:mindcare_app/services/UserService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
+
+String? selectedValue = 'DefaultEmotion';
 
 class EmotionCard extends StatefulWidget {
   EmotionCard({Key? key}) : super(key: key);
@@ -20,9 +23,18 @@ class _EmotionCardState extends State<EmotionCard> {
     super.initState();
     _elementService = ElementService();
 
-    // Llama a getElements al iniciar
     _loadElements();
   }
+
+  String _getFormattedDate() {
+    final DateTime now = DateTime.now();
+    final String formattedDate = "${now.day}/${now.month}/${now.year}";
+    return formattedDate;
+  }
+
+  String? _selectedEmotion;
+
+  final List<String> _emotionList = [];
 
   Future<void> _loadElements() async {
     try {
@@ -82,6 +94,7 @@ class _EmotionCardState extends State<EmotionCard> {
                     onChanged: (String? newValue) {
                       setState(() {
                         _selectedEmotion = newValue;
+                        selectedValue = newValue;
                       });
                     },
                     items: _emotionList
@@ -157,97 +170,47 @@ class _EmotionCardState extends State<EmotionCard> {
   }
 
   void _saveCard(BuildContext context) {
-    // if (      ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Column(
-          children: [
-            SizedBox(height: 4),
-            Center(child: Text('Please fill the fields')),
-            SizedBox(height: 40),
-          ],
-        ),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-    // } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Column(
-          children: [
-            SizedBox(height: 4),
-            Center(child: Text('Event saved successfully')),
-            SizedBox(height: 40),
-          ],
-        ),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
-    });
-  }
-
-  String _getFormattedDate() {
-    final DateTime now = DateTime.now();
-    final String formattedDate = "${now.day}/${now.month}/${now.year}";
-    return formattedDate;
-  }
-
-  String _getFormattedTime() {
-    final DateTime now = DateTime.now();
-    final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
-    return formattedTime;
-  }
-
-  String? _selectedEmotion;
-  List<String> _emotionList = [
-    'Happy',
-    'Sad',
-    'Angry',
-    'Calm',
-    'Excited',
-    'Stressed',
-    'Tired',
-  ];
-}
-
-class AddImageCustomButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
-
-  const AddImageCustomButton(
-      {required this.onPressed, required this.text, Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.25,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[300], // Color grisáceo
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(
-              color: Colors.grey, // Borde de líneas discontinuas de color gris
-              style: BorderStyle.solid,
-            ),
-            borderRadius: BorderRadius.circular(0),
+    if (selectedValue == 'defaultEmotion') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Column(
+            children: [
+              SizedBox(height: 4),
+              Center(child: Text('Please choose an emotion')),
+              SizedBox(height: 40),
+            ],
           ),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
         ),
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.black),
+      );
+    } else {
+      final DateTime now = DateTime.now();
+      final String formattedDate = "${now.year}-${now.month}-${now.day}";
+      print(formattedDate);
+      ElementService().newElement(
+          UserService.userId, 'u', 'emotion', formattedDate,
+          emotion_id: 5);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Column(
+            children: [
+              SizedBox(height: 4),
+              Center(child: Text('Emotion saved successfully!')),
+              SizedBox(height: 40),
+            ],
+          ),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
         ),
-      ),
-    );
+      );
+
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      });
+    }
   }
 }
