@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
@@ -15,14 +16,14 @@ class _MoodCardState extends State<MoodCard> {
   late ElementService _elementService;
   List<ElementData> _elements = [];
   List<ElementData> _moods = [];
-  String _moodImage = 'assets/screen_images/default_create.jpg';
+  String _moodImage = 'https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg';
+  // String _moodImage = 'assets/screen_images/default_create.jpg';
+  ElementData? _selectedMood;
 
   @override
   void initState() {
     super.initState();
     _elementService = ElementService();
-
-    // Llama a getElements al iniciar
     _loadElements();
     _loadMoods();
   }
@@ -48,7 +49,7 @@ class _MoodCardState extends State<MoodCard> {
       print('Error al cargar elementos: $error');
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,10 +74,12 @@ class _MoodCardState extends State<MoodCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Center(
-              child: SizedBox(
-                height: 200,
+              child: CachedNetworkImage(
+                imageUrl: _moodImage,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
                 width: 200,
-                child: Image.asset(_moodImage),
+                height: 200,
               ),
             ),
             const SizedBox(height: 16.0),
@@ -103,7 +106,7 @@ class _MoodCardState extends State<MoodCard> {
                       return DropdownMenuItem<ElementData>(
                         value: mood,
                         child: Text(
-                          _truncateText(mood.description ?? 'No description available', 18), // Truncate description to 18 characters
+                          _truncateText(mood.description ?? 'No description available', 18),
                         ),
                       );
                     }).toList(),
@@ -178,8 +181,6 @@ class _MoodCardState extends State<MoodCard> {
     return formattedDate;
   }
 
-  ElementData? _selectedMood;
-
   // Método para truncar el texto y agregar puntos suspensivos
   String _truncateText(String text, int maxLength) {
     if (text.length <= maxLength) {
@@ -224,7 +225,8 @@ class _MoodCardState extends State<MoodCard> {
 
   Widget _buildHorizontalButtonList(BuildContext context) {
     // Filtrar los elementos para incluir solo los de tipo "mood"
-    final List<ElementData> moodElements = _elements.where((element) => element.type == 'mood').toList();
+    final List<ElementData> moodElements =
+        _elements.where((element) => element.type == 'mood').toList();
 
     return SizedBox(
       height: 100, // Ajusta la altura según sea necesario
@@ -252,7 +254,9 @@ class _MoodCardState extends State<MoodCard> {
   }
 
   void _updateImageFromMood(String? moodDescription) {
-    final mood = _moods.firstWhere((mood) => mood.description == moodDescription, orElse: () => ElementData());
+    final mood = _moods.firstWhere(
+        (mood) => mood.description == moodDescription,
+        orElse: () => ElementData());
 
     if (mood.image != null) {
       setState(() {
