@@ -252,10 +252,8 @@ class _MoodCardState extends State<MoodCard> {
   }
 
   void _updateImageFromMood(String? moodDescription) {
-    // Busca el mood correspondiente por descripción
     final mood = _moods.firstWhere((mood) => mood.description == moodDescription, orElse: () => ElementData());
 
-    // Actualiza la imagen si se encontró el mood
     if (mood.image != null) {
       setState(() {
         _moodImage = mood.image!;
