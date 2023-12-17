@@ -181,7 +181,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                   height: 80.0,
                   errorBuilder: (context, error, stackTrace) {
                     return Image.asset(
-                      'assets/screen_images/default_img.png',
+                      'assets/screen_images/Inside_out_default.png',
                       fit: BoxFit.cover,
                       width: 80.0,
                       height: 80.0,
@@ -244,7 +244,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                   height: 80.0,
                   errorBuilder: (context, error, stackTrace) {
                     return Image.asset(
-                      'assets/screen_images/default_img.png',
+                      'assets/screen_images/Inside_out_default.png',
                       fit: BoxFit.cover,
                       width: 80.0,
                       height: 80.0,
@@ -304,7 +304,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                     height: 80.0,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.asset(
-                        'assets/screen_images/default_img.png',
+                        'assets/screen_images/Inside_out_default.png',
                         fit: BoxFit.cover,
                         width: 80.0,
                         height: 80.0,
@@ -361,7 +361,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                     height: 80.0,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.asset(
-                        'assets/screen_images/default_img.png',
+                        'assets/screen_images/Inside_out_default.png',
                         fit: BoxFit.cover,
                         width: 80.0,
                         height: 80.0,

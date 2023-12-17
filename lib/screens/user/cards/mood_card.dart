@@ -190,69 +190,6 @@ class _MoodCardState extends State<MoodCard> {
     }
   }
 
-  void _showHorizontalButtonDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            width: 300, // Adjust the width as needed
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Select an Option',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                _buildHorizontalButtonList(context),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildHorizontalButtonList(BuildContext context) {
-    // Filtrar los elementos para incluir solo los de tipo "mood"
-    final List<ElementData> moodElements =
-        _elements.where((element) => element.type == 'mood').toList();
-
-    return SizedBox(
-      height: 100, // Ajusta la altura según sea necesario
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: moodElements.length, // Usamos la lista filtrada
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ElevatedButton(
-              onPressed: () {
-                final name = moodElements[index].name;
-                if (name != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(name)),
-                  );
-                }
-              },
-              child: Text(moodElements[index].name ?? ''),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   void _updateImageFromMood(String? moodDescription) {
     final mood = _moods.firstWhere(
         (mood) => mood.description == moodDescription,

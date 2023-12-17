@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/models/ElementModel.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
@@ -17,6 +18,10 @@ class EmotionCard extends StatefulWidget {
 class _EmotionCardState extends State<EmotionCard> {
   late ElementService _elementService;
   List<ElementData> _elements = [];
+  List<ElementData> _emotions = [];
+  String _emotionImage = 'https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg';
+  // String _emotionImage = 'assets/screen_images/default_create.jpg';
+  ElementData? _selectedEmotion;
 
   @override
   void initState() {
@@ -24,17 +29,24 @@ class _EmotionCardState extends State<EmotionCard> {
     _elementService = ElementService();
 
     _loadElements();
+    _loadEmotions();
   }
 
+  Future<void> _loadEmotions() async {
+    try {
+      ElementResponse response = await _elementService.getEmotions();
+      setState(() {
+        _emotions = response.data ?? [];
+      });
+    } catch (error) {
+      print('Error al cargar los emotions: $error');
+    }
+  }
   String _getFormattedDate() {
     final DateTime now = DateTime.now();
     final String formattedDate = "${now.day}/${now.month}/${now.year}";
     return formattedDate;
   }
-
-  String? _selectedEmotion;
-
-  final List<String> _emotionList = [];
 
   Future<void> _loadElements() async {
     try {
@@ -71,10 +83,12 @@ class _EmotionCardState extends State<EmotionCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Center(
-              child: SizedBox(
-                height: 200,
+              child: CachedNetworkImage(
+                imageUrl: _emotionImage,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
                 width: 200,
-                child: Image.asset('assets/screen_images/default_create.jpg'),
+                height: 200,
               ),
             ),
             const SizedBox(height: 16.0),
@@ -88,20 +102,21 @@ class _EmotionCardState extends State<EmotionCard> {
                 ),
                 const SizedBox(width: 8.0),
                 Expanded(
-                  child: DropdownButton<String>(
-                    hint: const Text('Select a emotion'),
+                  child: DropdownButton<ElementData>(
+                    hint: const Text('Select a Emotion'),
                     value: _selectedEmotion,
-                    onChanged: (String? newValue) {
+                    onChanged: (ElementData? newValue) {
                       setState(() {
                         _selectedEmotion = newValue;
-                        selectedValue = newValue;
+                        _updateImageFromEmotion(newValue?.name);
                       });
                     },
-                    items: _emotionList
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+                    items: _emotions.map((ElementData mood) {
+                      return DropdownMenuItem<ElementData>(
+                        value: mood,
+                        child: Text(
+                          _truncateText(mood.name ?? 'No name available', 18),
+                        ),
                       );
                     }).toList(),
                   ),
@@ -167,6 +182,26 @@ class _EmotionCardState extends State<EmotionCard> {
         ),
       ),
     );
+  }
+
+  void _updateImageFromEmotion(String? emotionName) {
+    final emotion = _emotions.firstWhere(
+        (emotion) => emotion.name == emotionName,
+        orElse: () => ElementData());
+
+    if (emotion.image != null) {
+      setState(() {
+        _emotionImage = emotion.image!;
+      });
+    }
+  }
+
+  String _truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return '${text.substring(0, maxLength)}...';
+    }
   }
 
   void _saveCard(BuildContext context) {
