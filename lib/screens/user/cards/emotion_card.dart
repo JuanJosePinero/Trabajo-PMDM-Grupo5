@@ -31,6 +31,7 @@ class _EmotionCardState extends State<EmotionCard> {
 
     _loadElements();
     _loadEmotions();
+    selectedValue = 'DefaultEmotion';
   }
 
   Future<void> _loadEmotions() async {
