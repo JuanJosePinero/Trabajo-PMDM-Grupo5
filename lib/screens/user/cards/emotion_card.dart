@@ -19,7 +19,8 @@ class _EmotionCardState extends State<EmotionCard> {
   late ElementService _elementService;
   List<ElementData> _elements = [];
   List<ElementData> _emotions = [];
-  String _emotionImage = 'https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg';
+  String _emotionImage =
+      'https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg';
   // String _emotionImage = 'assets/screen_images/default_create.jpg';
   ElementData? _selectedEmotion;
 
@@ -42,6 +43,7 @@ class _EmotionCardState extends State<EmotionCard> {
       print('Error al cargar los emotions: $error');
     }
   }
+
   String _getFormattedDate() {
     final DateTime now = DateTime.now();
     final String formattedDate = "${now.day}/${now.month}/${now.year}";
@@ -108,6 +110,7 @@ class _EmotionCardState extends State<EmotionCard> {
                     onChanged: (ElementData? newValue) {
                       setState(() {
                         _selectedEmotion = newValue;
+                        selectedValue = newValue.toString();
                         _updateImageFromEmotion(newValue?.name);
                       });
                     },
@@ -205,7 +208,7 @@ class _EmotionCardState extends State<EmotionCard> {
   }
 
   void _saveCard(BuildContext context) {
-    if (selectedValue == 'defaultEmotion') {
+    if (selectedValue == 'DefaultEmotion') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Column(

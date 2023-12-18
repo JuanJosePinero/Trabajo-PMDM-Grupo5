@@ -5,6 +5,10 @@ import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:mindcare_app/models/ElementModel.dart';
 
+import '../../../services/UserService.dart';
+
+String selectedValue = 'DefaultMood';
+
 class MoodCard extends StatefulWidget {
   MoodCard({Key? key}) : super(key: key);
 
@@ -16,7 +20,8 @@ class _MoodCardState extends State<MoodCard> {
   late ElementService _elementService;
   List<ElementData> _elements = [];
   List<ElementData> _moods = [];
-  String _moodImage = 'https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg';
+  String _moodImage =
+      'https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg';
   // String _moodImage = 'assets/screen_images/default_create.jpg';
   ElementData? _selectedMood;
 
@@ -99,6 +104,7 @@ class _MoodCardState extends State<MoodCard> {
                     onChanged: (ElementData? newValue) {
                       setState(() {
                         _selectedMood = newValue;
+                        selectedValue = newValue.toString();
                         _updateImageFromMood(newValue?.description);
                       });
                     },
@@ -106,7 +112,9 @@ class _MoodCardState extends State<MoodCard> {
                       return DropdownMenuItem<ElementData>(
                         value: mood,
                         child: Text(
-                          _truncateText(mood.description ?? 'No description available', 18),
+                          _truncateText(
+                              mood.description ?? 'No description available',
+                              18),
                         ),
                       );
                     }).toList(),
@@ -181,7 +189,6 @@ class _MoodCardState extends State<MoodCard> {
     return formattedDate;
   }
 
-  // Método para truncar el texto y agregar puntos suspensivos
   String _truncateText(String text, int maxLength) {
     if (text.length <= maxLength) {
       return text;
@@ -203,39 +210,46 @@ class _MoodCardState extends State<MoodCard> {
   }
 
   void _saveCard(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Column(
-          children: [
-            SizedBox(height: 4),
-            Center(child: Text('Please fill the fields')),
-            SizedBox(height: 40),
-          ],
+    if (selectedValue == 'DefaultMood') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Column(
+            children: [
+              SizedBox(height: 4),
+              Center(child: Text('Please select a mood.')),
+              SizedBox(height: 40),
+            ],
+          ),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
         ),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Column(
-          children: [
-            SizedBox(height: 4),
-            Center(child: Text('Event saved successfully')),
-            SizedBox(height: 40),
-          ],
-        ),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
       );
-    });
+    } else {
+      final DateTime now = DateTime.now();
+      final String formattedDate = "${now.year}-${now.month}-${now.day}";
+      ElementService().newElement(
+          UserService.userId, 'u', 'mood', formattedDate,
+          mood_id: 5);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Column(
+            children: [
+              SizedBox(height: 4),
+              Center(child: Text('Mood saved successfully')),
+              SizedBox(height: 40),
+            ],
+          ),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      });
+    }
   }
 }
