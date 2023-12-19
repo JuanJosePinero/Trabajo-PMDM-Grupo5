@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mindcare_app/screens/user/main_screen.dart';
@@ -7,8 +8,15 @@ import 'package:mindcare_app/themes/themeColors.dart';
 
 final TextEditingController whatHappenedController = TextEditingController();
 
-class EventCard extends StatelessWidget {
+class EventCard extends StatefulWidget {
   const EventCard({Key? key}) : super(key: key);
+
+  @override
+  _EventCardState createState() => _EventCardState();
+}
+
+class _EventCardState extends State<EventCard> {
+  DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +24,13 @@ class EventCard extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Event Details'),
       ),
-      body: _buildMoodDetails(context),
+      body: _buildEventDetails(context),
     );
   }
 
-  Widget _buildMoodDetails(BuildContext context) {
+  Widget _buildEventDetails(BuildContext context) {
+    String formattedDate =
+        "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
     return Slidable(
       child: Container(
         width: double.infinity,
@@ -37,23 +47,6 @@ class EventCard extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    // const Row(children: [
-                    //   Text(
-                    //     'You need to write a description below\n',
-                    //     style: TextStyle(fontSize: 16),
-                    //   ),
-                    // ]),
-                    // Container(
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.grey[300],
-                    //     borderRadius: BorderRadius.circular(8.0),
-                    //   ),
-                    //   child: TextField(
-                    //     controller: whatHappenedController,
-                    //     style: const TextStyle(fontSize: 16.0),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 16.0),
                     const Row(children: [
                       Icon(Icons.text_decrease),
                       Text(
@@ -79,7 +72,12 @@ class EventCard extends StatelessWidget {
                 const SizedBox(height: 48.0),
                 Row(
                   children: [
-                    const Icon(Icons.calendar_month_outlined),
+                    TextButton(
+                      onPressed: () {
+                        _selectDate(context);
+                      },
+                      child: Text('When did it happen?'),
+                    ),
                     const SizedBox(width: 12.0),
                     const Text(
                       'Date:',
@@ -87,7 +85,7 @@ class EventCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8.0),
                     Text(
-                      _getFormattedDate(),
+                      formattedDate,
                       style: const TextStyle(fontSize: 16.0),
                     ),
                   ],
@@ -118,7 +116,7 @@ class EventCard extends StatelessWidget {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      _saveCard(context);
+                      _saveCard(context, formattedDate);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
@@ -140,12 +138,26 @@ class EventCard extends StatelessWidget {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
   bool whatHappenEmpty() {
     if (whatHappenedController.text.isEmpty) return true;
     return false;
   }
 
-  void _saveCard(BuildContext context) {
+  void _saveCard(BuildContext context, String formattedDate) {
     if (whatHappenEmpty()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -163,8 +175,12 @@ class EventCard extends StatelessWidget {
     } else {
       String descriptionText = whatHappenedController.text;
       ElementService().newElement(
-          UserService.userId, 'u', 'event', _getFormattedDate2(),
-          description: descriptionText);
+        UserService.userId,
+        'u',
+        'event',
+        selectedDate.toString(),
+        description: descriptionText,
+      );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Column(
@@ -189,21 +205,9 @@ class EventCard extends StatelessWidget {
     }
   }
 
-  String _getFormattedDate() {
-    final DateTime now = DateTime.now();
-    final String formattedDate = "${now.day}/${now.month}/${now.year}";
-    return formattedDate;
-  }
-
   String _getFormattedDate2() {
     final DateTime now = DateTime.now();
     final String formattedDate = "${now.year}-${now.month}-${now.day}";
     return formattedDate;
-  }
-
-  String _getFormattedTime() {
-    final DateTime now = DateTime.now();
-    final String formattedTime = "${now.hour}:${now.minute}:${now.second}";
-    return formattedTime;
   }
 }

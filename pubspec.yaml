@@ -33,6 +33,7 @@ dependencies:
   email_validator: ^2.1.17
   flutter:
     sdk: flutter
+  flutter_datetime_picker: ^1.5.1
   flutter_secure_storage: ^9.0.0
   flutter_slidable: ^3.0.1
   font_awesome_icon_class: ^0.0.6
