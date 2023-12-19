@@ -20,7 +20,7 @@ class _EmotionCardState extends State<EmotionCard> {
   List<ElementData> _elements = [];
   List<ElementData> _emotions = [];
   String _emotionImage =
-      'https://cdn.vectorstock.com/i/preview-1x/65/30/default-image-icon-missing-picture-page-vector-40546530.jpg';
+      'https://mindcare.allsites.es/public/images/default_create_imgs.jpg';
   // String _emotionImage = 'assets/screen_images/default_create.jpg';
   ElementData? _selectedEmotion;
 
