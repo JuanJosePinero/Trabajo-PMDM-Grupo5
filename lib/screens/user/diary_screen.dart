@@ -179,7 +179,14 @@ class _DiaryScreenState extends State<DiaryScreen> {
                   fit: BoxFit.cover,
                   width: 80.0,
                   height: 80.0,
-                  
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/screen_images/Inside_out_default.png',
+                      fit: BoxFit.cover,
+                      width: 80.0,
+                      height: 80.0,
+                    );
+                  },
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
@@ -235,7 +242,14 @@ class _DiaryScreenState extends State<DiaryScreen> {
                   fit: BoxFit.cover,
                   width: 80.0,
                   height: 80.0,
-                  
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/screen_images/Inside_out_default.png',
+                      fit: BoxFit.cover,
+                      width: 80.0,
+                      height: 80.0,
+                    );
+                  },
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
@@ -288,7 +302,14 @@ class _DiaryScreenState extends State<DiaryScreen> {
                     fit: BoxFit.cover,
                     width: 80.0,
                     height: 80.0,
-                    
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/Inside_out_default.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
                   ),
                   const SizedBox(width: 16.0),
                   Expanded(
@@ -338,7 +359,14 @@ class _DiaryScreenState extends State<DiaryScreen> {
                     fit: BoxFit.cover,
                     width: 80.0,
                     height: 80.0,
-                    
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/Inside_out_default.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
                   ),
                   const SizedBox(width: 16.0),
                   Expanded(
