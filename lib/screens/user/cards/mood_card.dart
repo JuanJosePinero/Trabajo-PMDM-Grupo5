@@ -4,8 +4,7 @@ import 'package:mindcare_app/screens/user/main_screen.dart';
 import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:mindcare_app/models/ElementModel.dart';
-
-import '../../../services/UserService.dart';
+import 'package:mindcare_app/services/UserService.dart';
 
 String selectedValue = 'DefaultMood';
 
@@ -217,7 +216,7 @@ class _MoodCardState extends State<MoodCard> {
       final String formattedDate = "${now.year}-${now.month}-${now.day}";
       ElementService().newElement(
           UserService.userId, 'u', 'mood', formattedDate,
-          mood_id: 5);
+          mood_id: _selectedMood?.id);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Column(

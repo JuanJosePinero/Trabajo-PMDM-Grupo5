@@ -228,7 +228,7 @@ class _EmotionCardState extends State<EmotionCard> {
       final String formattedDate = "${now.year}-${now.month}-${now.day}";
       ElementService().newElement(
           UserService.userId, 'u', 'emotion', formattedDate,
-          emotion_id: 5);
+          emotion_id: _selectedEmotion?.id);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Column(
