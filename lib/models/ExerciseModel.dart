@@ -1,4 +1,4 @@
-class ExerciceData {
+class ExerciseData {
   int? id;
   String? name;
   String? improvement;
@@ -11,7 +11,7 @@ class ExerciceData {
   String? createdAt;
   String? updatedAt;
 
-  ExerciceData({
+  ExerciseData({
     this.id,
     this.name,
     this.improvement,
@@ -25,7 +25,7 @@ class ExerciceData {
     this.updatedAt,
   });
 
-  ExerciceData.fromJson(Map<String, dynamic> json) {
+  ExerciseData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     improvement = json['improvement'];
@@ -56,19 +56,19 @@ class ExerciceData {
   }
 }
 
-class ExerciceResponse {
+class ExerciseResponse {
   bool? success;
-  List<ExerciceData>? data;
+  List<ExerciseData>? data;
   String? message;
 
-  ExerciceResponse({this.success, this.data, this.message});
+  ExerciseResponse({this.success, this.data, this.message});
 
-  ExerciceResponse.fromJson(Map<String, dynamic> json) {
+  ExerciseResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
-      data = <ExerciceData>[];
+      data = <ExerciseData>[];
       json['data'].forEach((v) {
-        data!.add(ExerciceData.fromJson(v));
+        data!.add(ExerciseData.fromJson(v));
       });
     }
     message = json['message'];

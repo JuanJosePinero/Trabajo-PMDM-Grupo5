@@ -76,8 +76,6 @@ class ElementService extends ChangeNotifier {
       elementData['emotion_id'] = emotion_id;
     }
 
-    print(elementData);
-
     final url = Uri.http(baseURL, '/public/api/newElement', {});
     String? authToken = await readToken();
 
