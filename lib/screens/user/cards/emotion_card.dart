@@ -252,3 +252,4 @@ class _EmotionCardState extends State<EmotionCard> {
     }
   }
 }
+//prueba
