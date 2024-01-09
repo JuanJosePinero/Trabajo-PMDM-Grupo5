@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/screens/user/Mindfulness_screen.dart';
 import 'package:mindcare_app/screens/user/diary_screen.dart';
 
 class _TabInfo {
@@ -20,8 +21,8 @@ class MainScreen extends StatelessWidget {
         CupertinoIcons.book_circle,
       ),
       const _TabInfo(
-        'Profile',
-        CupertinoIcons.profile_circled,
+        'MindFulness',
+        CupertinoIcons.memories_badge_plus,
       ),
       const _TabInfo(
         'Settings',
@@ -71,12 +72,8 @@ class _CupertinoDemoTab extends StatelessWidget {
     {
       if (title == 'Diary') {
         return const DiaryScreen();
-      } else if (title == 'Profile') {
-        return const Center(
-          //Cuando creemos la página que irá aquí, que no se nos olvide añadir el
-          //navigationBar: const CupertinoNavigationBar(),
-          child: Text('Page under construction (Profile)'),
-        );
+      } else if (title == 'MindFulness') {
+        return const MindFulnessScreen();
       } else if (title == 'Settings') {
         return const Center(
           //Cuando creemos la página que irá aquí, que no se nos olvide añadir el

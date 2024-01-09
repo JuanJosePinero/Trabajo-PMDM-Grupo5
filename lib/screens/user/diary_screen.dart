@@ -104,8 +104,6 @@ class _DiaryScreenState extends State<DiaryScreen> {
   void initState() {
     super.initState();
     _elementService = ElementService();
-
-    // Llama a getElements al iniciar
     _loadElements();
   }
 
@@ -167,130 +165,133 @@ class _DiaryScreenState extends State<DiaryScreen> {
   }
 
   Widget _buildCardContentWithImage(int index) {
-  return _elements[index].description != null &&
-          _elements[index].description!.length > 18
-      ? ExpansionTile(
-          title: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Image.network(
-                  _elements[index].image ?? '',
-                  fit: BoxFit.cover,
-                  width: 80.0,
-                  height: 80.0,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      'assets/screen_images/Inside_out_default.png',
-                      fit: BoxFit.cover,
-                      width: 80.0,
-                      height: 80.0,
-                    );
-                  },
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_elements[index].type == 'mood')
-                        Text(
-                          (_elements[index].description ??
-                                  'No description available')
-                              .length > 18
-                              ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
-                              : _elements[index].description ??
-                                  'No description available',
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      else
-                        Text(
-                          _elements[index].name ?? 'No name available',
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      const SizedBox(height: 8.0),
-                      Text(_getFormattedDate(_elements[index].date) ?? 'No date available'),
-                    ],
+    return _elements[index].description != null &&
+            _elements[index].description!.length > 18
+        ? ExpansionTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Image.network(
+                    _elements[index].image ?? '',
+                    fit: BoxFit.cover,
+                    width: 80.0,
+                    height: 80.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/Inside_out_default.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
                   ),
-                ),
-              ],
-            ),
-          ),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                _elements[index].description ?? 'No description available',
-                maxLines: null, // Muestra todo el texto
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_elements[index].type == 'mood')
+                          Text(
+                            (_elements[index].description ??
+                                            'No description available')
+                                        .length >
+                                    18
+                                ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
+                                : _elements[index].description ??
+                                    'No description available',
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        else
+                          Text(
+                            _elements[index].name ?? 'No name available',
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        const SizedBox(height: 8.0),
+                        Text(_getFormattedDate(_elements[index].date) ??
+                            'No date available'),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        )
-      : ListTile(
-          title: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Image.network(
-                  _elements[index].image ?? '',
-                  fit: BoxFit.cover,
-                  width: 80.0,
-                  height: 80.0,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      'assets/screen_images/Inside_out_default.png',
-                      fit: BoxFit.cover,
-                      width: 80.0,
-                      height: 80.0,
-                    );
-                  },
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  _elements[index].description ?? 'No description available',
+                  maxLines: null, // Muestra todo el texto
                 ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_elements[index].type == 'mood')
-                        Text(
-                          (_elements[index].description ??
-                                  'No description available')
-                              .length > 18
-                              ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
-                              : _elements[index].description ??
-                                  'No description available',
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      else
-                        Text(
-                          _elements[index].name ?? 'No name available',
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      const SizedBox(height: 8.0),
-                      Text(_getFormattedDate(_elements[index].date) ?? 'No date available'),
-                    ],
+              ),
+            ],
+          )
+        : ListTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Image.network(
+                    _elements[index].image ?? '',
+                    fit: BoxFit.cover,
+                    width: 80.0,
+                    height: 80.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/screen_images/Inside_out_default.png',
+                        fit: BoxFit.cover,
+                        width: 80.0,
+                        height: 80.0,
+                      );
+                    },
                   ),
-                ),
-              ],
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_elements[index].type == 'mood')
+                          Text(
+                            (_elements[index].description ??
+                                            'No description available')
+                                        .length >
+                                    18
+                                ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
+                                : _elements[index].description ??
+                                    'No description available',
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        else
+                          Text(
+                            _elements[index].name ?? 'No name available',
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        const SizedBox(height: 8.0),
+                        Text(_getFormattedDate(_elements[index].date) ??
+                            'No date available'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-}
-
+          );
+  }
 
   Widget _buildCardContentForEvent(int index) {
-  return _elements[index].description != null &&
+    return _elements[index].description != null &&
             _elements[index].description!.length > 18
         ? ExpansionTile(
             title: Padding(
@@ -317,18 +318,22 @@ class _DiaryScreenState extends State<DiaryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                         'Event Card',
+                          'Event Card',
                           style: TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 8.0),
-                        Text(_getFormattedDate(_elements[index].date) ?? 'No date available',),
+                        Text(
+                          _getFormattedDate(_elements[index].date) ??
+                              'No date available',
+                        ),
                         Text(
                           (_elements[index].description ??
-                                  'No description available')
-                              .length > 18
+                                          'No description available')
+                                      .length >
+                                  18
                               ? '${(_elements[index].description ?? 'No description available').substring(0, 18)}...'
                               : _elements[index].description ??
                                   'No description available',
@@ -381,7 +386,10 @@ class _DiaryScreenState extends State<DiaryScreen> {
                           ),
                         ),
                         const SizedBox(height: 8.0),
-                        Text(_getFormattedDate(_elements[index].date) ?? 'No date available',),
+                        Text(
+                          _getFormattedDate(_elements[index].date) ??
+                              'No date available',
+                        ),
                         const SizedBox(height: 8.0),
                         Text(
                           _elements[index].description ??
@@ -394,17 +402,15 @@ class _DiaryScreenState extends State<DiaryScreen> {
               ),
             ),
           );
-}
-
-
+  }
 
   String? _getFormattedDate(String? date) {
     if (date == null) return null;
     final DateTime dateTime = DateTime.parse(date);
-    final String formattedDate = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+    final String formattedDate =
+        "${dateTime.year}-${dateTime.month}-${dateTime.day}";
     return formattedDate;
   }
-
 
   Color _getBorderColor(String? elementType) {
     switch (elementType) {
