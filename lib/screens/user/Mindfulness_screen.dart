@@ -14,25 +14,61 @@ class MindFulnessScreen extends StatelessWidget {
     final cardHeight = (cardWidth * 0.7);
     final exerciseService = ExerciseService();
 
-    return CupertinoPageScaffold(
+     Future<void> _refresh() async {
+  try {
+    await exerciseService.getExercises();
+    // No es necesario utilizar setState aquí, ya que el modelo de ExerciseService notificará automáticamente a los consumidores cuando se actualicen los datos.
+  } catch (error) {
+    // Maneja el error aquí si es necesario.
+  }
+}
+
+
+   return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(),
       child: Container(
         decoration: BoxDecoration(
           gradient: ThemeColors.getGradient(),
         ),
-        child: ListView(
-          children: [
-            const Center(child: Text("Meditation")),
-            buildSwiperMeditation(cardWidth, cardHeight, exerciseService, 'Meditation'), // Pasa el tipo 'meditation'
-            const Center(child: Text("Relaxation")),
-            buildSwiperRelaxation(cardWidth, cardHeight, exerciseService, 'Relaxation'), // Pasa el tipo 'relaxation'
-            const Center(child: Text("Breathing")),
-            buildSwiperBreathing(cardWidth, cardHeight, exerciseService, 'Breathing'), // Pasa el tipo 'breathing'
-          ],
+        child: RefreshIndicator(
+          onRefresh: _refresh, // Función para actualizar los datos
+          child: ListView(
+            children: [
+              const SizedBox(height: 8.0),
+              _buildFloatingPanel("Meditation"),
+              buildSwiperMeditation(cardWidth, cardHeight, exerciseService, 'Meditation'),
+              _buildFloatingPanel("Relaxation"),
+              buildSwiperRelaxation(cardWidth, cardHeight, exerciseService, 'Relaxation'),
+              _buildFloatingPanel("Breathing"),
+              buildSwiperBreathing(cardWidth, cardHeight, exerciseService, 'Breathing'),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildFloatingPanel(String text) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 110.0, vertical: 8.0),
+    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.8),
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: Center(
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 18.0,
+          color: Colors.black,
+        ),
+      ),
+    ),
+  );
+}
+
 
   Widget buildSwiperMeditation(double cardWidth, double cardHeight, ExerciseService exerciseService, String type) {
     return FutureBuilder<ExerciseResponse>(
