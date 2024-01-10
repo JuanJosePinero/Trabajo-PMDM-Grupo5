@@ -41,6 +41,7 @@ dependencies:
   google_sign_in: ^6.1.5
   http: ^1.1.0
   provider: ^6.0.5
+  swipe_gesture_recognizer: ^0.0.2
 
 dev_dependencies:
   flutter_lints: ^2.0.0
