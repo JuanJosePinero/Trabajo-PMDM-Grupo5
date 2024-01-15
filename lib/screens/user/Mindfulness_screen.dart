@@ -18,7 +18,6 @@ class MindFulnessScreen extends StatelessWidget {
     Future<void> _refresh() async {
       try {
         await exerciseService.getExercises();
-        // No es necesario utilizar setState aquí, ya que el modelo de ExerciseService notificará automáticamente a los consumidores cuando se actualicen los datos.
       } catch (error) {
         // Maneja el error aquí si es necesario.
       }
@@ -31,7 +30,7 @@ class MindFulnessScreen extends StatelessWidget {
           gradient: ThemeColors.getGradient(),
         ),
         child: RefreshIndicator(
-          onRefresh: _refresh, // Función para actualizar los datos
+          onRefresh: _refresh,
           child: ListView(
             children: [
               const SizedBox(height: 8.0),
@@ -88,35 +87,46 @@ class MindFulnessScreen extends StatelessWidget {
         } else {
           final exercises = snapshot.data!.data!
               .where((exercise) => exercise.type == type)
-              .toList(); // Filtra por tipo
+              .toList();
           return Container(
             width: cardWidth,
             height: cardHeight,
             margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExerciseDescription(),
-                  ),
-                );
-              },
-              child: Swiper(
-                itemCount: exercises.length,
-                pagination: const SwiperPagination(),
-                itemBuilder: (BuildContext context, int index) {
-                  final exercise = exercises[index];
-                  return CardWithExerciseInfo(
+            child: Swiper(
+              itemCount: exercises.length,
+              pagination: const SwiperPagination(),
+              itemBuilder: (BuildContext context, int index) {
+                final exercise = exercises[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ExerciseDescription(exerciseId: exercise.id),
+                      ),
+                    );
+                  },
+                  child: CardWithExerciseInfo(
                     cardWidth: cardWidth,
                     cardHeight: cardHeight,
                     imagePath: 'assets/screen_images/meditacion.png',
                     exerciseName:
                         exercise.name ?? 'Nombre de Ejercicio Predeterminado',
-                  );
-                },
-                autoplay: true,
-              ),
+                    isFavorite: false,
+                    exerciseId: exercise.id ??
+                        0,
+                    onTap: () {
+                       Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ExerciseDescription(exerciseId: exercise.id ?? 0),
+      ),
+    );
+                    },
+                  ),
+                );
+              },
+              autoplay: true,
             ),
           );
         }
@@ -140,35 +150,46 @@ class MindFulnessScreen extends StatelessWidget {
         } else {
           final exercises = snapshot.data!.data!
               .where((exercise) => exercise.type == type)
-              .toList(); // Filtra por tipo
+              .toList();
           return Container(
             width: cardWidth,
             height: cardHeight,
             margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExerciseDescription(),
-                  ),
-                );
-              },
-              child: Swiper(
-                itemCount: exercises.length,
-                pagination: const SwiperPagination(),
-                itemBuilder: (BuildContext context, int index) {
-                  final exercise = exercises[index];
-                  return CardWithExerciseInfo(
+            child: Swiper(
+              itemCount: exercises.length,
+              pagination: const SwiperPagination(),
+              itemBuilder: (BuildContext context, int index) {
+                final exercise = exercises[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ExerciseDescription(exerciseId: exercise.id),
+                      ),
+                    );
+                  },
+                  child: CardWithExerciseInfo(
                     cardWidth: cardWidth,
                     cardHeight: cardHeight,
                     imagePath: 'assets/screen_images/relaxation.png',
                     exerciseName:
                         exercise.name ?? 'Nombre de Ejercicio Predeterminado',
-                  );
-                },
-                autoplay: true,
-              ),
+                    isFavorite: false,
+                    exerciseId: exercise.id ??
+                        0,
+                    onTap: () {
+                      Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ExerciseDescription(exerciseId: exercise.id ?? 0),
+      ),
+    );
+                    },
+                  ),
+                );
+              },
+              autoplay: true,
             ),
           );
         }
@@ -192,35 +213,46 @@ class MindFulnessScreen extends StatelessWidget {
         } else {
           final exercises = snapshot.data!.data!
               .where((exercise) => exercise.type == type)
-              .toList(); // Filtra por tipo
+              .toList();
           return Container(
             width: cardWidth,
             height: cardHeight,
             margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExerciseDescription(),
-                  ),
-                );
-              },
-              child: Swiper(
-                itemCount: exercises.length,
-                pagination: const SwiperPagination(),
-                itemBuilder: (BuildContext context, int index) {
-                  final exercise = exercises[index];
-                  return CardWithExerciseInfo(
+            child: Swiper(
+              itemCount: exercises.length,
+              pagination: const SwiperPagination(),
+              itemBuilder: (BuildContext context, int index) {
+                final exercise = exercises[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ExerciseDescription(exerciseId: exercise.id),
+                      ),
+                    );
+                  },
+                  child: CardWithExerciseInfo(
                     cardWidth: cardWidth,
                     cardHeight: cardHeight,
                     imagePath: 'assets/screen_images/breathing.png',
                     exerciseName:
                         exercise.name ?? 'Nombre de Ejercicio Predeterminado',
-                  );
-                },
-                autoplay: true,
-              ),
+                    isFavorite: false,
+                    exerciseId: exercise.id ??
+                        0,
+                    onTap: () {
+                      Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ExerciseDescription(exerciseId: exercise.id ?? 0),
+      ),
+    );
+                    },
+                  ),
+                );
+              },
+              autoplay: true,
             ),
           );
         }
@@ -229,19 +261,30 @@ class MindFulnessScreen extends StatelessWidget {
   }
 }
 
-class CardWithExerciseInfo extends StatelessWidget {
+class CardWithExerciseInfo extends StatefulWidget {
   final double cardWidth;
   final double cardHeight;
   final String imagePath;
   final String exerciseName;
+  final bool isFavorite; 
+  final int exerciseId; 
+  final void Function() onTap; 
 
   CardWithExerciseInfo({
     required this.cardWidth,
     required this.cardHeight,
     required this.imagePath,
     required this.exerciseName,
+    required this.isFavorite,
+    required this.exerciseId, 
+    required this.onTap,
   });
 
+  @override
+  _CardWithExerciseInfoState createState() => _CardWithExerciseInfoState();
+}
+
+class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -249,32 +292,47 @@ class CardWithExerciseInfo extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
       ),
-      child: Container(
-        width: cardWidth,
-        height: cardHeight,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(imagePath),
-            fit: BoxFit
-                .cover, // Hace que la imagen ocupe todo el tamaño del contenedor
+      child: InkWell(
+        onTap: widget.onTap,
+        child: Container(
+          width: widget.cardWidth,
+          height: widget.cardHeight,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(widget.imagePath),
+              fit: BoxFit.cover,
+            ),
+            borderRadius: BorderRadius.circular(16.0),
           ),
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: 10.0,
-              left: 10.0,
-              child: Text(
-                exerciseName,
-                style: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 10.0,
+                left: 10.0,
+                child: Row(
+                  children: [
+                    Text(
+                      widget.exerciseName,
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        widget.isFavorite ? Icons.star : Icons.star_border,
+                        color: Colors.yellow,
+                      ),
+                      onPressed: () {
+                        // logica de la estrella.
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
