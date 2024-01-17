@@ -123,14 +123,12 @@ class ExerciseService extends ChangeNotifier {
     }
   }
 
-  Future<ExerciseResponse> getExercisesById(int id) async {
+  Future<ExerciseResponse> getExercisesById(String id) async {
     try {
       final url = Uri.http(baseURL, '/public/api/exerciseById', {'id': id});
       String? authToken = await readToken();
       isLoading = true;
       notifyListeners();
-      //SI FALLA ES PRQUE RAUL YA   |
-      //HA CAMBIADO A GET ESO      V
       final response = await http.post(
         url,
         headers: {
