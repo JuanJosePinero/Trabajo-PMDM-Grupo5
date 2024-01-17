@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mindcare_app/models/ExerciseModel.dart';
+import 'package:mindcare_app/services/UserService.dart';
 
 class ExerciseService extends ChangeNotifier {
   final String baseURL = 'mindcare.allsites.es';
@@ -82,6 +83,80 @@ class ExerciseService extends ChangeNotifier {
       return 'success';
     } else {
       return 'error';
+    }
+  }
+
+  Future<ExerciseResponse> getExercisesByAlumn() async {
+    try {
+      final url = Uri.http(baseURL, '/public/api/exercisesByAlum',
+          {'id': UserService.userId.toString()});
+      String? authToken = await readToken();
+      isLoading = true;
+      notifyListeners();
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        ExerciseResponse exerciseResponse = ExerciseResponse.fromJson(json);
+        exercises.clear();
+        exercises.addAll(exerciseResponse.data!);
+        isLoading = false;
+        notifyListeners();
+        return exerciseResponse;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        throw Exception(
+            'Failed to load exercises. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      isLoading = false;
+      notifyListeners();
+      throw Exception('Error: $error');
+    }
+  }
+
+  Future<ExerciseResponse> getExercisesById(int id) async {
+    try {
+      final url = Uri.http(baseURL, '/public/api/exerciseById', {'id': id});
+      String? authToken = await readToken();
+      isLoading = true;
+      notifyListeners();
+      //SI FALLA ES PRQUE RAUL YA   |
+      //HA CAMBIADO A GET ESO      V
+      final response = await http.post(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        ExerciseResponse exerciseResponse = ExerciseResponse.fromJson(json);
+        exercises.clear();
+        exercises.addAll(exerciseResponse.data!);
+        isLoading = false;
+        notifyListeners();
+        return exerciseResponse;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        throw Exception(
+            'Failed to load exercises. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      isLoading = false;
+      notifyListeners();
+      throw Exception('Error: $error');
     }
   }
 }
