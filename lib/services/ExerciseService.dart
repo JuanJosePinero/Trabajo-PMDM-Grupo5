@@ -71,12 +71,14 @@ class ExerciseService extends ChangeNotifier {
 
     final response = await http.post(url,
         headers: {
-          // 'Content-type': 'application/json',
+          'Content-type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $authToken',
         },
         body: json.encode(exerciseData));
+
     final Map<String, dynamic> decoded = json.decode(response.body);
+
     if (decoded['success'] == true) {
       ExerciseService.user_id = decoded['data']['user_id'].toString();
       ExerciseService.exercise_id = decoded['data']['exercise_id'].toString();
@@ -155,6 +157,16 @@ class ExerciseService extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       throw Exception('Error: $error');
+    }
+  }
+
+  Future<bool> hasDoneExercise(int idEjercicio) async {
+    try {
+      ExerciseResponse exerciseResponse = await getExercisesByAlumn();
+      return exerciseResponse.data!
+          .any((exercise) => exercise.id == idEjercicio);
+    } catch (error) {
+      return false;
     }
   }
 }

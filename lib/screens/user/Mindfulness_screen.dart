@@ -4,6 +4,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:mindcare_app/models/ExerciseModel.dart';
 import 'package:mindcare_app/screens/user/exercise_screen.dart';
 import 'package:mindcare_app/services/ExerciseService.dart';
+import 'package:mindcare_app/services/UserService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
 class MindFulnessScreen extends StatelessWidget {
@@ -99,6 +100,8 @@ class MindFulnessScreen extends StatelessWidget {
                 final exercise = exercises[index];
                 return GestureDetector(
                   onTap: () {
+                    exerciseService.exerciseMade(
+                        UserService.userId.toString(), exercise.id.toString());
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -114,14 +117,17 @@ class MindFulnessScreen extends StatelessWidget {
                     exerciseName:
                         exercise.name ?? 'Nombre de Ejercicio Predeterminado',
                     isFavorite: false,
-                    exerciseId: exercise.id ??
-                        0,
+                    exerciseId: exercise.id ?? 0,
                     onTap: () {
-                       Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ExerciseDescription(exerciseId: exercise.id ?? 0),
-      ),
-    );
+                      exerciseService.exerciseMade(
+                          UserService.userId.toString(),
+                          exercise.id.toString());
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ExerciseDescription(exerciseId: exercise.id ?? 0),
+                        ),
+                      );
                     },
                   ),
                 );
@@ -162,6 +168,8 @@ class MindFulnessScreen extends StatelessWidget {
                 final exercise = exercises[index];
                 return GestureDetector(
                   onTap: () {
+                    exerciseService.exerciseMade(
+                        UserService.userId.toString(), exercise.id.toString());
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -177,14 +185,17 @@ class MindFulnessScreen extends StatelessWidget {
                     exerciseName:
                         exercise.name ?? 'Nombre de Ejercicio Predeterminado',
                     isFavorite: false,
-                    exerciseId: exercise.id ??
-                        0,
+                    exerciseId: exercise.id ?? 0,
                     onTap: () {
+                      exerciseService.exerciseMade(
+                          UserService.userId.toString(),
+                          exercise.id.toString());
                       Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ExerciseDescription(exerciseId: exercise.id ?? 0),
-      ),
-    );
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ExerciseDescription(exerciseId: exercise.id ?? 0),
+                        ),
+                      );
                     },
                   ),
                 );
@@ -225,6 +236,8 @@ class MindFulnessScreen extends StatelessWidget {
                 final exercise = exercises[index];
                 return GestureDetector(
                   onTap: () {
+                    exerciseService.exerciseMade(
+                        UserService.userId.toString(), exercise.id.toString());
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -240,14 +253,17 @@ class MindFulnessScreen extends StatelessWidget {
                     exerciseName:
                         exercise.name ?? 'Nombre de Ejercicio Predeterminado',
                     isFavorite: false,
-                    exerciseId: exercise.id ??
-                        0,
+                    exerciseId: exercise.id ?? 0,
                     onTap: () {
+                      exerciseService.exerciseMade(
+                          UserService.userId.toString(),
+                          exercise.id.toString());
                       Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ExerciseDescription(exerciseId: exercise.id ?? 0),
-      ),
-    );
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ExerciseDescription(exerciseId: exercise.id ?? 0),
+                        ),
+                      );
                     },
                   ),
                 );
@@ -266,9 +282,9 @@ class CardWithExerciseInfo extends StatefulWidget {
   final double cardHeight;
   final String imagePath;
   final String exerciseName;
-  final bool isFavorite; 
-  final int exerciseId; 
-  final void Function() onTap; 
+  final bool isFavorite;
+  final int exerciseId;
+  final void Function() onTap;
 
   CardWithExerciseInfo({
     required this.cardWidth,
@@ -276,7 +292,7 @@ class CardWithExerciseInfo extends StatefulWidget {
     required this.imagePath,
     required this.exerciseName,
     required this.isFavorite,
-    required this.exerciseId, 
+    required this.exerciseId,
     required this.onTap,
   });
 
@@ -285,6 +301,20 @@ class CardWithExerciseInfo extends StatefulWidget {
 }
 
 class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
+  final exerciseService = ExerciseService();
+  @override
+  void initState() {
+    super.initState();
+    verificarEjercicio();
+  }
+
+  void verificarEjercicio() async {
+    bool result = await exerciseService.hasDoneExercise(widget.exerciseId);
+    setState(() {
+      // hasDoneExercise = result;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -318,15 +348,6 @@ class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        widget.isFavorite ? Icons.star : Icons.star_border,
-                        color: Colors.yellow,
-                      ),
-                      onPressed: () {
-                        // logica de la estrella.
-                      },
                     ),
                   ],
                 ),
