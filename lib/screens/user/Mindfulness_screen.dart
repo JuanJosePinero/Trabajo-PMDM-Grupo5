@@ -99,17 +99,6 @@ class MindFulnessScreen extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 final exercise = exercises[index];
                 return GestureDetector(
-                  onTap: () {
-                    exerciseService.exerciseMade(
-                        UserService.userId.toString(), exercise.id.toString());
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ExerciseDescription(exerciseId: exercise.id),
-                      ),
-                    );
-                  },
                   child: CardWithExerciseInfo(
                     cardWidth: cardWidth,
                     cardHeight: cardHeight,
@@ -125,7 +114,7 @@ class MindFulnessScreen extends StatelessWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              ExerciseDescription(exerciseId: exercise.id ?? 0),
+                              ExerciseDescription(exerciseId: exercise.id.toString()),
                         ),
                       );
                     },
@@ -167,17 +156,6 @@ class MindFulnessScreen extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 final exercise = exercises[index];
                 return GestureDetector(
-                  onTap: () {
-                    exerciseService.exerciseMade(
-                        UserService.userId.toString(), exercise.id.toString());
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ExerciseDescription(exerciseId: exercise.id),
-                      ),
-                    );
-                  },
                   child: CardWithExerciseInfo(
                     cardWidth: cardWidth,
                     cardHeight: cardHeight,
@@ -193,7 +171,7 @@ class MindFulnessScreen extends StatelessWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              ExerciseDescription(exerciseId: exercise.id ?? 0),
+                              ExerciseDescription(exerciseId: exercise.id.toString()),
                         ),
                       );
                     },
@@ -235,17 +213,6 @@ class MindFulnessScreen extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 final exercise = exercises[index];
                 return GestureDetector(
-                  onTap: () {
-                    exerciseService.exerciseMade(
-                        UserService.userId.toString(), exercise.id.toString());
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ExerciseDescription(exerciseId: exercise.id),
-                      ),
-                    );
-                  },
                   child: CardWithExerciseInfo(
                     cardWidth: cardWidth,
                     cardHeight: cardHeight,
@@ -261,7 +228,7 @@ class MindFulnessScreen extends StatelessWidget {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              ExerciseDescription(exerciseId: exercise.id ?? 0),
+                              ExerciseDescription(exerciseId: exercise.id.toString()),
                         ),
                       );
                     },
