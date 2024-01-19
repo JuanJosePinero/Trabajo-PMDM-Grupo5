@@ -8,6 +8,7 @@ class ExerciseData {
   String? audio;
   String? video;
   int? deleted;
+  int? made;
   String? createdAt;
   String? updatedAt;
 
@@ -21,6 +22,7 @@ class ExerciseData {
     this.audio,
     this.video,
     this.deleted,
+    this.made,
     this.createdAt,
     this.updatedAt,
   });
@@ -35,6 +37,7 @@ class ExerciseData {
     audio = json['audio'];
     video = json['video'];
     deleted = json['deleted'];
+    made = json['made'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -50,6 +53,7 @@ class ExerciseData {
     data['audio'] = audio;
     data['video'] = video;
     data['deleted'] = deleted;
+    data['made'] = made;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     return data;
