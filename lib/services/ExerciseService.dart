@@ -90,8 +90,9 @@ class ExerciseService extends ChangeNotifier {
 
   Future<ExerciseResponse> getExercisesByAlumn() async {
     try {
-      final url = Uri.http(baseURL, '/public/api/exercisesByAlum',
-          {'id': UserService.userId.toString()});
+      final url = Uri.http(baseURL, '/public/api/exercisesByAlum', {
+        'id': UserService.userId.toString(),
+      });
       String? authToken = await readToken();
       isLoading = true;
       notifyListeners();
@@ -125,48 +126,47 @@ class ExerciseService extends ChangeNotifier {
     }
   }
 
-  Future<ExerciseResponse> getExercisesById(String id) async {
-    try {
-      final url = Uri.http(baseURL, '/public/api/exerciseById', {'id': id});
-      String? authToken = await readToken();
-      isLoading = true;
-      notifyListeners();
-      final response = await http.post(
-        url,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $authToken',
-        },
-      );
+  Future<ExerciseData> getExerciseById(String exerciseId) async {
+    String? token = await readToken();
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> json = jsonDecode(response.body);
-        ExerciseResponse exerciseResponse = ExerciseResponse.fromJson(json);
-        exercises.clear();
-        exercises.addAll(exerciseResponse.data!);
-        isLoading = false;
-        notifyListeners();
-        return exerciseResponse;
-      } else {
-        isLoading = false;
-        notifyListeners();
-        throw Exception(
-            'Failed to load exercises. Status code: ${response.statusCode}');
-      }
-    } catch (error) {
+    final Uri url = Uri.https(
+        baseURL, '/public/api/exerciseById', {'id': exerciseId.toString()});
+
+    Map<String, dynamic> requestData = {
+      'id': exerciseId.toString(),
+    };
+
+    final resp = await http.post(
+      url,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(requestData),
+    );
+
+    exercises.clear();
+
+    final Map<String, dynamic> decoded = json.decode(resp.body);
+    if (decoded['success'] == true) {
+      ExerciseData exerciseData = ExerciseData(
+        id: decoded['data']['id'],
+        name: decoded['data']['name'] ?? '',
+        improvement: decoded['data']['improvement'] ?? '',
+        type: decoded['data']['type'] ?? '',
+        explanation: decoded['data']['explanation'] ?? '',
+        image: decoded['data']['image'] ?? '',
+        audio: decoded['data']['audio'] ?? '',
+        video: decoded['data']['video'] ?? '',
+        made: decoded['data']['made'] ?? '',
+      );
+      exercises.add(exerciseData);
+
       isLoading = false;
       notifyListeners();
-      throw Exception('Error: $error');
-    }
-  }
-
-  Future<bool> hasDoneExercise(int idEjercicio) async {
-    try {
-      ExerciseResponse exerciseResponse = await getExercisesByAlumn();
-      return exerciseResponse.data!
-          .any((exercise) => exercise.id == idEjercicio);
-    } catch (error) {
-      return false;
+      return exerciseData;
+    } else {
+      throw Exception(decoded['message'] ?? 'Failed to retrieve exercise');
     }
   }
 }
