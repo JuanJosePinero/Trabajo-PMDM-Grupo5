@@ -272,14 +272,6 @@ class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
   @override
   void initState() {
     super.initState();
-    verificarEjercicio();
-  }
-
-  void verificarEjercicio() async {
-    bool result = await exerciseService.hasDoneExercise(widget.exerciseId);
-    setState(() {
-      // hasDoneExercise = result;
-    });
   }
 
   @override
