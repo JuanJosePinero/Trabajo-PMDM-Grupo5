@@ -27,7 +27,8 @@ class ExerciseDescription extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data?.data?.isEmpty == true) {
+            } else if (!snapshot.hasData ||
+                snapshot.data?.data?.isEmpty == true) {
               return Center(child: Text('No exercises with Id: $exerciseId'));
             } else {
               final exercise = snapshot.data!.data![0];
@@ -79,17 +80,32 @@ class ExerciseDescription extends StatelessWidget {
         if (exercise.audio != null && exercise.video == null)
           _buildAudioPlayer(exercise.audio!),
         if (exercise.video != null && exercise.audio != null)
-          _buildVideoPlayer(exercise.video!), // Mostrar solo el video
+          _buildVideoPlayer(exercise.video!),
+        if (exercise.video == null && exercise.audio == null)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image.network(exercise.image!),
+          ),
         if (exercise.explanation != null)
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              exercise.explanation ?? '',
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                    'Exercise explanation', style: TextStyle(
+                    fontSize: 16,
+                  ),),
+                  const SizedBox(),
+                Text(
+                  exercise.explanation ?? '',
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ],
             ),
-          ),
+          )
       ],
     );
   }
@@ -124,8 +140,7 @@ class ExerciseDescription extends StatelessWidget {
 class AudioPlayerWidget extends StatefulWidget {
   final String audioUrl;
 
-  const AudioPlayerWidget({Key? key, required this.audioUrl})
-      : super(key: key);
+  const AudioPlayerWidget({Key? key, required this.audioUrl}) : super(key: key);
 
   @override
   _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();

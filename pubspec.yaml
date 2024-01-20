@@ -42,7 +42,6 @@ dependencies:
   http: ^1.1.0
   just_audio: ^0.9.36
   provider: ^6.0.5
-  screen: ^0.0.5
   youtube_player_flutter: ^8.1.2
 
 dev_dependencies:
