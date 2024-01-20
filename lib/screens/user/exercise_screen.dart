@@ -34,7 +34,7 @@ class ExerciseDescription extends StatelessWidget {
               final exercise = snapshot.data!.data![0];
               return ListView(
                 children: [
-                  _buildExerciseDetails(exercise),
+                  _buildExerciseDetails(exercise, context),
                 ],
               );
             }
@@ -61,7 +61,7 @@ class ExerciseDescription extends StatelessWidget {
     }
   }
 
-  Widget _buildExerciseDetails(ExerciseData exercise) {
+  Widget _buildExerciseDetails(ExerciseData exercise, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -75,13 +75,11 @@ class ExerciseDescription extends StatelessWidget {
             ),
           ),
         ),
-        if (exercise.video != null && exercise.audio == null)
-          _buildVideoPlayer(exercise.video!),
-        if (exercise.audio != null && exercise.video == null)
-          _buildAudioPlayer(exercise.audio!),
-        if (exercise.video != null && exercise.audio != null)
-          _buildVideoPlayer(exercise.video!),
-        if (exercise.video == null && exercise.audio == null)
+        if (exercise.video!.isNotEmpty)
+          _buildVideoPlayer(exercise.video!)
+        else if (exercise.audio!.isNotEmpty)
+          _buildAudioPlayer(exercise.audio!)
+        else if (exercise.image!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Image.network(exercise.image!),
@@ -93,10 +91,13 @@ class ExerciseDescription extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                    'Exercise explanation', style: TextStyle(
+                  'Exercise explanation',
+                  style: TextStyle(
                     fontSize: 16,
-                  ),),
-                  const SizedBox(),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Text(
                   exercise.explanation ?? '',
                   style: const TextStyle(
@@ -105,7 +106,31 @@ class ExerciseDescription extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
+        Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.green, // Background color
+            ),
+            onPressed: () {
+              // Aquí se maneja el evento de presionar el botón
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Row(
+                    children: [
+                      Icon(Icons.check, color: Colors.green),
+                      SizedBox(width: 8),
+                      Text('Exercise finished successfully!'),
+                    ],
+                  ),
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            },
+            child: const Text('Finish Exercise'),
+          ),
+        ),
+        const SizedBox(height: 16,)
       ],
     );
   }
@@ -116,7 +141,7 @@ class ExerciseDescription extends StatelessWidget {
       controller: YoutubePlayerController(
         initialVideoId: videoCode,
         flags: const YoutubePlayerFlags(
-          autoPlay: true,
+          autoPlay: false,
           mute: false,
         ),
       ),
@@ -125,7 +150,6 @@ class ExerciseDescription extends StatelessWidget {
   }
 
   String _extractVideoId(String videoUrl) {
-    // Extraer el ID del video de la URL completa de YouTube
     final Uri uri = Uri.parse(videoUrl);
     final String videoId = uri.queryParameters['v'] ?? '';
 
@@ -133,7 +157,136 @@ class ExerciseDescription extends StatelessWidget {
   }
 
   Widget _buildAudioPlayer(String audioUrl) {
-    return AudioPlayerWidget(audioUrl: audioUrl);
+    final player = AudioPlayer();
+    double lastVolume = 1.0;
+
+    player.setUrl(audioUrl);
+
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Exercise audio',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () {
+                  player
+                      .seek(Duration(seconds: player.position.inSeconds - 10));
+                },
+                icon: const Icon(
+                  Icons.replay_10,
+                  size: 24,
+                ),
+              ),
+              StreamBuilder<bool>(
+                stream: player.playingStream,
+                builder: (context, snapshot) {
+                  final isPlaying = snapshot.data ?? false;
+                  return IconButton(
+                    onPressed: () {
+                      if (isPlaying) {
+                        player.pause();
+                      } else {
+                        player.play();
+                      }
+                    },
+                    icon: Icon(
+                      isPlaying ? Icons.pause : Icons.play_arrow,
+                      size: 32,
+                    ),
+                  );
+                },
+              ),
+              IconButton(
+                onPressed: () {
+                  player
+                      .seek(Duration(seconds: player.position.inSeconds + 10));
+                },
+                icon: const Icon(
+                  Icons.forward_10,
+                  size: 24,
+                ),
+              ),
+            ],
+          ),
+          StreamBuilder<Duration>(
+            stream: player.positionStream,
+            builder: (context, snapshot) {
+              final position = snapshot.data ?? Duration.zero;
+              final duration = player.duration ?? Duration.zero;
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(_printDuration(position)),
+                      Text(_printDuration(duration)),
+                    ],
+                  ),
+                  Slider(
+                    value: position.inSeconds.toDouble(),
+                    onChanged: (value) {
+                      player.seek(Duration(seconds: value.toInt()));
+                    },
+                    min: 0,
+                    max: duration.inSeconds.toDouble(),
+                  ),
+                ],
+              );
+            },
+          ),
+          StreamBuilder<double>(
+            stream: player.volumeStream,
+            builder: (context, snapshot) {
+              final volume = snapshot.data ?? lastVolume;
+              return Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      if (volume > 0) {
+                        lastVolume = volume;
+                        player.setVolume(0.0);
+                      } else {
+                        player.setVolume(lastVolume);
+                      }
+                    },
+                    icon: Icon(volume > 0 ? Icons.volume_up : Icons.volume_off),
+                  ),
+                  Expanded(
+                    child: Slider(
+                      value: volume,
+                      onChanged: (newVolume) {
+                        lastVolume = newVolume;
+                        player.setVolume(newVolume);
+                      },
+                      min: 0,
+                      max: 1,
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }
 
@@ -181,6 +334,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   void dispose() {
+    player.stop();
     player.dispose();
     super.dispose();
   }
