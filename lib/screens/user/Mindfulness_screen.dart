@@ -19,9 +19,7 @@ class MindFulnessScreen extends StatelessWidget {
     Future<void> _refresh() async {
       try {
         await exerciseService.getExercises();
-      } catch (error) {
-        // Maneja el error aquí si es necesario.
-      }
+      } catch (error) {}
     }
 
     return CupertinoPageScaffold(
@@ -81,7 +79,7 @@ class MindFulnessScreen extends StatelessWidget {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
-        } else if (snapshot.data == null ||
+        } else if (!snapshot.hasData ||
             snapshot.data!.data == null ||
             snapshot.data!.data!.isEmpty) {
           return const Text('No exercises available');
@@ -97,31 +95,46 @@ class MindFulnessScreen extends StatelessWidget {
               itemCount: exercises.length,
               pagination: const SwiperPagination(),
               itemBuilder: (BuildContext context, int index) {
-                final exercise = exercises[index];
-                return GestureDetector(
-                  child: CardWithExerciseInfo(
-                    cardWidth: cardWidth,
-                    cardHeight: cardHeight,
-                    imagePath: 'assets/screen_images/meditacion.png',
-                    exerciseName:
-                        exercise.name ?? 'Nombre de Ejercicio Predeterminado',
-                    isFavorite: false,
-                    exerciseId: exercise.id ?? 0,
-                    onTap: () {
-                      exerciseService.exerciseMade(
-                          UserService.userId.toString(),
-                          exercise.id.toString());
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ExerciseDescription(exerciseId: exercise.id.toString()),
+                return FutureBuilder<ExerciseData>(
+                  future: exerciseService
+                      .getExerciseById(exercises[index].id.toString()),
+                  builder: (context, exerciseSnapshot) {
+                    if (exerciseSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (exerciseSnapshot.hasError) {
+                      return Text('Error: ${exerciseSnapshot.error}');
+                    } else if (!exerciseSnapshot.hasData) {
+                      return const Text('Exercise data not available');
+                    } else {
+                      final exerciseData = exerciseSnapshot.data!;
+                      return GestureDetector(
+                        child: CardWithExerciseInfo(
+                          cardWidth: cardWidth,
+                          cardHeight: cardHeight,
+                          imagePath: 'assets/screen_images/meditacion.png',
+                          exerciseName: exerciseData.name ??
+                              'Nombre de Ejercicio Predeterminado',
+                          isMade: exerciseData.made ?? 0,
+                          exerciseId: exerciseData.id ?? 0,
+                          onTap: () {
+                            exerciseService.exerciseMade(
+                                UserService.userId.toString(),
+                                exerciseData.id.toString());
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ExerciseDescription(
+                                    exerciseId: exerciseData.id.toString()),
+                              ),
+                            );
+                          },
                         ),
                       );
-                    },
-                  ),
+                    }
+                  },
                 );
               },
-              autoplay: true,
+              autoplay: false,
             ),
           );
         }
@@ -138,7 +151,7 @@ class MindFulnessScreen extends StatelessWidget {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
-        } else if (snapshot.data == null ||
+        } else if (!snapshot.hasData ||
             snapshot.data!.data == null ||
             snapshot.data!.data!.isEmpty) {
           return const Text('No exercises available');
@@ -154,31 +167,46 @@ class MindFulnessScreen extends StatelessWidget {
               itemCount: exercises.length,
               pagination: const SwiperPagination(),
               itemBuilder: (BuildContext context, int index) {
-                final exercise = exercises[index];
-                return GestureDetector(
-                  child: CardWithExerciseInfo(
-                    cardWidth: cardWidth,
-                    cardHeight: cardHeight,
-                    imagePath: 'assets/screen_images/relaxation.png',
-                    exerciseName:
-                        exercise.name ?? 'Nombre de Ejercicio Predeterminado',
-                    isFavorite: false,
-                    exerciseId: exercise.id ?? 0,
-                    onTap: () {
-                      exerciseService.exerciseMade(
-                          UserService.userId.toString(),
-                          exercise.id.toString());
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ExerciseDescription(exerciseId: exercise.id.toString()),
+                return FutureBuilder<ExerciseData>(
+                  future: exerciseService
+                      .getExerciseById(exercises[index].id.toString()),
+                  builder: (context, exerciseSnapshot) {
+                    if (exerciseSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (exerciseSnapshot.hasError) {
+                      return Text('Error: ${exerciseSnapshot.error}');
+                    } else if (!exerciseSnapshot.hasData) {
+                      return const Text('Exercise data not available');
+                    } else {
+                      final exerciseData = exerciseSnapshot.data!;
+                      return GestureDetector(
+                        child: CardWithExerciseInfo(
+                          cardWidth: cardWidth,
+                          cardHeight: cardHeight,
+                          imagePath: 'assets/screen_images/relaxation.png',
+                          exerciseName: exerciseData.name ??
+                              'Nombre de Ejercicio Predeterminado',
+                          isMade: exerciseData.made ?? 0,
+                          exerciseId: exerciseData.id ?? 0,
+                          onTap: () {
+                            exerciseService.exerciseMade(
+                                UserService.userId.toString(),
+                                exerciseData.id.toString());
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ExerciseDescription(
+                                    exerciseId: exerciseData.id.toString()),
+                              ),
+                            );
+                          },
                         ),
                       );
-                    },
-                  ),
+                    }
+                  },
                 );
               },
-              autoplay: true,
+              autoplay: false,
             ),
           );
         }
@@ -195,7 +223,7 @@ class MindFulnessScreen extends StatelessWidget {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
-        } else if (snapshot.data == null ||
+        } else if (!snapshot.hasData ||
             snapshot.data!.data == null ||
             snapshot.data!.data!.isEmpty) {
           return const Text('No exercises available');
@@ -211,31 +239,46 @@ class MindFulnessScreen extends StatelessWidget {
               itemCount: exercises.length,
               pagination: const SwiperPagination(),
               itemBuilder: (BuildContext context, int index) {
-                final exercise = exercises[index];
-                return GestureDetector(
-                  child: CardWithExerciseInfo(
-                    cardWidth: cardWidth,
-                    cardHeight: cardHeight,
-                    imagePath: 'assets/screen_images/breathing.png',
-                    exerciseName:
-                        exercise.name ?? 'Nombre de Ejercicio Predeterminado',
-                    isFavorite: false,
-                    exerciseId: exercise.id ?? 0,
-                    onTap: () {
-                      exerciseService.exerciseMade(
-                          UserService.userId.toString(),
-                          exercise.id.toString());
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ExerciseDescription(exerciseId: exercise.id.toString()),
+                return FutureBuilder<ExerciseData>(
+                  future: exerciseService
+                      .getExerciseById(exercises[index].id.toString()),
+                  builder: (context, exerciseSnapshot) {
+                    if (exerciseSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (exerciseSnapshot.hasError) {
+                      return Text('Error: ${exerciseSnapshot.error}');
+                    } else if (!exerciseSnapshot.hasData) {
+                      return const Text('Exercise data not available');
+                    } else {
+                      final exerciseData = exerciseSnapshot.data!;
+                      return GestureDetector(
+                        child: CardWithExerciseInfo(
+                          cardWidth: cardWidth,
+                          cardHeight: cardHeight,
+                          imagePath: 'assets/screen_images/breathing.png',
+                          exerciseName: exerciseData.name ??
+                              'Nombre de Ejercicio Predeterminado',
+                          isMade: exerciseData.made ?? 0,
+                          exerciseId: exerciseData.id ?? 0,
+                          onTap: () {
+                            exerciseService.exerciseMade(
+                                UserService.userId.toString(),
+                                exerciseData.id.toString());
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ExerciseDescription(
+                                    exerciseId: exerciseData.id.toString()),
+                              ),
+                            );
+                          },
                         ),
                       );
-                    },
-                  ),
+                    }
+                  },
                 );
               },
-              autoplay: true,
+              autoplay: false,
             ),
           );
         }
@@ -249,7 +292,7 @@ class CardWithExerciseInfo extends StatefulWidget {
   final double cardHeight;
   final String imagePath;
   final String exerciseName;
-  final bool isFavorite;
+  final int isMade;
   final int exerciseId;
   final void Function() onTap;
 
@@ -258,7 +301,7 @@ class CardWithExerciseInfo extends StatefulWidget {
     required this.cardHeight,
     required this.imagePath,
     required this.exerciseName,
-    required this.isFavorite,
+    required this.isMade,
     required this.exerciseId,
     required this.onTap,
   });
@@ -269,13 +312,13 @@ class CardWithExerciseInfo extends StatefulWidget {
 
 class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
   final exerciseService = ExerciseService();
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
+    bool exerciseMade = false;
+    if (widget.isMade == 1) {
+      exerciseMade = true;
+    }
     return Card(
       elevation: 4.0,
       shape: RoundedRectangleBorder(
@@ -307,6 +350,10 @@ class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
+                    ),
+                    Icon(
+                      exerciseMade ? Icons.star : Icons.star_border,
+                      color: Colors.yellow,
                     ),
                   ],
                 ),
