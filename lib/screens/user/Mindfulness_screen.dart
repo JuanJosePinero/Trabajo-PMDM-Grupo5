@@ -118,9 +118,9 @@ class MindFulnessScreen extends StatelessWidget {
                           isMade: exerciseData.made ?? 0,
                           exerciseId: exerciseData.id ?? 0,
                           onTap: () {
-                            exerciseService.exerciseMade(
-                                UserService.userId.toString(),
-                                exerciseData.id.toString());
+                            // exerciseService.exerciseMade(
+                            //     UserService.userId.toString(),
+                            //     exerciseData.id.toString());
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => ExerciseDescription(
@@ -190,9 +190,9 @@ class MindFulnessScreen extends StatelessWidget {
                           isMade: exerciseData.made ?? 0,
                           exerciseId: exerciseData.id ?? 0,
                           onTap: () {
-                            exerciseService.exerciseMade(
-                                UserService.userId.toString(),
-                                exerciseData.id.toString());
+                            // exerciseService.exerciseMade(
+                            //     UserService.userId.toString(),
+                            //     exerciseData.id.toString());
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => ExerciseDescription(
@@ -262,9 +262,9 @@ class MindFulnessScreen extends StatelessWidget {
                           isMade: exerciseData.made ?? 0,
                           exerciseId: exerciseData.id ?? 0,
                           onTap: () {
-                            exerciseService.exerciseMade(
-                                UserService.userId.toString(),
-                                exerciseData.id.toString());
+                            // exerciseService.exerciseMade(
+                            //     UserService.userId.toString(),
+                            //     exerciseData.id.toString());
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => ExerciseDescription(
