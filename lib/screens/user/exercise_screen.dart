@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindcare_app/models/ExerciseModel.dart';
 import 'package:mindcare_app/services/ExerciseService.dart';
 import 'package:mindcare_app/services/UserService.dart';
@@ -10,36 +11,49 @@ class ExerciseDescription extends StatelessWidget {
   final String exerciseId;
 
   const ExerciseDescription({Key? key, required this.exerciseId});
+  
+  get exerciseService => null;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mindfulness'),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: ThemeColors.getGradient(),
+    return WillPopScope(
+      onWillPop: () async {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Mindfulness'),
         ),
-        child: FutureBuilder<ExerciseResponse>(
-          future: _fetchExercise(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData ||
-                snapshot.data?.data?.isEmpty == true) {
-              return Center(child: Text('No exercises with Id: $exerciseId'));
-            } else {
-              final exercise = snapshot.data!.data![0];
-              return ListView(
-                children: [
-                  _buildExerciseDetails(exercise, context),
-                ],
-              );
-            }
-          },
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: ThemeColors.getGradient(),
+          ),
+          child: FutureBuilder<ExerciseResponse>(
+            future: _fetchExercise(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData ||
+                  snapshot.data?.data?.isEmpty == true) {
+                return Center(child: Text('No exercises with Id: $exerciseId'));
+              } else {
+                final exercise = snapshot.data!.data![0];
+                return ListView(
+                  children: [
+                    _buildExerciseDetails(exercise, context),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -142,18 +156,57 @@ class ExerciseDescription extends StatelessWidget {
   }
 
   Widget _buildVideoPlayer(String videoUrl) {
-    final videoCode = _extractVideoId(videoUrl);
-    return YoutubePlayer(
-      controller: YoutubePlayerController(
-        initialVideoId: videoCode,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-        ),
-      ),
+  final videoCode = _extractVideoId(videoUrl);
+  YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: videoCode,
+    flags: const YoutubePlayerFlags(
+      autoPlay: false,
+      mute: false,
+    ),
+  );
+
+  _controller.addListener(() {
+    if (_controller.value.isFullScreen) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+  });
+
+  return YoutubePlayerBuilder(
+    player: YoutubePlayer(
+      controller: _controller,
       liveUIColor: Colors.amber,
-    );
-  }
+    ),
+    builder: (context, player) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0),
+            child: Text(
+              'Exercise video',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          player,
+        ],
+      );
+    },
+  );
+}
+
+
 
   String _extractVideoId(String videoUrl) {
     final Uri uri = Uri.parse(videoUrl);

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:flutter/services.dart';
 import 'package:mindcare_app/models/ExerciseModel.dart';
 import 'package:mindcare_app/screens/user/exercise_screen.dart';
 import 'package:mindcare_app/services/ExerciseService.dart';
@@ -12,6 +13,10 @@ class MindFulnessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     final cardWidth = MediaQuery.of(context).size.width * 0.8;
     final cardHeight = (cardWidth * 0.7);
     final exerciseService = ExerciseService();
