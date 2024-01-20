@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/models/ExerciseModel.dart';
 import 'package:mindcare_app/services/ExerciseService.dart';
+import 'package:mindcare_app/services/UserService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:just_audio/just_audio.dart';
@@ -62,6 +63,7 @@ class ExerciseDescription extends StatelessWidget {
   }
 
   Widget _buildExerciseDetails(ExerciseData exercise, BuildContext context) {
+    ExerciseService exerciseService = ExerciseService();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -108,29 +110,33 @@ class ExerciseDescription extends StatelessWidget {
             ),
           ),
         Center(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.green, // Background color
-            ),
-            onPressed: () {
-              // Aquí se maneja el evento de presionar el botón
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Row(
-                    children: [
-                      Icon(Icons.check, color: Colors.green),
-                      SizedBox(width: 8),
-                      Text('Exercise finished successfully!'),
-                    ],
-                  ),
-                  duration: Duration(seconds: 3),
-                ),
-              );
-            },
-            child: const Text('Finish Exercise'),
+            child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: exercise.made == 1 ? Colors.grey : Colors.green,
           ),
-        ),
-        const SizedBox(height: 16,)
+          onPressed: exercise.made == 1
+              ? null
+              : () {
+                  exerciseService.exerciseMade(
+                      UserService.userId.toString(), exercise.id.toString());
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Row(
+                        children: [
+                          Icon(Icons.check, color: Colors.green),
+                          SizedBox(width: 8),
+                          Text('Exercise finished successfully!'),
+                        ],
+                      ),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                },
+          child: const Text('Finish Exercise'),
+        )),
+        const SizedBox(
+          height: 16,
+        )
       ],
     );
   }
