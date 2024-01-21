@@ -7,12 +7,31 @@ import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 
-class ExerciseDescription extends StatelessWidget {
+class ExerciseDescription extends StatefulWidget {
   final String exerciseId;
 
-  const ExerciseDescription({Key? key, required this.exerciseId});
-  
-  get exerciseService => null;
+  const ExerciseDescription({Key? key, required this.exerciseId})
+      : super(key: key);
+
+  @override
+  _ExerciseDescriptionState createState() => _ExerciseDescriptionState();
+}
+
+class _ExerciseDescriptionState extends State<ExerciseDescription> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isButtonDisabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.stop();
+    _audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +62,8 @@ class ExerciseDescription extends StatelessWidget {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (!snapshot.hasData ||
                   snapshot.data?.data?.isEmpty == true) {
-                return Center(child: Text('No exercises with Id: $exerciseId'));
+                return Center(
+                    child: Text('No exercises with Id: ' + widget.exerciseId));
               } else {
                 final exercise = snapshot.data!.data![0];
                 return ListView(
@@ -61,7 +81,8 @@ class ExerciseDescription extends StatelessWidget {
 
   Future<ExerciseResponse> _fetchExercise() async {
     try {
-      final exerciseData = await ExerciseService().getExerciseById(exerciseId);
+      final exerciseData =
+          await ExerciseService().getExerciseById(widget.exerciseId);
       if (exerciseData != null) {
         return ExerciseResponse(
           success: true,
@@ -128,9 +149,12 @@ class ExerciseDescription extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             primary: exercise.made == 1 ? Colors.grey : Colors.green,
           ),
-          onPressed: exercise.made == 1
+          onPressed: _isButtonDisabled || exercise.made == 1
               ? null
               : () {
+                  setState(() {
+                    _isButtonDisabled = true;
+                  });
                   exerciseService.exerciseMade(
                       UserService.userId.toString(), exercise.id.toString());
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -156,57 +180,55 @@ class ExerciseDescription extends StatelessWidget {
   }
 
   Widget _buildVideoPlayer(String videoUrl) {
-  final videoCode = _extractVideoId(videoUrl);
-  YoutubePlayerController _controller = YoutubePlayerController(
-    initialVideoId: videoCode,
-    flags: const YoutubePlayerFlags(
-      autoPlay: false,
-      mute: false,
-    ),
-  );
+    final videoCode = _extractVideoId(videoUrl);
+    YoutubePlayerController _controller = YoutubePlayerController(
+      initialVideoId: videoCode,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
 
-  _controller.addListener(() {
-    if (_controller.value.isFullScreen) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeRight,
-        DeviceOrientation.landscapeLeft,
-      ]);
-    } else {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-    }
-  });
+    _controller.addListener(() {
+      if (_controller.value.isFullScreen) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);
+      } else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+      }
+    });
 
-  return YoutubePlayerBuilder(
-    player: YoutubePlayer(
-      controller: _controller,
-      liveUIColor: Colors.amber,
-    ),
-    builder: (context, player) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0),
-            child: Text(
-              'Exercise video',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        controller: _controller,
+        liveUIColor: Colors.amber,
+      ),
+      builder: (context, player) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: Text(
+                'Exercise video',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          player,
-        ],
-      );
-    },
-  );
-}
-
-
+            const SizedBox(height: 16),
+            player,
+          ],
+        );
+      },
+    );
+  }
 
   String _extractVideoId(String videoUrl) {
     final Uri uri = Uri.parse(videoUrl);
@@ -216,10 +238,9 @@ class ExerciseDescription extends StatelessWidget {
   }
 
   Widget _buildAudioPlayer(String audioUrl) {
-    final player = AudioPlayer();
-    double lastVolume = 1.0;
+    _audioPlayer.setUrl(audioUrl);
 
-    player.setUrl(audioUrl);
+    double lastVolume = 1.0;
 
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -239,8 +260,8 @@ class ExerciseDescription extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {
-                  player
-                      .seek(Duration(seconds: player.position.inSeconds - 10));
+                  _audioPlayer.seek(
+                      Duration(seconds: _audioPlayer.position.inSeconds - 10));
                 },
                 icon: const Icon(
                   Icons.replay_10,
@@ -248,15 +269,15 @@ class ExerciseDescription extends StatelessWidget {
                 ),
               ),
               StreamBuilder<bool>(
-                stream: player.playingStream,
+                stream: _audioPlayer.playingStream,
                 builder: (context, snapshot) {
                   final isPlaying = snapshot.data ?? false;
                   return IconButton(
                     onPressed: () {
                       if (isPlaying) {
-                        player.pause();
+                        _audioPlayer.pause();
                       } else {
-                        player.play();
+                        _audioPlayer.play();
                       }
                     },
                     icon: Icon(
@@ -268,8 +289,8 @@ class ExerciseDescription extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  player
-                      .seek(Duration(seconds: player.position.inSeconds + 10));
+                  _audioPlayer.seek(
+                      Duration(seconds: _audioPlayer.position.inSeconds + 10));
                 },
                 icon: const Icon(
                   Icons.forward_10,
@@ -279,10 +300,10 @@ class ExerciseDescription extends StatelessWidget {
             ],
           ),
           StreamBuilder<Duration>(
-            stream: player.positionStream,
+            stream: _audioPlayer.positionStream,
             builder: (context, snapshot) {
               final position = snapshot.data ?? Duration.zero;
-              final duration = player.duration ?? Duration.zero;
+              final duration = _audioPlayer.duration ?? Duration.zero;
               return Column(
                 children: [
                   Row(
@@ -295,7 +316,7 @@ class ExerciseDescription extends StatelessWidget {
                   Slider(
                     value: position.inSeconds.toDouble(),
                     onChanged: (value) {
-                      player.seek(Duration(seconds: value.toInt()));
+                      _audioPlayer.seek(Duration(seconds: value.toInt()));
                     },
                     min: 0,
                     max: duration.inSeconds.toDouble(),
@@ -305,7 +326,7 @@ class ExerciseDescription extends StatelessWidget {
             },
           ),
           StreamBuilder<double>(
-            stream: player.volumeStream,
+            stream: _audioPlayer.volumeStream,
             builder: (context, snapshot) {
               final volume = snapshot.data ?? lastVolume;
               return Row(
@@ -314,9 +335,9 @@ class ExerciseDescription extends StatelessWidget {
                     onPressed: () {
                       if (volume > 0) {
                         lastVolume = volume;
-                        player.setVolume(0.0);
+                        _audioPlayer.setVolume(0.0);
                       } else {
-                        player.setVolume(lastVolume);
+                        _audioPlayer.setVolume(lastVolume);
                       }
                     },
                     icon: Icon(volume > 0 ? Icons.volume_up : Icons.volume_off),
@@ -326,7 +347,7 @@ class ExerciseDescription extends StatelessWidget {
                       value: volume,
                       onChanged: (newVolume) {
                         lastVolume = newVolume;
-                        player.setVolume(newVolume);
+                        _audioPlayer.setVolume(newVolume);
                       },
                       min: 0,
                       max: 1,

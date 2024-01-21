@@ -22,9 +22,14 @@ class MindFulnessScreen extends StatelessWidget {
     final exerciseService = ExerciseService();
 
     Future<void> _refresh() async {
-      try {
-        await exerciseService.getExercises();
-      } catch (error) {}
+      _buildFloatingPanel("Meditation");
+      buildSwiperMeditation(
+          cardWidth, cardHeight, exerciseService, 'Meditation', context);
+      _buildFloatingPanel("Relaxation");
+      buildSwiperRelaxation(
+          cardWidth, cardHeight, exerciseService, 'Relaxation');
+      _buildFloatingPanel("Breathing");
+      buildSwiperBreathing(cardWidth, cardHeight, exerciseService, 'Breathing');
     }
 
     return CupertinoPageScaffold(
