@@ -122,7 +122,7 @@ class MindFulnessScreen extends StatelessWidget {
                         child: CardWithExerciseInfo(
                           cardWidth: cardWidth,
                           cardHeight: cardHeight,
-                          imagePath: 'assets/screen_images/meditacion.png',
+                          imageUrl: exerciseData.image ?? 'assets/screen_images/meditacion.png',
                           exerciseName: exerciseData.name ??
                               'Nombre de Ejercicio Predeterminado',
                           isMade: exerciseData.made ?? 0,
@@ -194,7 +194,7 @@ class MindFulnessScreen extends StatelessWidget {
                         child: CardWithExerciseInfo(
                           cardWidth: cardWidth,
                           cardHeight: cardHeight,
-                          imagePath: 'assets/screen_images/relaxation.png',
+                          imageUrl: exerciseData.image ?? 'assets/screen_images/relaxation.png',
                           exerciseName: exerciseData.name ??
                               'Nombre de Ejercicio Predeterminado',
                           isMade: exerciseData.made ?? 0,
@@ -263,7 +263,7 @@ class MindFulnessScreen extends StatelessWidget {
                         child: CardWithExerciseInfo(
                           cardWidth: cardWidth,
                           cardHeight: cardHeight,
-                          imagePath: 'assets/screen_images/breathing.png',
+                          imageUrl: exerciseData.image ?? 'assets/screen_images/breathing.png',
                           exerciseName: exerciseData.name ??
                               'Nombre de Ejercicio Predeterminado',
                           isMade: exerciseData.made ?? 0,
@@ -297,7 +297,7 @@ class MindFulnessScreen extends StatelessWidget {
 class CardWithExerciseInfo extends StatefulWidget {
   final double cardWidth;
   final double cardHeight;
-  final String imagePath;
+  final String imageUrl; // Cambiar el nombre del parámetro a imageUrl
   final String exerciseName;
   final int isMade;
   final int exerciseId;
@@ -306,7 +306,7 @@ class CardWithExerciseInfo extends StatefulWidget {
   CardWithExerciseInfo({
     required this.cardWidth,
     required this.cardHeight,
-    required this.imagePath,
+    required this.imageUrl, // Cambiar el nombre del parámetro a imageUrl
     required this.exerciseName,
     required this.isMade,
     required this.exerciseId,
@@ -338,7 +338,7 @@ class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
           height: widget.cardHeight,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(widget.imagePath),
+              image: NetworkImage(widget.imageUrl), // Usar NetworkImage para cargar la imagen desde la URL
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(16.0),
