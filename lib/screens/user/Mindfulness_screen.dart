@@ -22,14 +22,9 @@ class MindFulnessScreen extends StatelessWidget {
     final exerciseService = ExerciseService();
 
     Future<void> _refresh() async {
-      _buildFloatingPanel("Meditation");
-      buildSwiperMeditation(
-          cardWidth, cardHeight, exerciseService, 'Meditation', context);
-      _buildFloatingPanel("Relaxation");
-      buildSwiperRelaxation(
-          cardWidth, cardHeight, exerciseService, 'Relaxation');
-      _buildFloatingPanel("Breathing");
-      buildSwiperBreathing(cardWidth, cardHeight, exerciseService, 'Breathing');
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const MindFulnessScreen()),
+      );
     }
 
     return CupertinoPageScaffold(
@@ -122,7 +117,8 @@ class MindFulnessScreen extends StatelessWidget {
                         child: CardWithExerciseInfo(
                           cardWidth: cardWidth,
                           cardHeight: cardHeight,
-                          imageUrl: exerciseData.image ?? 'assets/screen_images/meditacion.png',
+                          imageUrl: exerciseData.image ??
+                              'assets/screen_images/meditacion.png',
                           exerciseName: exerciseData.name ??
                               'Nombre de Ejercicio Predeterminado',
                           isMade: exerciseData.made ?? 0,
@@ -194,7 +190,8 @@ class MindFulnessScreen extends StatelessWidget {
                         child: CardWithExerciseInfo(
                           cardWidth: cardWidth,
                           cardHeight: cardHeight,
-                          imageUrl: exerciseData.image ?? 'assets/screen_images/relaxation.png',
+                          imageUrl: exerciseData.image ??
+                              'assets/screen_images/relaxation.png',
                           exerciseName: exerciseData.name ??
                               'Nombre de Ejercicio Predeterminado',
                           isMade: exerciseData.made ?? 0,
@@ -263,7 +260,8 @@ class MindFulnessScreen extends StatelessWidget {
                         child: CardWithExerciseInfo(
                           cardWidth: cardWidth,
                           cardHeight: cardHeight,
-                          imageUrl: exerciseData.image ?? 'assets/screen_images/breathing.png',
+                          imageUrl: exerciseData.image ??
+                              'assets/screen_images/breathing.png',
                           exerciseName: exerciseData.name ??
                               'Nombre de Ejercicio Predeterminado',
                           isMade: exerciseData.made ?? 0,
@@ -338,7 +336,8 @@ class _CardWithExerciseInfoState extends State<CardWithExerciseInfo> {
           height: widget.cardHeight,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(widget.imageUrl), // Usar NetworkImage para cargar la imagen desde la URL
+              image: NetworkImage(widget
+                  .imageUrl), // Usar NetworkImage para cargar la imagen desde la URL
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(16.0),
