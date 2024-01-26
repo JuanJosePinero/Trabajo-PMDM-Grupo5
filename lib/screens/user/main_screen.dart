@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/screens/user/Mindfulness_screen.dart';
 import 'package:mindcare_app/screens/user/diary_screen.dart';
+import 'package:mindcare_app/screens/user/reportScreen.dart';
 
 class _TabInfo {
   const _TabInfo(this.title, this.icon);
@@ -25,8 +26,8 @@ class MainScreen extends StatelessWidget {
         CupertinoIcons.memories_badge_plus,
       ),
       const _TabInfo(
-        'Settings',
-        CupertinoIcons.settings,
+        'Report',
+        CupertinoIcons.person_crop_circle_fill_badge_checkmark,
       ),
     ];
 
@@ -74,12 +75,8 @@ class _CupertinoDemoTab extends StatelessWidget {
         return const DiaryScreen();
       } else if (title == 'MindFulness') {
         return const MindFulnessScreen();
-      } else if (title == 'Settings') {
-        return const Center(
-          //Cuando creemos la página que irá aquí, que no se nos olvide añadir el
-          //navigationBar: const CupertinoNavigationBar(),
-          child: Text('Page under construction (Settings)'),
-        );
+      } else if (title == 'Report') {
+        return const ReportScreen();
       }
       return const CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(),
