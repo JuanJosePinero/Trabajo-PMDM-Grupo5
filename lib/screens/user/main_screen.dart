@@ -27,7 +27,7 @@ class MainScreen extends StatelessWidget {
       ),
       const _TabInfo(
         'Report',
-        CupertinoIcons.person_crop_circle_fill_badge_checkmark,
+        CupertinoIcons.cloud_upload_fill,
       ),
     ];
 
