@@ -1,4 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:mindcare_app/screens/user/Mindfulness_screen.dart';
+import 'package:mindcare_app/screens/user/diary_screen.dart';
 
 class _TabInfo {
   const _TabInfo(this.title, this.icon);
@@ -14,19 +17,15 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabInfo = [
       const _TabInfo(
-        ('home'),
-        CupertinoIcons.home,
+        'Diary',
+        CupertinoIcons.book_circle,
       ),
       const _TabInfo(
-        ('conversation'),
-        CupertinoIcons.conversation_bubble,
+        'MindFulness',
+        CupertinoIcons.memories_badge_plus,
       ),
       const _TabInfo(
-        ('profile'),
-        CupertinoIcons.profile_circled,
-      ),
-      const _TabInfo(
-        ('settings'),
+        'Settings',
         CupertinoIcons.settings,
       ),
     ];
@@ -70,18 +69,25 @@ class _CupertinoDemoTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(),
-      backgroundColor: CupertinoColors.systemBackground,
-      child: Center(
-        child: Icon(
-          icon,
-          semanticLabel: title,
-          size: 100,
+    {
+      if (title == 'Diary') {
+        return const DiaryScreen();
+      } else if (title == 'MindFulness') {
+        return const MindFulnessScreen();
+      } else if (title == 'Settings') {
+        return const Center(
+          //Cuando creemos la página que irá aquí, que no se nos olvide añadir el
+          //navigationBar: const CupertinoNavigationBar(),
+          child: Text('Page under construction (Settings)'),
+        );
+      }
+      return const CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(),
+        backgroundColor: CupertinoColors.systemBackground,
+        child: Center(
+          child: Text('Page under construction'),
         ),
-      ),
-    );
+      );
+    }
   }
 }
-
-

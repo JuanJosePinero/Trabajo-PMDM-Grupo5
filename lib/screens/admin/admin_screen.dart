@@ -69,7 +69,7 @@ class AdminScreenState extends State<AdminScreen> {
                   });
                 }
 
-                Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+                Navigator.of(context).pop(); 
               }
             },
             child: const Text('Confirmar'),
@@ -80,7 +80,7 @@ class AdminScreenState extends State<AdminScreen> {
   );
 }
 
-  Future<void> toggleAction(UserData user) async {
+Future<void> toggleDeleteAction(UserData user) async {
     final index = users.indexOf(user);
 
     if (index != -1) {
@@ -89,6 +89,19 @@ class AdminScreenState extends State<AdminScreen> {
       if (user.deleted == 0) {
         success = await userService.postDelete(user.id.toString(), token);
       }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => AdminScreen()),
+      );
+    }
+  }
+
+  Future<void> toggleAction(UserData user) async {
+    final index = users.indexOf(user);
+
+    if (index != -1) {
+      String token = await userService.readToken();
+      bool success;
       if (user.actived == 0) {
         success = await userService.postActivate(user.id.toString(), token);
       } else {
@@ -136,7 +149,6 @@ class AdminScreenState extends State<AdminScreen> {
                     key: ValueKey(index),
                     startActionPane: ActionPane(
                       motion: const ScrollMotion(),
-                      dismissible: DismissiblePane(onDismissed: () {}),
                       children: [
                         SlidableAction(
                           backgroundColor: const Color(0xFFFE4A49),
@@ -157,7 +169,7 @@ class AdminScreenState extends State<AdminScreen> {
                                 ),
                               ),
                             );
-                            toggleAction(user);
+                            toggleDeleteAction(user);
                           },
                         ),
                         SlidableAction(
@@ -181,7 +193,7 @@ class AdminScreenState extends State<AdminScreen> {
                                 const Color.fromARGB(255, 255, 165, 80),
                             foregroundColor: Colors.white,
                             icon: Icons.not_interested_outlined,
-                            label: 'Desactivate',
+                            label: 'Deactivate',
                             onPressed: (BuildContext context) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
