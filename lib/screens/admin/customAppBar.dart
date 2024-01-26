@@ -21,7 +21,8 @@ class CustomAppBar {
               const SnackBar(
                 content: Row(
                   children: [
-                    Icon(Icons.info_outline, color: Color.fromARGB(255, 255, 200, 0)),
+                    Icon(Icons.info_outline,
+                        color: Color.fromARGB(255, 255, 200, 0)),
                     SizedBox(width: 8),
                     Text('You dont have notifications'),
                   ],
@@ -31,7 +32,8 @@ class CustomAppBar {
               const SnackBar(
                 content: Row(
                   children: [
-                    Icon(Icons.info_outline, color: Color.fromARGB(255, 255, 200, 0)),
+                    Icon(Icons.info_outline,
+                        color: Color.fromARGB(255, 255, 200, 0)),
                     SizedBox(width: 8),
                     Text("You can't edit your account"),
                   ],
@@ -143,6 +145,44 @@ class CustomAppBar {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(),
       ),
+    );
+  }
+}
+
+class CustomFloatingActionButton extends StatelessWidget {
+  const CustomFloatingActionButton({
+    Key? key,
+    required this.onPressed,
+    required this.tooltip,
+    required this.heroTag,
+    required this.icon,
+    required this.label,
+  }) : super(key: key);
+
+  final VoidCallback onPressed;
+  final String tooltip;
+  final Object? heroTag;
+  final Icon icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        FloatingActionButton(
+          onPressed: onPressed,
+          tooltip: tooltip,
+          heroTag: heroTag,
+          child: icon,
+        ),
+        const SizedBox(height: 1),
+        Text(
+          label,
+          style: const TextStyle(
+              fontSize:
+                  12), // Ajusta el tamaño del texto según tus preferencias
+        ),
+      ],
     );
   }
 }
