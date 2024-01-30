@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/models/ElementModel.dart';
+import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -186,6 +188,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   // Lógica para la acción de "Upload PDF"
+                                  uploadPDF();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.blue,
@@ -206,8 +209,6 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                         ],
                       ),
-
-                      // Agrega aquí el contenido adicional de tu pantalla de informes.
                     ],
                   ),
                 ),
@@ -246,4 +247,93 @@ class _ReportScreenState extends State<ReportScreen> {
       });
     }
   }
+  
+  final elementService = ElementService();
+
+void obtenerElementos() async {
+  try {
+    ElementResponse response = await elementService.getElements();
+    
+    if (response.success == true) {
+      print('Elementos obtenidos correctamente:');
+      response.data?.forEach((element) {
+        print('Nombre: ${element.name}, Fecha: ${element.date}');
+      });
+      uploadPDF();
+    } else {
+      print('Error al obtener elementos: ${response.message}');
+    }
+  } catch (error) {
+    print('Error al obtener elementos: $error');
+  }
+}
+
+List<ElementData> elementsList = [];
+
+void uploadPDF() async {
+  try {
+    // Llamamos a la función para obtener los elementos
+    await elementService.getElements();
+
+    // Limpia la lista antes de agregar elementos filtrados
+    elementsList.clear();
+
+    // Paso 2: Filtrar elementos por tipo 
+    List<ElementData> moodElements = elementService.elements.where((element) => element.type == 'Mood').toList();
+    List<ElementData> eventElements = elementService.elements.where((element) => element.type == 'Event').toList();
+    List<ElementData> emotionElements = elementService.elements.where((element) => element.type == 'Emotion').toList();
+
+    print('Fechas seleccionadas: $startDate - $finalDate');
+
+    // Paso 3: Aplicar filtro por rango de fechas
+    moodElements = moodElements.where((element) {
+      DateTime elementDate = DateTime.parse(element.date!);
+      return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
+    }).toList();
+
+    eventElements = eventElements.where((element) {
+      DateTime elementDate = DateTime.parse(element.date!);
+      return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
+    }).toList();
+
+    emotionElements = emotionElements.where((element) {
+      DateTime elementDate = DateTime.parse(element.date!);
+      return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
+    }).toList();
+
+    // Paso 4: Aplicar filtros de checkboxes
+    if (isMoodsChecked) {
+      elementsList.addAll(moodElements);
+    }
+
+    if (isEventsChecked) {
+      elementsList.addAll(eventElements);
+    }
+
+    if (isEmotionsChecked) {
+      elementsList.addAll(emotionElements);
+    }
+
+    // Paso 5: Mostrar resultados en la consola
+    print('Elementos de tipo "Mood" dentro del rango de fechas seleccionado:');
+    elementsList.forEach((element) {
+      print('Nombre: ${element.name}, Fecha: ${element.date}');
+    });
+
+    print('Elementos de tipo "Event" dentro del rango de fechas seleccionado:');
+    elementsList.forEach((element) {
+      print('Nombre: ${element.name}, Fecha: ${element.date}');
+    });
+
+    print('Elementos de tipo "Emotion" dentro del rango de fechas seleccionado:');
+    elementsList.forEach((element) {
+      print('Nombre: ${element.name}, Fecha: ${element.date}');
+    });
+  } catch (error) {
+    print('Error al obtener elementos: $error');
+  }
+}
+
+
+
 }
