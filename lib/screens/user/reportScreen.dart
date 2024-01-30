@@ -10,12 +10,19 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  DateTime selectedDate = DateTime.now();
+  DateTime startDate = DateTime.now();
+  DateTime finalDate = DateTime.now();
+  bool isMoodsChecked = false;
+  bool isEventsChecked = false;
+  bool isEmotionsChecked = false;
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate =
-        "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
+    String formattedStartDate =
+        "${startDate.year}-${startDate.month}-${startDate.day}";
+
+    String formattedFinalDate =
+        "${finalDate.year}-${finalDate.month}-${finalDate.day}";
 
     return Scaffold(
       appBar: const CupertinoNavigationBar(
@@ -43,7 +50,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              _selectDate(context);
+                              _selectStartDate(context);
                             },
                             child: const Icon(Icons.edit_calendar_outlined),
                           ),
@@ -53,7 +60,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              _selectDate(context);
+                              _selectFinalDate(context);
                             },
                             child: const Icon(Icons.edit_calendar_outlined),
                           ),
@@ -86,7 +93,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             width: 50,
                           ),
                           Text(
-                            formattedDate,
+                            formattedStartDate,
                             style: const TextStyle(fontSize: 16.0),
                           ),
                           const SizedBox(
@@ -94,13 +101,20 @@ class _ReportScreenState extends State<ReportScreen> {
                             width: 50,
                           ),
                           Text(
-                            formattedDate,
+                            formattedFinalDate,
                             style: const TextStyle(fontSize: 16.0),
                           ),
                           const SizedBox(
                             height: 50.0,
                           ),
                         ],
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 1.0,
+                      ),
+                      const SizedBox(
+                        height: 20.0,
                       ),
                       const Row(
                         children: [
@@ -116,67 +130,82 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
                       Column(
-  children: [
-    Row(
-      children: [
-        Checkbox(
-          value: false, // Puedes establecer el valor según tu lógica
-          onChanged: (bool? newValue) {
-            // Aquí puedes manejar la lógica cuando se cambia el estado del checkbox
-          },
-        ),
-        const Text('Emotions'),
-      ],
-    ),
-    Row(
-      children: [
-        Checkbox(
-          value: false, // Puedes establecer el valor según tu lógica
-          onChanged: (bool? newValue) {
-            // Aquí puedes manejar la lógica cuando se cambia el estado del checkbox
-          },
-        ),
-        const Text('Moods'),
-      ],
-    ),
-    Row(
-      children: [
-        Checkbox(
-          value: false, // Puedes establecer el valor según tu lógica
-          onChanged: (bool? newValue) {
-            // Aquí puedes manejar la lógica cuando se cambia el estado del checkbox
-          },
-        ),
-        const Text('Events'),
-      ],
-    ),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            // Lógica para la acción de "Upload PDF"
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
-          ),
-          child: const Text('Upload PDF'),
-        ),
-        const SizedBox(width: 16.0), // Espacio entre botones
-        ElevatedButton(
-          onPressed: () {
-            // Lógica para la acción de "Send PDF"
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.red,
-          ),
-          child: const Text('Send PDF'),
-        ),
-      ],
-    ),
-  ],
-),
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: isEmotionsChecked,
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    isEmotionsChecked = newValue ??
+                                        false;
+                                  });
+                                },
+                              ),
+                              const Text('Emotions'),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: isMoodsChecked,
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    isMoodsChecked = newValue ??
+                                        false;
+                                  });
+                                },
+                              ),
+                              const Text('Moods'),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: isEventsChecked,
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    isEventsChecked = newValue ??
+                                        false;
+                                  });
+                                },
+                              ),
+                              const Text('Events'),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 40.0,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Lógica para la acción de "Upload PDF"
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue,
+                                ),
+                                child: const Text('Upload PDF'),
+                              ),
+                              const SizedBox(width: 16.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Lógica para la acción de "Send PDF"
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.red,
+                                ),
+                                child: const Text('Send PDF'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
 
                       // Agrega aquí el contenido adicional de tu pantalla de informes.
                     ],
@@ -190,16 +219,30 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: startDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != selectedDate) {
+    if (picked != null && picked != startDate) {
       setState(() {
-        selectedDate = picked;
+        startDate = picked;
+      });
+    }
+  }
+
+  Future<void> _selectFinalDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: finalDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != finalDate) {
+      setState(() {
+        finalDate = picked;
       });
     }
   }
