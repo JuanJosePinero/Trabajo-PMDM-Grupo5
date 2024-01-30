@@ -188,7 +188,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   // Lógica para la acción de "Upload PDF"
-                                  uploadPDF();
+                                  // uploadPDF();
+                                  obtenerElementos();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.blue,
@@ -249,17 +250,70 @@ class _ReportScreenState extends State<ReportScreen> {
   }
   
   final elementService = ElementService();
+  List<ElementData> moodElements = [];
+  List<ElementData> eventElements = [];
+  List<ElementData> emotionElements = [];
+  List<ElementData> elementsList = [];
 
 void obtenerElementos() async {
   try {
     ElementResponse response = await elementService.getElements();
     
     if (response.success == true) {
-      print('Elementos obtenidos correctamente:');
+      // print('Elementos obtenidos correctamente:');
       response.data?.forEach((element) {
-        print('Nombre: ${element.name}, Fecha: ${element.date}');
+        // print('Nombre: ${element.name}, Fecha: ${element.date}');
+        
+        if (element.type == 'mood') {
+          moodElements.add(element);
+        } else if (element.type == 'event') {
+          eventElements.add(element);
+        } else if (element.type == 'emotion') {
+          emotionElements.add(element);
+        }
       });
-      uploadPDF();
+
+      // Paso 3: Aplicar filtro por rango de fechas
+  moodElements = moodElements.where((element) {
+    DateTime elementDate = DateTime.parse(element.date!);
+    return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
+  }).toList();
+
+  eventElements = eventElements.where((element) {
+    DateTime elementDate = DateTime.parse(element.date!);
+    return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
+  }).toList();
+
+  emotionElements = emotionElements.where((element) {
+    DateTime elementDate = DateTime.parse(element.date!);
+    return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
+  }).toList();
+
+  // Paso 4: Aplicar filtros de checkboxes
+  if (!isMoodsChecked) {
+    moodElements.clear();
+  }
+
+  if (!isEventsChecked) {
+    eventElements.clear();
+  }
+
+  if (!isEmotionsChecked) {
+    emotionElements.clear();
+  }
+
+  // Combinar los elementos filtrados en una lista
+  elementsList.clear();
+  elementsList.addAll(moodElements);
+  elementsList.addAll(eventElements);
+  elementsList.addAll(emotionElements);
+
+  // Paso 5: Mostrar resultados en la consola
+  print('Elementos filtrados por fechas y checkboxes:');
+  elementsList.forEach((element) {
+    print('Nombre: ${element.name}, Fecha: ${element.date}');
+  });
+
     } else {
       print('Error al obtener elementos: ${response.message}');
     }
@@ -268,72 +322,8 @@ void obtenerElementos() async {
   }
 }
 
-List<ElementData> elementsList = [];
 
-void uploadPDF() async {
-  try {
-    // Llamamos a la función para obtener los elementos
-    await elementService.getElements();
+  void uploadPDF() {
 
-    // Limpia la lista antes de agregar elementos filtrados
-    elementsList.clear();
-
-    // Paso 2: Filtrar elementos por tipo 
-    List<ElementData> moodElements = elementService.elements.where((element) => element.type == 'Mood').toList();
-    List<ElementData> eventElements = elementService.elements.where((element) => element.type == 'Event').toList();
-    List<ElementData> emotionElements = elementService.elements.where((element) => element.type == 'Emotion').toList();
-
-    print('Fechas seleccionadas: $startDate - $finalDate');
-
-    // Paso 3: Aplicar filtro por rango de fechas
-    moodElements = moodElements.where((element) {
-      DateTime elementDate = DateTime.parse(element.date!);
-      return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
-    }).toList();
-
-    eventElements = eventElements.where((element) {
-      DateTime elementDate = DateTime.parse(element.date!);
-      return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
-    }).toList();
-
-    emotionElements = emotionElements.where((element) {
-      DateTime elementDate = DateTime.parse(element.date!);
-      return elementDate.isAfter(startDate) && elementDate.isBefore(finalDate);
-    }).toList();
-
-    // Paso 4: Aplicar filtros de checkboxes
-    if (isMoodsChecked) {
-      elementsList.addAll(moodElements);
-    }
-
-    if (isEventsChecked) {
-      elementsList.addAll(eventElements);
-    }
-
-    if (isEmotionsChecked) {
-      elementsList.addAll(emotionElements);
-    }
-
-    // Paso 5: Mostrar resultados en la consola
-    print('Elementos de tipo "Mood" dentro del rango de fechas seleccionado:');
-    elementsList.forEach((element) {
-      print('Nombre: ${element.name}, Fecha: ${element.date}');
-    });
-
-    print('Elementos de tipo "Event" dentro del rango de fechas seleccionado:');
-    elementsList.forEach((element) {
-      print('Nombre: ${element.name}, Fecha: ${element.date}');
-    });
-
-    print('Elementos de tipo "Emotion" dentro del rango de fechas seleccionado:');
-    elementsList.forEach((element) {
-      print('Nombre: ${element.name}, Fecha: ${element.date}');
-    });
-  } catch (error) {
-    print('Error al obtener elementos: $error');
   }
-}
-
-
-
 }
