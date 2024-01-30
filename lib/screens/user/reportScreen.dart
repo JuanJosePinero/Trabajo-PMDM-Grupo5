@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/models/ElementModel.dart';
+import 'package:mindcare_app/screens/user/pdf.dart';
 import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -187,8 +188,10 @@ class _ReportScreenState extends State<ReportScreen> {
                             children: [
                               ElevatedButton(
                                 onPressed: () async {
-                                  obtenerElementos();
-                                  uploadPDF(elementsList);
+                                  final elementService = ElementService();
+                                  elementService.obtenerElementos(startDate, finalDate, isMoodsChecked, isEventsChecked, isEmotionsChecked);
+                                  final pdfGenerator = PdfGenerator();
+                                  await pdfGenerator.uploadPDF(elementService.elementsList);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.blue,
@@ -248,178 +251,79 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-  final elementService = ElementService();
-  List<ElementData> moodElements = [];
-  List<ElementData> eventElements = [];
-  List<ElementData> emotionElements = [];
-  List<ElementData> elementsList = [];
+  // final elementService = ElementService();
+  // List<ElementData> moodElements = [];
+  // List<ElementData> eventElements = [];
+  // List<ElementData> emotionElements = [];
+  // List<ElementData> elementsList = [];
 
-  void obtenerElementos() async {
-    try {
-      ElementResponse response = await elementService.getElements();
+  // void obtenerElementos() async {
+  //   try {
+  //     ElementResponse response = await elementService.getElements();
 
-      if (response.success == true) {
-        // print('Elementos obtenidos correctamente:');
-        response.data?.forEach((element) {
-          // print('Nombre: ${element.name}, Fecha: ${element.date}');
+  //     if (response.success == true) {
+  //       // print('Elementos obtenidos correctamente:');
+  //       response.data?.forEach((element) {
+  //         // print('Nombre: ${element.name}, Fecha: ${element.date}');
 
-          if (element.type == 'mood') {
-            moodElements.add(element);
-          } else if (element.type == 'event') {
-            eventElements.add(element);
-          } else if (element.type == 'emotion') {
-            emotionElements.add(element);
-          }
-        });
+  //         if (element.type == 'mood') {
+  //           moodElements.add(element);
+  //         } else if (element.type == 'event') {
+  //           eventElements.add(element);
+  //         } else if (element.type == 'emotion') {
+  //           emotionElements.add(element);
+  //         }
+  //       });
 
-        // Paso 3: Aplicar filtro por rango de fechas
-        moodElements = moodElements.where((element) {
-          DateTime elementDate = DateTime.parse(element.date!);
-          return elementDate.isAfter(startDate) &&
-              elementDate.isBefore(finalDate);
-        }).toList();
+  //       // Paso 3: Aplicar filtro por rango de fechas
+  //       moodElements = moodElements.where((element) {
+  //         DateTime elementDate = DateTime.parse(element.date!);
+  //         return elementDate.isAfter(startDate) &&
+  //             elementDate.isBefore(finalDate);
+  //       }).toList();
 
-        eventElements = eventElements.where((element) {
-          DateTime elementDate = DateTime.parse(element.date!);
-          return elementDate.isAfter(startDate) &&
-              elementDate.isBefore(finalDate);
-        }).toList();
+  //       eventElements = eventElements.where((element) {
+  //         DateTime elementDate = DateTime.parse(element.date!);
+  //         return elementDate.isAfter(startDate) &&
+  //             elementDate.isBefore(finalDate);
+  //       }).toList();
 
-        emotionElements = emotionElements.where((element) {
-          DateTime elementDate = DateTime.parse(element.date!);
-          return elementDate.isAfter(startDate) &&
-              elementDate.isBefore(finalDate);
-        }).toList();
+  //       emotionElements = emotionElements.where((element) {
+  //         DateTime elementDate = DateTime.parse(element.date!);
+  //         return elementDate.isAfter(startDate) &&
+  //             elementDate.isBefore(finalDate);
+  //       }).toList();
 
-        // Paso 4: Aplicar filtros de checkboxes
-        if (!isMoodsChecked) {
-          moodElements.clear();
-        }
+  //       // Paso 4: Aplicar filtros de checkboxes
+  //       if (!isMoodsChecked) {
+  //         moodElements.clear();
+  //       }
 
-        if (!isEventsChecked) {
-          eventElements.clear();
-        }
+  //       if (!isEventsChecked) {
+  //         eventElements.clear();
+  //       }
 
-        if (!isEmotionsChecked) {
-          emotionElements.clear();
-        }
+  //       if (!isEmotionsChecked) {
+  //         emotionElements.clear();
+  //       }
 
-        // Combinar los elementos filtrados en una lista
-        elementsList.clear();
-        elementsList.addAll(moodElements);
-        elementsList.addAll(eventElements);
-        elementsList.addAll(emotionElements);
+  //       // Combinar los elementos filtrados en una lista
+  //       elementsList.clear();
+  //       elementsList.addAll(moodElements);
+  //       elementsList.addAll(eventElements);
+  //       elementsList.addAll(emotionElements);
 
-        // Paso 5: Mostrar resultados en la consola
-        print('Elementos filtrados por fechas y checkboxes:');
-        elementsList.forEach((element) {
-          print('Nombre: ${element.name}, Fecha: ${element.date}');
-        });
-      } else {
-        print('Error al obtener elementos: ${response.message}');
-      }
-    } catch (error) {
-      print('Error al obtener elementos: $error');
-    }
-  }
+  //       // Paso 5: Mostrar resultados en la consola
+  //       print('Elementos filtrados por fechas y checkboxes:');
+  //       elementsList.forEach((element) {
+  //         print('Nombre: ${element.name}, Fecha: ${element.date}');
+  //       });
+  //     } else {
+  //       print('Error al obtener elementos: ${response.message}');
+  //     }
+  //   } catch (error) {
+  //     print('Error al obtener elementos: $error');
+  //   }
+  // }
 
-  void uploadPDF(List<ElementData> elements) async {
-    final pdf = pw.Document();
-
-    // Título centrado
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Center(
-          child: pw.Text(
-            // "List of elements from '${element.idUser.name}'",
-            "List of elements from you",
-            style: pw.TextStyle(fontSize: 18),
-          ),
-        ),
-      ),
-    );
-
-// Separación
-    pdf.addPage(
-        pw.Page(build: (pw.Context context) => pw.SizedBox(height: 10)));
-
-// Tabla
-    final tableHeaders = ['Image', 'Description', 'Date'];
-
-    if (elements.any((element) => element.type == 'Event')) {
-      pdf.addPage(pw.Page(build: (pw.Context context) {
-        return pw.Column(
-          children: [
-            pw.Text('Events',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-            _buildTable(tableHeaders,
-                elements.where((element) => element.type == 'Event')),
-          ],
-        );
-      }));
-    }
-
-    if (elements.any(
-        (element) => element.type == 'Mood' || element.type == 'Emotion')) {
-      pdf.addPage(pw.Page(build: (pw.Context context) {
-        return pw.Column(
-          children: [
-            pw.Text('Moods and Emotions',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-            _buildTable(
-                ['Image', 'Name', 'Date'],
-                elements.where((element) =>
-                    element.type == 'Mood' || element.type == 'Emotion')),
-          ],
-        );
-      }));
-    }
-
-    // Guardar el PDF en la carpeta de descargas del dispositivo
-    final downloadsDirectory = await getDownloadsDirectory();
-    if (downloadsDirectory != null) {
-      final file = File("${downloadsDirectory.path}/prueba2.pdf");
-      await file.writeAsBytes(await pdf.save());
-      print('PDF guardado en: ${file.path}');
-    } else {
-      print('No se pudo obtener el directorio de descargas.');
-    }
-
-    // Guardar el PDF en la carpeta lib/pdf del proyecto
-    final appDirectory = await getApplicationDocumentsDirectory();
-    final pdfFile = File("${appDirectory.path}/pdf/prueba.pdf");
-    await pdfFile.writeAsBytes(await pdf.save());
-    print('PDF guardado en: ${pdfFile.path}');
-  }
-
-  pw.Widget _buildTable(List<String> headers, Iterable<ElementData> elements) {
-    final List<pw.TableRow> tableRows = [];
-
-    // Headers
-    final headerRow = headers
-        .map((header) => pw.Text(header,
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)))
-        .toList();
-    tableRows.add(pw.TableRow(children: headerRow));
-
-    // Rows
-    for (final element in elements) {
-      final image = element.image != null
-          ? pw.Image(pw.MemoryImage(File(element.image!).readAsBytesSync()),
-              width: 50, height: 50)
-          : pw.Text('');
-      final description = pw.Text(element.type == 'Event'
-          ? element.description ?? ''
-          : element.name ?? '');
-      final date = pw.Text(element.date ?? '');
-
-      final rowData = [image, description, date];
-      tableRows.add(pw.TableRow(children: rowData));
-    }
-
-    return pw.Table(
-      border: pw.TableBorder.all(),
-      children: tableRows,
-    );
-  }
 }
