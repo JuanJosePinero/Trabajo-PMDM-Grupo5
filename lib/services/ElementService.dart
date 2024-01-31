@@ -187,15 +187,11 @@ class ElementService extends ChangeNotifier {
   List<ElementData> emotionElements = [];
   List<ElementData> elementsList = [];
 
-  void obtenerElementos(DateTime startDate, DateTime finalDate, bool isMoodsChecked, bool isEventsChecked, bool isEmotionsChecked) async {
+  Future<void> obtenerElementos(DateTime startDate, DateTime endDate, bool isMoodsChecked, bool isEventsChecked, bool isEmotionsChecked) async {
     try {
       ElementResponse response = await getElements();
-
       if (response.success == true) {
-        // print('Elementos obtenidos correctamente:');
         response.data?.forEach((element) {
-          // print('Nombre: ${element.name}, Fecha: ${element.date}');
-
           if (element.type == 'mood') {
             moodElements.add(element);
           } else if (element.type == 'event') {
@@ -205,50 +201,25 @@ class ElementService extends ChangeNotifier {
           }
         });
 
-        moodElements = moodElements.where((element) {
-          DateTime elementDate = DateTime.parse(element.date!);
-          return elementDate.isAfter(startDate) &&
-              elementDate.isBefore(finalDate);
-        }).toList();
-
-        eventElements = eventElements.where((element) {
-          DateTime elementDate = DateTime.parse(element.date!);
-          return elementDate.isAfter(startDate) &&
-              elementDate.isBefore(finalDate);
-        }).toList();
-
-        emotionElements = emotionElements.where((element) {
-          DateTime elementDate = DateTime.parse(element.date!);
-          return elementDate.isAfter(startDate) &&
-              elementDate.isBefore(finalDate);
-        }).toList();
-
-        if (!isMoodsChecked) {
-          moodElements.clear();
-        }
-
-        if (!isEventsChecked) {
-          eventElements.clear();
-        }
-
-        if (!isEmotionsChecked) {
-          emotionElements.clear();
-        }
+        // Filtros por fecha y tipo
+        moodElements = moodElements.where((element) => isElementInDateRange(element, startDate, endDate) && isMoodsChecked).toList();
+        eventElements = eventElements.where((element) => isElementInDateRange(element, startDate, endDate) && isEventsChecked).toList();
+        emotionElements = emotionElements.where((element) => isElementInDateRange(element, startDate, endDate) && isEmotionsChecked).toList();
 
         elementsList.clear();
         elementsList.addAll(moodElements);
         elementsList.addAll(eventElements);
         elementsList.addAll(emotionElements);
-
-        print('Elementos filtrados por fechas y checkboxes:');
-        elementsList.forEach((element) {
-          print('Nombre: ${element.name}, Fecha: ${element.date}');
-        });
       } else {
         print('Error al obtener elementos: ${response.message}');
       }
     } catch (error) {
       print('Error al obtener elementos: $error');
     }
+  }
+
+  bool isElementInDateRange(ElementData element, DateTime startDate, DateTime endDate) {
+    DateTime elementDate = DateTime.parse(element.date!);
+    return elementDate.isAfter(startDate) && elementDate.isBefore(endDate);
   }
 }

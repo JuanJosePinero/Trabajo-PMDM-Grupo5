@@ -189,9 +189,21 @@ class _ReportScreenState extends State<ReportScreen> {
                               ElevatedButton(
                                 onPressed: () async {
                                   final elementService = ElementService();
-                                  elementService.obtenerElementos(startDate, finalDate, isMoodsChecked, isEventsChecked, isEmotionsChecked);
+                                  await elementService.obtenerElementos(
+                                      startDate,
+                                      finalDate,
+                                      isMoodsChecked,
+                                      isEventsChecked,
+                                      isEmotionsChecked);
+
+                                  // Ahora elementsList debería estar lleno con los elementos filtrados
+                                  print(
+                                      'Elementos filtrados: ${elementService.elementsList.length}');
+
                                   final pdfGenerator = PdfGenerator();
-                                  await pdfGenerator.uploadPDF(elementService.elementsList);
+                                  pdfGenerator.printElementsList(elementService.elementsList);
+                                  await pdfGenerator
+                                      .uploadPDF(elementService.elementsList);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.blue,
@@ -325,5 +337,4 @@ class _ReportScreenState extends State<ReportScreen> {
   //     print('Error al obtener elementos: $error');
   //   }
   // }
-
 }
