@@ -96,7 +96,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         children: [
                           const SizedBox(
                             height: 35.0,
-                            width: 50,
+                            width: 45,
                           ),
                           Text(
                             formattedStartDate,
@@ -104,7 +104,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                           const SizedBox(
                             height: 8.0,
-                            width: 50,
+                            width: 35,
                           ),
                           Text(
                             formattedFinalDate,
@@ -203,10 +203,40 @@ class _ReportScreenState extends State<ReportScreen> {
                                   // Verificar si el usuario ingresó un nombre de archivo
                                   if (fileName != null && fileName.isNotEmpty) {
                                     final pdfGenerator = PdfGenerator();
-                                    await pdfGenerator.uploadPDF(
-                                        elementService.elementsList, fileName);
-                                  } else {
-                                    print('No se ingresó un nombre de archivo');
+                                    if (elementService
+                                        .elementsList.isNotEmpty) {
+                                      try {
+                                        await pdfGenerator.uploadPDF(
+                                            elementService.elementsList,
+                                            fileName);
+                                        // Mostrar Snackbar de éxito
+                                        showSnackbarUploadPDF(
+                                            context,
+                                            "Pdf saved successfully!",
+                                            Icons.check_circle,
+                                            Colors.green);
+                                      } catch (e) {
+                                        // Mostrar Snackbar de error en caso de excepción
+                                        showSnackbarUploadPDF(
+                                            context,
+                                            "Error saving pdf: $e",
+                                            Icons.error,
+                                            Colors.red);
+                                      }
+                                    } else {
+                                      showSnackbarNoElements(
+                                            context,
+                                            "Error. There aren't elements between this dates",
+                                            Icons.error,
+                                            Colors.red);
+                                    }
+                                  }else {
+                                    showSnackbarUploadPDF(
+                                          context,
+                                          "Error saving pdf: No file name provided",
+                                          Icons.error,
+                                          Colors.red);
+                                    
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -279,7 +309,7 @@ class _ReportScreenState extends State<ReportScreen> {
             onChanged: (value) {
               fileName = value;
             },
-            decoration: InputDecoration(hintText: "Enter file name"),
+            decoration: const InputDecoration(hintText: "Enter file name"),
           ),
           actions: <Widget>[
             ElevatedButton(
@@ -293,4 +323,37 @@ class _ReportScreenState extends State<ReportScreen> {
       },
     );
   }
+
+  void showSnackbarUploadPDF(
+      BuildContext context, String message, IconData icon, Color color) {
+    final snackBar = SnackBar(
+      content: Row(
+        children: <Widget>[
+          Icon(icon, color: color),
+          const SizedBox(width: 8),
+          Text(message),
+        ],
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showSnackbarNoElements(BuildContext context, String message, IconData icon, Color color) {
+  final snackBar = SnackBar(
+    content: Row(
+      children: <Widget>[
+        Icon(icon, color: color),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            message,
+            softWrap: true,
+          ),
+        ),
+      ],
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+
 }
