@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mindcare_app/models/ElementModel.dart';
@@ -206,9 +208,9 @@ class _ReportScreenState extends State<ReportScreen> {
                                     if (elementService
                                         .elementsList.isNotEmpty) {
                                       try {
-                                        await pdfGenerator.uploadPDF(
-                                            elementService.elementsList,
-                                            fileName);
+                                        List<Uint8List?> imageDatas = await pdfGenerator.loadImagesForElements(elementService.elementsList);
+          // Llamar a uploadPDF con los elementos y sus imágenes
+          await pdfGenerator.uploadPDF(elementService.elementsList, imageDatas, fileName);
                                         // Mostrar Snackbar de éxito
                                         showSnackbarUploadPDF(
                                             context,
