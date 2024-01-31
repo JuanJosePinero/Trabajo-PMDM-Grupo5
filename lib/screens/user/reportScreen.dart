@@ -196,14 +196,18 @@ class _ReportScreenState extends State<ReportScreen> {
                                       isEventsChecked,
                                       isEmotionsChecked);
 
-                                  // Ahora elementsList debería estar lleno con los elementos filtrados
-                                  print(
-                                      'Elementos filtrados: ${elementService.elementsList.length}');
+                                  // Obtener el nombre del archivo del usuario
+                                  String? fileName =
+                                      await showFileNameDialog(context);
 
-                                  final pdfGenerator = PdfGenerator();
-                                  pdfGenerator.printElementsList(elementService.elementsList);
-                                  await pdfGenerator
-                                      .uploadPDF(elementService.elementsList);
+                                  // Verificar si el usuario ingresó un nombre de archivo
+                                  if (fileName != null && fileName.isNotEmpty) {
+                                    final pdfGenerator = PdfGenerator();
+                                    await pdfGenerator.uploadPDF(
+                                        elementService.elementsList, fileName);
+                                  } else {
+                                    print('No se ingresó un nombre de archivo');
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.blue,
@@ -263,78 +267,30 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-  // final elementService = ElementService();
-  // List<ElementData> moodElements = [];
-  // List<ElementData> eventElements = [];
-  // List<ElementData> emotionElements = [];
-  // List<ElementData> elementsList = [];
+  Future<String?> showFileNameDialog(BuildContext context) async {
+    String? fileName;
 
-  // void obtenerElementos() async {
-  //   try {
-  //     ElementResponse response = await elementService.getElements();
-
-  //     if (response.success == true) {
-  //       // print('Elementos obtenidos correctamente:');
-  //       response.data?.forEach((element) {
-  //         // print('Nombre: ${element.name}, Fecha: ${element.date}');
-
-  //         if (element.type == 'mood') {
-  //           moodElements.add(element);
-  //         } else if (element.type == 'event') {
-  //           eventElements.add(element);
-  //         } else if (element.type == 'emotion') {
-  //           emotionElements.add(element);
-  //         }
-  //       });
-
-  //       // Paso 3: Aplicar filtro por rango de fechas
-  //       moodElements = moodElements.where((element) {
-  //         DateTime elementDate = DateTime.parse(element.date!);
-  //         return elementDate.isAfter(startDate) &&
-  //             elementDate.isBefore(finalDate);
-  //       }).toList();
-
-  //       eventElements = eventElements.where((element) {
-  //         DateTime elementDate = DateTime.parse(element.date!);
-  //         return elementDate.isAfter(startDate) &&
-  //             elementDate.isBefore(finalDate);
-  //       }).toList();
-
-  //       emotionElements = emotionElements.where((element) {
-  //         DateTime elementDate = DateTime.parse(element.date!);
-  //         return elementDate.isAfter(startDate) &&
-  //             elementDate.isBefore(finalDate);
-  //       }).toList();
-
-  //       // Paso 4: Aplicar filtros de checkboxes
-  //       if (!isMoodsChecked) {
-  //         moodElements.clear();
-  //       }
-
-  //       if (!isEventsChecked) {
-  //         eventElements.clear();
-  //       }
-
-  //       if (!isEmotionsChecked) {
-  //         emotionElements.clear();
-  //       }
-
-  //       // Combinar los elementos filtrados en una lista
-  //       elementsList.clear();
-  //       elementsList.addAll(moodElements);
-  //       elementsList.addAll(eventElements);
-  //       elementsList.addAll(emotionElements);
-
-  //       // Paso 5: Mostrar resultados en la consola
-  //       print('Elementos filtrados por fechas y checkboxes:');
-  //       elementsList.forEach((element) {
-  //         print('Nombre: ${element.name}, Fecha: ${element.date}');
-  //       });
-  //     } else {
-  //       print('Error al obtener elementos: ${response.message}');
-  //     }
-  //   } catch (error) {
-  //     print('Error al obtener elementos: $error');
-  //   }
-  // }
+    return await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Write the file name'),
+          content: TextField(
+            onChanged: (value) {
+              fileName = value;
+            },
+            decoration: InputDecoration(hintText: "Enter file name"),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(fileName);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

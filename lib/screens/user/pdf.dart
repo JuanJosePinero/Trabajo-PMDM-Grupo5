@@ -13,7 +13,7 @@ class PdfGenerator {
     print('-----------------------------------');
   }
 }
-  Future<void> uploadPDF(List<ElementData> elements) async {
+  Future<void> uploadPDF(List<ElementData> elements, String fileName) async {
     final pdf = pw.Document();
 
     // Añadir una nueva página con el encabezado y los elementos
@@ -39,13 +39,13 @@ class PdfGenerator {
 
     // Guardar el PDF
     final downloadsDirectory = await getDownloadsDirectory();
-    final file = File("${downloadsDirectory?.path}/elements.pdf");
+    final file = File("${downloadsDirectory?.path}/$fileName.pdf");
     await file.writeAsBytes(await pdf.save());
     print('PDF guardado en: ${file.path}');
 
     // También guardar en la carpeta de documentos de la aplicación
     final appDirectory = await getApplicationDocumentsDirectory();
-    final pdfFile = File("${appDirectory.path}/pdf/elements.pdf");
+    final pdfFile = File("${appDirectory.path}/pdf/$fileName.pdf");
     await pdfFile.writeAsBytes(await pdf.save());
     print('PDF guardado en: ${pdfFile.path}');
   }
