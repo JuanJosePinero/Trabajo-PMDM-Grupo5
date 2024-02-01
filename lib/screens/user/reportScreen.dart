@@ -208,9 +208,16 @@ class _ReportScreenState extends State<ReportScreen> {
                                     if (elementService
                                         .elementsList.isNotEmpty) {
                                       try {
-                                        List<Uint8List?> imageDatas = await pdfGenerator.loadImagesForElements(elementService.elementsList);
-          // Llamar a uploadPDF con los elementos y sus imágenes
-          await pdfGenerator.uploadPDF(elementService.elementsList, imageDatas, fileName);
+                                        List<Uint8List?> imageDatas =
+                                            await pdfGenerator
+                                                .loadImagesForElements(
+                                                    elementService
+                                                        .elementsList);
+                                        // Llamar a uploadPDF con los elementos y sus imágenes
+                                        await pdfGenerator.uploadPDF(
+                                            elementService.elementsList,
+                                            imageDatas,
+                                            fileName);
                                         // Mostrar Snackbar de éxito
                                         showSnackbarUploadPDF(
                                             context,
@@ -227,18 +234,17 @@ class _ReportScreenState extends State<ReportScreen> {
                                       }
                                     } else {
                                       showSnackbarNoElements(
-                                            context,
-                                            "Error. There aren't elements between this dates",
-                                            Icons.error,
-                                            Colors.red);
-                                    }
-                                  }else {
-                                    showSnackbarUploadPDF(
                                           context,
-                                          "Error saving pdf: No file name provided",
+                                          "Error. There aren't elements between this dates",
                                           Icons.error,
                                           Colors.red);
-                                    
+                                    }
+                                  } else {
+                                    showSnackbarUploadPDF(
+                                        context,
+                                        "Error saving pdf: No file name provided",
+                                        Icons.error,
+                                        Colors.red);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -340,22 +346,22 @@ class _ReportScreenState extends State<ReportScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void showSnackbarNoElements(BuildContext context, String message, IconData icon, Color color) {
-  final snackBar = SnackBar(
-    content: Row(
-      children: <Widget>[
-        Icon(icon, color: color),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            message,
-            softWrap: true,
+  void showSnackbarNoElements(
+      BuildContext context, String message, IconData icon, Color color) {
+    final snackBar = SnackBar(
+      content: Row(
+        children: <Widget>[
+          Icon(icon, color: color),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              message,
+              softWrap: true,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
-
+        ],
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }

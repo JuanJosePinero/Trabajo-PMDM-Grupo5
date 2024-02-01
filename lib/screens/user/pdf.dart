@@ -26,7 +26,7 @@ class PdfGenerator {
         child: pw.Center(
           child: pw.Text(
             "List of Elements",
-            style: pw.TextStyle(fontSize: 18),
+            style: const pw.TextStyle(fontSize: 18),
           ),
         ),
       ),
@@ -53,18 +53,19 @@ class PdfGenerator {
 
   pw.Widget _buildElementDetails(ElementData element, Uint8List? imageData) {
   return pw.Row(
-    crossAxisAlignment: pw.CrossAxisAlignment.start,
+    crossAxisAlignment: pw.CrossAxisAlignment.center,
     children: [
       if (imageData != null)
-        pw.Image(pw.MemoryImage(imageData), width: 50, height: 50),
+        pw.Image(pw.MemoryImage(imageData), width: 80, height: 80),
       pw.SizedBox(width: 8),
       pw.Expanded(
         child: pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
+          mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
-            pw.Text('Name: ${element.name ?? 'N/A'}', style: pw.TextStyle(fontSize: 12)),
-            pw.Text('Date: ${element.date ?? 'N/A'}', style: pw.TextStyle(fontSize: 12)),
-            pw.Text('Description: ${element.description ?? 'N/A'}', style: pw.TextStyle(fontSize: 12)),
+            pw.Text('Name: ${element.name ?? 'N/A'}', style: const pw.TextStyle(fontSize: 12)),
+            pw.Text('Date: ${element.date ?? 'N/A'}', style: const pw.TextStyle(fontSize: 12)),
+            pw.Text('Description: ${element.description ?? 'N/A'}', style: const pw.TextStyle(fontSize: 12)),
           ],
         ),
       ),
