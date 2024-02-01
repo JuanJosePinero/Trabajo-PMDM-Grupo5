@@ -18,7 +18,8 @@ class PdfGenerator {
   Future<void> uploadPDF(List<ElementData> elements, List<Uint8List?> imageDatas, String fileName) async {
   final pdf = pw.Document();
 
-  pdf.addPage(pw.MultiPage(
+  pdf.addPage(
+  pw.MultiPage(
     pageFormat: PdfPageFormat.a4,
     build: (pw.Context context) => [
       pw.Header(
@@ -32,12 +33,18 @@ class PdfGenerator {
       ),
       pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: List.generate(elements.length, (index) {
-          return _buildElementDetails(elements[index], imageDatas[index]);
+        children: List.generate(elements.length * 2 - 1, (index) {
+          if (index % 2 == 0) {
+            return _buildElementDetails(elements[index ~/ 2], imageDatas[index ~/ 2]);
+          } else {
+            return pw.Divider();
+          }
         }),
       ),
     ],
-  ));
+  )
+);
+
 
     // Guardar el PDF
     final downloadsDirectory = await getDownloadsDirectory();
