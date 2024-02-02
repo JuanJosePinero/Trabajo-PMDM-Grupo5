@@ -275,36 +275,87 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
                               const SizedBox(width: 16.0),
                               ElevatedButton(
-   onPressed: () async {
-    final elementService = ElementService();
-    await elementService.obtenerElementos(startDate, finalDate, isMoodsChecked, isEventsChecked, isEmotionsChecked);
-    String? fileName = await showFileNameDialog(context);
+                                onPressed: () async {
+                                  final elementService = ElementService();
+                                  await elementService.obtenerElementos(
+                                      startDate,
+                                      finalDate,
+                                      isMoodsChecked,
+                                      isEventsChecked,
+                                      isEmotionsChecked);
+                                  String? fileName =
+                                      await showFileNameDialog(context);
 
-    if (fileName != null && fileName.isNotEmpty && elementService.elementsList.isNotEmpty) {
-      final pdfGenerator = PdfGenerator();
+                                  if (fileName != null &&
+                                      fileName.isNotEmpty &&
+                                      elementService.elementsList.isNotEmpty) {
+                                    final pdfGenerator = PdfGenerator();
 
-      try {
-        List<Uint8List?> imageDatas = await pdfGenerator.loadImagesForElements(elementService.elementsList);
-        
-        String recipientEmail = UserService.userEmail;
-        print(recipientEmail);
-        
-        await pdfGenerator.sendPDF(elementService.elementsList, imageDatas, fileName, recipientEmail);
-        
-        showSnackbarUploadPDF(context, "PDF enviado exitosamente!", Icons.check_circle, Colors.green);
-      } catch (e) {
-        showSnackbarUploadPDF(context, "Error enviando el PDF: $e", Icons.error, Colors.red);
-      }
-    } else {
-      showSnackbarUploadPDF(context, "Error: Datos insuficientes para generar o enviar el PDF.", Icons.error, Colors.red);
-    }
-  },
-  style: ElevatedButton.styleFrom(
-    primary: Colors.red,
-  ),
-  child: const Text('Send PDF'),
-),
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("Sending..."),
+                                            CircularProgressIndicator(
+                                                color: Colors.white),
+                                          ],
+                                        ),
+                                        duration: Duration(hours: 1),
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                    );
 
+                                    try {
+                                      List<Uint8List?> imageDatas =
+                                          await pdfGenerator
+                                              .loadImagesForElements(
+                                                  elementService.elementsList);
+
+                                      String recipientEmail =
+                                          UserService.userEmail;
+                                      print(recipientEmail);
+
+                                      await pdfGenerator.sendPDF(
+                                          elementService.elementsList,
+                                          imageDatas,
+                                          fileName,
+                                          recipientEmail,
+                                          startDate,
+                                          finalDate);
+
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+
+                                      showSnackbarUploadPDF(
+                                          context,
+                                          "PDF send succesfully!",
+                                          Icons.check_circle,
+                                          Colors.green);
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+
+                                      showSnackbarUploadPDF(
+                                          context,
+                                          "Error sending PDF: $e",
+                                          Icons.error,
+                                          Colors.red);
+                                    }
+                                  } else {
+                                    showSnackbarUploadPDF(
+                                        context,
+                                        "Error: No data available.",
+                                        Icons.error,
+                                        Colors.red);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.red,
+                                ),
+                                child: const Text('Send PDF'),
+                              ),
                             ],
                           ),
                         ],

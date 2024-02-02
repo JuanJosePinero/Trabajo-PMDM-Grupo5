@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:intl/intl.dart';
 
 class PdfGenerator {
   void printElementsList(List<ElementData> elements) {
@@ -115,12 +116,9 @@ class PdfGenerator {
     return imageDatas;
   }
 
-
-//--------------------
-Future<void> sendPDF(List<ElementData> elements, List<Uint8List?> imageDatas, String fileName, String recipientEmail) async {
+Future<void> sendPDF(List<ElementData> elements, List<Uint8List?> imageDatas, String fileName, String recipientEmail, DateTime startDate, DateTime endDate) async {
   final pdf = pw.Document();
   
-  // Construye tu documento PDF aquí...
   pdf.addPage(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) => [
@@ -149,30 +147,30 @@ Future<void> sendPDF(List<ElementData> elements, List<Uint8List?> imageDatas, St
 
   final bytes = await pdf.save();
 
-  // Guardar temporalmente
   final tempDir = await getTemporaryDirectory();
   final tempFile = File('${tempDir.path}/$fileName.pdf');
   await tempFile.writeAsBytes(bytes);
 
-  // Utiliza tus credenciales de SMTP
   String username = 'raul.reyes@allsites.es';
-  String password = 'wOvVm2296,@:'; // Considera utilizar variables de entorno o mecanismos seguros para almacenar contraseñas
+  String password = 'wOvVm2296,@:'; 
 
-  // Configura el servidor SMTP con tus propios detalles
   final smtpServer = SmtpServer('allsites-es.correoseguro.dinaserver.com',
       port: 465,
       username: username,
       password: password,
-      ssl: true, // MAIL_ENCRYPTION=ssl implica el uso de SSL
-      ignoreBadCertificate: true // Esto puede ser necesario si el certificado no es reconocido automáticamente
+      ssl: true,
+      ignoreBadCertificate: true
   );
 
-  // Crea el mensaje
+  final dateFormat = DateFormat('dd/MM/yyyy');
+  final formattedStartDate = dateFormat.format(startDate);
+  final formattedEndDate = dateFormat.format(endDate);
+
   final message = Message()
-    ..from = Address(username, "MindCare App") // MAIL_FROM_NAME
+    ..from = Address(username, "MindCare App")
     ..recipients.add(recipientEmail)
-    ..subject = 'Tu PDF: $fileName :: ${DateTime.now()}'
-    ..text = 'Aquí está el archivo PDF que solicitaste.'
+    ..subject = 'MindCare App. PDF: $fileName.pdf'
+    ..text = 'Here you have the elements generated between ${formattedStartDate} and ${formattedEndDate}.'
     ..attachments.add(FileAttachment(tempFile));
 
   try {
@@ -185,7 +183,6 @@ Future<void> sendPDF(List<ElementData> elements, List<Uint8List?> imageDatas, St
     }
   }
 
-  // Opcional: Eliminar el archivo después de enviarlo
   await tempFile.delete();
 }
 
