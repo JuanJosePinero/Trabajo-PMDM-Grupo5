@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mindcare_app/models/ElementModel.dart';
 import 'package:mindcare_app/screens/user/pdf.dart';
 import 'package:mindcare_app/services/ElementService.dart';
+import 'package:mindcare_app/services/UserService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
@@ -198,34 +199,54 @@ class _ReportScreenState extends State<ReportScreen> {
                                       isEventsChecked,
                                       isEmotionsChecked);
 
-                                  // Obtener el nombre del archivo del usuario
                                   String? fileName =
                                       await showFileNameDialog(context);
 
-                                  // Verificar si el usuario ingresó un nombre de archivo
                                   if (fileName != null && fileName.isNotEmpty) {
                                     final pdfGenerator = PdfGenerator();
                                     if (elementService
                                         .elementsList.isNotEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text("Saving..."),
+                                              CircularProgressIndicator(
+                                                  color: Colors.white),
+                                            ],
+                                          ),
+                                          duration: Duration(hours: 1),
+                                          backgroundColor: Colors.blue,
+                                        ),
+                                      );
+
                                       try {
                                         List<Uint8List?> imageDatas =
                                             await pdfGenerator
                                                 .loadImagesForElements(
                                                     elementService
                                                         .elementsList);
-                                        // Llamar a uploadPDF con los elementos y sus imágenes
+
                                         await pdfGenerator.uploadPDF(
                                             elementService.elementsList,
                                             imageDatas,
                                             fileName);
-                                        // Mostrar Snackbar de éxito
+
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+
                                         showSnackbarUploadPDF(
                                             context,
                                             "Pdf saved successfully!",
                                             Icons.check_circle,
                                             Colors.green);
                                       } catch (e) {
-                                        // Mostrar Snackbar de error en caso de excepción
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+
                                         showSnackbarUploadPDF(
                                             context,
                                             "Error saving pdf: $e",
@@ -235,7 +256,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                     } else {
                                       showSnackbarNoElements(
                                           context,
-                                          "Error. There aren't elements between this dates",
+                                          "Error. There aren't elements between these dates",
                                           Icons.error,
                                           Colors.red);
                                     }
@@ -254,14 +275,36 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
                               const SizedBox(width: 16.0),
                               ElevatedButton(
-                                onPressed: () {
-                                  // Lógica para la acción de "Send PDF"
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.red,
-                                ),
-                                child: const Text('Send PDF'),
-                              ),
+   onPressed: () async {
+    final elementService = ElementService();
+    await elementService.obtenerElementos(startDate, finalDate, isMoodsChecked, isEventsChecked, isEmotionsChecked);
+    String? fileName = await showFileNameDialog(context);
+
+    if (fileName != null && fileName.isNotEmpty && elementService.elementsList.isNotEmpty) {
+      final pdfGenerator = PdfGenerator();
+
+      try {
+        List<Uint8List?> imageDatas = await pdfGenerator.loadImagesForElements(elementService.elementsList);
+        
+        String recipientEmail = UserService.userEmail;
+        print(recipientEmail);
+        
+        await pdfGenerator.sendPDF(elementService.elementsList, imageDatas, fileName, recipientEmail);
+        
+        showSnackbarUploadPDF(context, "PDF enviado exitosamente!", Icons.check_circle, Colors.green);
+      } catch (e) {
+        showSnackbarUploadPDF(context, "Error enviando el PDF: $e", Icons.error, Colors.red);
+      }
+    } else {
+      showSnackbarUploadPDF(context, "Error: Datos insuficientes para generar o enviar el PDF.", Icons.error, Colors.red);
+    }
+  },
+  style: ElevatedButton.styleFrom(
+    primary: Colors.red,
+  ),
+  child: const Text('Send PDF'),
+),
+
                             ],
                           ),
                         ],
@@ -363,5 +406,23 @@ class _ReportScreenState extends State<ReportScreen> {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showLoadingSnackbar(
+      BuildContext context, String message, IconData icon, Color color) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(message),
+              Icon(icon, color: color),
+            ],
+          ),
+          backgroundColor: Colors.blue,
+        ),
+      );
   }
 }
