@@ -179,4 +179,47 @@ class ElementService extends ChangeNotifier {
     final String formattedDate = "${now.day}/${now.month}/${now.year}";
     return formattedDate;
   }
+
+  // Report Screen -----------------------------------------------------------------------------------------------------------------------------
+
+  List<ElementData> moodElements = [];
+  List<ElementData> eventElements = [];
+  List<ElementData> emotionElements = [];
+  List<ElementData> elementsList = [];
+
+  Future<void> obtenerElementos(DateTime startDate, DateTime endDate, bool isMoodsChecked, bool isEventsChecked, bool isEmotionsChecked) async {
+    try {
+      ElementResponse response = await getElements();
+      if (response.success == true) {
+        response.data?.forEach((element) {
+          if (element.type == 'mood') {
+            moodElements.add(element);
+          } else if (element.type == 'event') {
+            eventElements.add(element);
+          } else if (element.type == 'emotion') {
+            emotionElements.add(element);
+          }
+        });
+
+        // Filtros por fecha y tipo
+        moodElements = moodElements.where((element) => isElementInDateRange(element, startDate, endDate) && isMoodsChecked).toList();
+        eventElements = eventElements.where((element) => isElementInDateRange(element, startDate, endDate) && isEventsChecked).toList();
+        emotionElements = emotionElements.where((element) => isElementInDateRange(element, startDate, endDate) && isEmotionsChecked).toList();
+
+        elementsList.clear();
+        elementsList.addAll(moodElements);
+        elementsList.addAll(eventElements);
+        elementsList.addAll(emotionElements);
+      } else {
+        print('Error al obtener elementos: ${response.message}');
+      }
+    } catch (error) {
+      print('Error al obtener elementos: $error');
+    }
+  }
+
+  bool isElementInDateRange(ElementData element, DateTime startDate, DateTime endDate) {
+    DateTime elementDate = DateTime.parse(element.date!);
+    return elementDate.isAfter(startDate) && elementDate.isBefore(endDate);
+  }
 }
