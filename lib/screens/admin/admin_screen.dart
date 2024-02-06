@@ -126,7 +126,7 @@ Future<void> toggleDeleteAction(UserData user) async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar().adminAppBar(),
+      appBar: CustomAppBar().adminAppBar(context),
       body: Container(
         decoration: BoxDecoration(
           gradient: ThemeColors.getGradient(),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mindcare_app/screens/admin/graph.dart';
 
 class CustomAppBar {
-  AppBar adminAppBar() {
+  AppBar adminAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.deepPurple,
       centerTitle: true,
@@ -14,50 +15,13 @@ class CustomAppBar {
         borderRadius: BorderRadius.vertical(),
       ),
       actions: [
-        PopupMenuButton<String>(
-          onSelected: (value) {
-            // Aquí puedes manejar las acciones correspondientes
-            if (value == 'notidications') {
-              const SnackBar(
-                content: Row(
-                  children: [
-                    Icon(Icons.info_outline,
-                        color: Color.fromARGB(255, 255, 200, 0)),
-                    SizedBox(width: 8),
-                    Text('You dont have notifications'),
-                  ],
-                ),
-              );
-            } else if (value == 'edit_profile') {
-              const SnackBar(
-                content: Row(
-                  children: [
-                    Icon(Icons.info_outline,
-                        color: Color.fromARGB(255, 255, 200, 0)),
-                    SizedBox(width: 8),
-                    Text("You can't edit your account"),
-                  ],
-                ),
-              );
-            }
-          },
-          itemBuilder: (BuildContext context) {
-            return <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'notifications',
-                child: ListTile(
-                  leading: Icon(Icons.notifications),
-                  title: Text('Notidications'),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'edit_profile',
-                child: ListTile(
-                  leading: Icon(Icons.edit),
-                  title: Text('Edit Porfile'),
-                ),
-              ),
-            ];
+        IconButton(
+          icon: Icon(Icons.auto_graph_outlined),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Graph()),
+            );
           },
         ),
       ],
