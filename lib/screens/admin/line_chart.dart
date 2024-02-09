@@ -23,7 +23,7 @@ class CustomLineChart extends StatelessWidget {
           bottomTitles: SideTitles(
             showTitles: true,
             getTitles: (value) {
-              return DateFormat.MMM().format(DateTime.fromMillisecondsSinceEpoch(value.toInt()));
+              return DateFormat.MMM().format(DateTime.fromMillisecondsSinceEpoch(value.toInt().toInt()));
             },
           ),
           leftTitles: SideTitles(showTitles: true),

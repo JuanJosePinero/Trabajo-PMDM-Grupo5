@@ -225,22 +225,6 @@ class ElementService extends ChangeNotifier {
 
 
   // --------------------------------------------------------------------------------------------------------------------------------------
-//   Future<void> countElementTypes(DateTime startDate, DateTime endDate) async {
-//   moodCount = await countElementsOfType('mood', startDate, endDate);
-//   emotionCount = await countElementsOfType('emotion', startDate, endDate);
-//   eventCount = await countElementsOfType('event', startDate, endDate);
-// }
-
-  Future<int> countElementsOfType(String type, DateTime startDate, DateTime endDate, String userId) async {
-  await getElements();
-  return elements.where((element) {
-    DateTime date = DateTime.parse(element.date!);
-    bool isUserMatch = userId == userId; // Asumiendo que ElementData tiene un campo userId
-    return element.type == type && date.isAfter(startDate) && date.isBefore(endDate) && isUserMatch;
-  }).length;
-}
-
-
 
 // HAY QUE HACER LOS SIGUIENTES METODOS:
 //
@@ -248,6 +232,55 @@ class ElementService extends ChangeNotifier {
 // Filtrar los elementos por cada mes
 // Hacerles un count a los elementos por mes
 
+Future<List<ElementData>> fetchElementsForUserByMonth(String userId, DateTime startDate, DateTime endDate) async {
+  await getElements();
+  
+  List<ElementData> userElements = elements.where((element) {
+    DateTime date = DateTime.parse(element.date!);
+    return UserService.userId == userId && date.isAfter(startDate) && date.isBefore(endDate);
+  }).toList();
+
+  return userElements;
+}
+
+Map<DateTime, List<ElementData>> groupElementsByMonth(List<ElementData> elements) {
+  Map<DateTime, List<ElementData>> groupedElements = {};
+
+  elements.forEach((element) {
+    DateTime date = DateTime.parse(element.date!);
+    DateTime monthStart = DateTime(date.year, date.month, 1);
+
+    if (!groupedElements.containsKey(monthStart)) {
+      groupedElements[monthStart] = [];
+    }
+
+    groupedElements[monthStart]!.add(element);
+  });
+
+  return groupedElements;
+}
+
+Map<DateTime, Map<String, int>> countElementsByMonth(Map<DateTime, List<ElementData>> groupedElements) {
+  Map<DateTime, Map<String, int>> countsByMonth = {};
+
+  groupedElements.forEach((monthStart, monthElements) {
+    int moodCount = monthElements.where((element) => element.type == 'mood').length;
+    int emotionCount = monthElements.where((element) => element.type == 'emotion').length;
+    int eventCount = monthElements.where((element) => element.type == 'event').length;
+
+    print(moodCount);
+    print(emotionCount);
+    print(eventCount);
+
+    countsByMonth[monthStart] = {
+      'mood': moodCount,
+      'emotion': emotionCount,
+      'event': eventCount,
+    };
+  });
+
+  return countsByMonth;
+}
 
 
 }
