@@ -222,4 +222,32 @@ class ElementService extends ChangeNotifier {
     DateTime elementDate = DateTime.parse(element.date!);
     return elementDate.isAfter(startDate) && elementDate.isBefore(endDate);
   }
+
+
+  // --------------------------------------------------------------------------------------------------------------------------------------
+//   Future<void> countElementTypes(DateTime startDate, DateTime endDate) async {
+//   moodCount = await countElementsOfType('mood', startDate, endDate);
+//   emotionCount = await countElementsOfType('emotion', startDate, endDate);
+//   eventCount = await countElementsOfType('event', startDate, endDate);
+// }
+
+  Future<int> countElementsOfType(String type, DateTime startDate, DateTime endDate, String userId) async {
+  await getElements();
+  return elements.where((element) {
+    DateTime date = DateTime.parse(element.date!);
+    bool isUserMatch = userId == userId; // Asumiendo que ElementData tiene un campo userId
+    return element.type == type && date.isAfter(startDate) && date.isBefore(endDate) && isUserMatch;
+  }).length;
+}
+
+
+
+// HAY QUE HACER LOS SIGUIENTES METODOS:
+//
+// Recoger elementos de usuarios y meterlos en listas (parecido a este: obtenerElementos())
+// Filtrar los elementos por cada mes
+// Hacerles un count a los elementos por mes
+
+
+
 }
