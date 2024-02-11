@@ -21,12 +21,7 @@ class _GraphState extends State<Graph> {
   List<FlSpot> moodData = [];
   List<FlSpot> emotionData = [];
   List<FlSpot> eventData = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUsers();
-  }
+  List<FlSpot> totalData = []; 
 
   Future<void> _fetchUsers() async {
     final user = await userService.getUsers();
@@ -34,6 +29,47 @@ class _GraphState extends State<Graph> {
       users = user;
     });
   }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _fetchAndCountElements() async {
+  if (selectedUser != null) {
+    final DateTime now = DateTime.now();
+    final DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+    final DateTime startDate = firstDayOfCurrentMonth.subtract(Duration(days: 120)); // Últimos 4 meses
+    final DateTime endDate = firstDayOfCurrentMonth.subtract(const Duration(days: 1)); // Hasta el último día del mes anterior
+
+    // Imprime el rango de fechas para depuración
+    print('Rango de Fechas: Desde ${startDate.toIso8601String()} hasta ${endDate.toIso8601String()}');
+
+    try {
+      // Encuentra el nombre del usuario seleccionado
+      final userName = users.firstWhere((user) => user.id.toString() == selectedUser, orElse: () => UserData()).name ?? "Unknown";
+      print('Usuario seleccionado: $userName, ID: $selectedUser');
+
+      // Obtiene y filtra los elementos por usuario y fecha
+      final Map<DateTime, Map<String, int>> countsByMonth = await elementService.getElementsByGraphicDate(selectedUser!, startDate, endDate);
+
+      if (countsByMonth.isNotEmpty) {
+        countsByMonth.forEach((monthStart, counts) {
+          print('Mes: ${monthStart.month}-${monthStart.year}, Elementos: $counts');
+        });
+
+        final int totalElements = countsByMonth.values.map((counts) => counts.values.reduce((sum, elementCount) => sum + elementCount)).reduce((sum, monthSum) => sum + monthSum);
+        print('Número total de elementos en el rango de fechas: $totalElements');
+      } else {
+        print('No se encontraron elementos para el usuario seleccionado en el rango de fechas dado.');
+      }
+    } catch (e) {
+      print('Error al obtener y contar los elementos: $e');
+    }
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,61 +122,62 @@ class _GraphState extends State<Graph> {
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CustomLineChart(
-                  moodData: moodData,
-                  emotionData: emotionData,
-                  eventData: eventData,
-                ),
-              ),
-            ),
+            // Expanded(
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: CustomLineChart(
+
+            //       moodData: moodData,
+            //       emotionData: emotionData,
+            //       eventData: eventData,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
     );
+    
   }
+  
 
-  Future<void> _fetchAndCountElements() async {
-    if (selectedUser != null) {
-      DateTime endDate = DateTime.now();
-      DateTime startDate = DateTime.now().subtract(const Duration(days: 120));
-      String userId = selectedUser!;
+  // Future<void> _fetchAndCountElements() async {
+  //   if (selectedUser != null) {
+  //     DateTime endDate = DateTime.now();
+  //     DateTime startDate = DateTime.now().subtract(const Duration(days: 120));
+  //     String userId = selectedUser!;
 
-      try {
-        List<ElementData> userElements =
-            await elementService.fetchElementsForUserByMonth(userId, startDate, endDate);
-        Map<DateTime, List<ElementData>> groupedElementsByMonth =
-            elementService.groupElementsByMonth(userElements);
-        Map<DateTime, Map<String, int>> countsByMonth =
-            elementService.countElementsByMonth(groupedElementsByMonth);
+  //     try {
+  //       List<ElementData> userElements =
+  //           await elementService.fetchElementsForUserByMonth(userId, startDate, endDate);
+  //       Map<DateTime, List<ElementData>> groupedElementsByMonth =
+  //           elementService.groupElementsByMonth(userElements);
+  //       Map<DateTime, Map<String, int>> countsByMonth =
+  //           elementService.countElementsByMonth(groupedElementsByMonth);
 
-        List<FlSpot> moodDataList = [];
-        List<FlSpot> emotionDataList = [];
-        List<FlSpot> eventDataList = [];
+  //       List<FlSpot> moodDataList = [];
+  //       List<FlSpot> emotionDataList = [];
+  //       List<FlSpot> eventDataList = [];
 
-        countsByMonth.forEach((monthStart, counts) {
-          double x = monthStart.millisecondsSinceEpoch.toDouble();
-          int maxCount = counts.values.reduce((value, element) => value > element ? value : element);
+  //       countsByMonth.forEach((monthStart, counts) {
+  //         double x = monthStart.millisecondsSinceEpoch.toDouble();
+  //         int maxCount = counts.values.reduce((value, element) => value > element ? value : element);
 
-          moodDataList.add(FlSpot(x, counts['mood']!.toDouble()));
-          emotionDataList.add(FlSpot(x, counts['emotion']!.toDouble()));
-          eventDataList.add(FlSpot(x, counts['event']!.toDouble()));
-        });
+  //         moodDataList.add(FlSpot(x, counts['mood']!.toDouble()));
+  //         emotionDataList.add(FlSpot(x, counts['emotion']!.toDouble()));
+  //         eventDataList.add(FlSpot(x, counts['event']!.toDouble()));
+  //       });
 
-        setState(() {
-          moodData = moodDataList;
-          emotionData = emotionDataList;
-          eventData = eventDataList;
-          print(moodData);
-          print(emotionData);
-          print(eventData);
-        });
-      } catch (e) {
-        print('Error fetching and counting elements: $e');
-      }
-    }
-  }
+  //       setState(() {
+  //         moodData = moodDataList;
+  //         emotionData = emotionDataList;
+  //         eventData = eventDataList;
+          
+  //       });
+  //     } catch (e) {
+  //       print('Error fetching and counting elements: $e');
+  //     }
+  //   }
+  // }
 }
 

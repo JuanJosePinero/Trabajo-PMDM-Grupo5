@@ -170,6 +170,43 @@ class ElementService extends ChangeNotifier {
     }
   }
 
+  Future<ElementResponse> getElementsByUserId(String userId) async {
+    try {
+      final url = Uri.http(baseURL, '/public/api/elements',
+          {'id': userId});
+      String? authToken = await readToken();
+      isLoading = true;
+      notifyListeners();
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        ElementResponse elementResponse = ElementResponse.fromJson(json);
+        elements.clear();
+        elements.addAll(elementResponse.data!);
+        isLoading = false;
+        notifyListeners();
+        return elementResponse;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        throw Exception(
+            'Failed to load elements. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      isLoading = false;
+      notifyListeners();
+      throw Exception('Error: $error');
+    }
+  }
+
   Future<String> readToken() async {
     return await storage.read(key: 'token') ?? '';
   }
@@ -187,7 +224,8 @@ class ElementService extends ChangeNotifier {
   List<ElementData> emotionElements = [];
   List<ElementData> elementsList = [];
 
-  Future<void> obtenerElementos(DateTime startDate, DateTime endDate, bool isMoodsChecked, bool isEventsChecked, bool isEmotionsChecked) async {
+  Future<void> obtenerElementos(DateTime startDate, DateTime endDate,
+      bool isMoodsChecked, bool isEventsChecked, bool isEmotionsChecked) async {
     try {
       ElementResponse response = await getElements();
       if (response.success == true) {
@@ -202,9 +240,21 @@ class ElementService extends ChangeNotifier {
         });
 
         // Filtros por fecha y tipo
-        moodElements = moodElements.where((element) => isElementInDateRange(element, startDate, endDate) && isMoodsChecked).toList();
-        eventElements = eventElements.where((element) => isElementInDateRange(element, startDate, endDate) && isEventsChecked).toList();
-        emotionElements = emotionElements.where((element) => isElementInDateRange(element, startDate, endDate) && isEmotionsChecked).toList();
+        moodElements = moodElements
+            .where((element) =>
+                isElementInDateRange(element, startDate, endDate) &&
+                isMoodsChecked)
+            .toList();
+        eventElements = eventElements
+            .where((element) =>
+                isElementInDateRange(element, startDate, endDate) &&
+                isEventsChecked)
+            .toList();
+        emotionElements = emotionElements
+            .where((element) =>
+                isElementInDateRange(element, startDate, endDate) &&
+                isEmotionsChecked)
+            .toList();
 
         elementsList.clear();
         elementsList.addAll(moodElements);
@@ -218,69 +268,89 @@ class ElementService extends ChangeNotifier {
     }
   }
 
-  bool isElementInDateRange(ElementData element, DateTime startDate, DateTime endDate) {
+  bool isElementInDateRange(
+      ElementData element, DateTime startDate, DateTime endDate) {
     DateTime elementDate = DateTime.parse(element.date!);
     return elementDate.isAfter(startDate) && elementDate.isBefore(endDate);
   }
 
-
   // --------------------------------------------------------------------------------------------------------------------------------------
 
 // HAY QUE HACER LOS SIGUIENTES METODOS:
-//
-// Recoger elementos de usuarios y meterlos en listas (parecido a este: obtenerElementos())
-// Filtrar los elementos por cada mes
-// Hacerles un count a los elementos por mes
 
-Future<List<ElementData>> fetchElementsForUserByMonth(String userId, DateTime startDate, DateTime endDate) async {
-  await getElements();
-  
-  List<ElementData> userElements = elements.where((element) {
-    DateTime date = DateTime.parse(element.date!);
-    return UserService.userId == userId && date.isAfter(startDate) && date.isBefore(endDate);
-  }).toList();
+Future<Map<DateTime, Map<String, int>>> getElementsByGraphicDate(
+    String idUser, DateTime startDate, DateTime endDate) async {
+  try {
+    // Modifica esta llamada para obtener elementos específicamente para idUser.
+    // Esto podría requerir ajustar getElements para aceptar un idUser y filtrar basado en este.
+    await getElementsByUserId(idUser);
 
-  return userElements;
+    DateTime startOfDay = DateTime(startDate.year, startDate.month, startDate.day);
+    DateTime endOfDay = DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59);
+
+    List<ElementData> filteredElements = elements.where((element) {
+      DateTime date = DateTime.parse(element.date!);
+      return date.isAfter(startOfDay) && date.isBefore(endOfDay);
+    }).toList();
+
+    
+    print("Id del metodo "+UserService.userId);
+
+    // Agrupa y cuenta los elementos filtrados por mes
+    Map<DateTime, List<ElementData>> groupedElements = groupElementsByMonth(filteredElements);
+    print("elementos agrupados");
+    print(groupedElements);
+    Map<DateTime, Map<String, int>> countsByMonth = countElementsByMonth(groupedElements);
+    print("elementos countsByMonth");
+    print(countsByMonth);
+
+    return countsByMonth;
+  } catch (error) {
+    throw Exception('Error al obtener elementos por fecha gráfica para el usuario $idUser: $error');
+  }
 }
 
-Map<DateTime, List<ElementData>> groupElementsByMonth(List<ElementData> elements) {
-  Map<DateTime, List<ElementData>> groupedElements = {};
+  Map<DateTime, List<ElementData>> groupElementsByMonth(
+      List<ElementData> elements) {
+    Map<DateTime, List<ElementData>> groupedElements = {};
 
-  elements.forEach((element) {
-    DateTime date = DateTime.parse(element.date!);
-    DateTime monthStart = DateTime(date.year, date.month, 1);
+    elements.forEach((element) {
+      DateTime date = DateTime.parse(element.date!);
+      DateTime monthStart = DateTime(date.year, date.month, 1);
 
-    if (!groupedElements.containsKey(monthStart)) {
-      groupedElements[monthStart] = [];
-    }
+      if (!groupedElements.containsKey(monthStart)) {
+        groupedElements[monthStart] = [];
+      }
 
-    groupedElements[monthStart]!.add(element);
-  });
+      groupedElements[monthStart]!.add(element);
+    });
 
-  return groupedElements;
-}
+    return groupedElements;
+  }
 
-Map<DateTime, Map<String, int>> countElementsByMonth(Map<DateTime, List<ElementData>> groupedElements) {
-  Map<DateTime, Map<String, int>> countsByMonth = {};
+  Map<DateTime, Map<String, int>> countElementsByMonth(
+      Map<DateTime, List<ElementData>> groupedElements) {
+    Map<DateTime, Map<String, int>> countsByMonth = {};
 
-  groupedElements.forEach((monthStart, monthElements) {
-    int moodCount = monthElements.where((element) => element.type == 'mood').length;
-    int emotionCount = monthElements.where((element) => element.type == 'emotion').length;
-    int eventCount = monthElements.where((element) => element.type == 'event').length;
+    groupedElements.forEach((monthStart, monthElements) {
+      int moodCount =
+          monthElements.where((element) => element.type == 'mood').length;
+      int emotionCount =
+          monthElements.where((element) => element.type == 'emotion').length;
+      int eventCount =
+          monthElements.where((element) => element.type == 'event').length;
 
-    print(moodCount);
-    print(emotionCount);
-    print(eventCount);
+      print(moodCount);
+      print(emotionCount);
+      print(eventCount);
 
-    countsByMonth[monthStart] = {
-      'mood': moodCount,
-      'emotion': emotionCount,
-      'event': eventCount,
-    };
-  });
+      countsByMonth[monthStart] = {
+        'mood': moodCount,
+        'emotion': emotionCount,
+        'event': eventCount,
+      };
+    });
 
-  return countsByMonth;
-}
-
-
+    return countsByMonth;
+  }
 }
