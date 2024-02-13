@@ -21,6 +21,7 @@ class _GraphState extends State<Graph> {
   List<FlSpot> moodData = [];
   List<FlSpot> emotionData = [];
   List<FlSpot> eventData = [];
+  List<DateTime> monthStartDates = [];
 
   @override
   void initState() {
@@ -87,16 +88,20 @@ class _GraphState extends State<Graph> {
                 ),
               ),
             ),
-            // Expanded(
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8.0),
-            //     child: CustomLineChart(
-            //       moodData: moodData,
-            //       emotionData: emotionData,
-            //       eventData: eventData,
-            //     ),
-            //   ),
-            // ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AspectRatio(
+                  aspectRatio: 1.7,
+                  child: CustomLineChart(
+                    moodData: moodData,
+                    emotionData: emotionData,
+                    eventData: eventData,
+                    monthStartDates: monthStartDates,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -104,36 +109,76 @@ class _GraphState extends State<Graph> {
   }
 
   void _fetchAndCountElements() async {
-  if (selectedUser != null) {
-    final DateTime now = DateTime.now();
-    final DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
-    final DateTime startDate = firstDayOfCurrentMonth.subtract(Duration(days: 120)); // Últimos 4 meses
-    final DateTime endDate = firstDayOfCurrentMonth.subtract(const Duration(days: 1)); // Hasta el último día del mes anterior
+    if (selectedUser != null) {
+      final DateTime now = DateTime.now();
+      final DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+      final DateTime startDate = firstDayOfCurrentMonth
+          .subtract(Duration(days: 120)); // Últimos 4 meses
+      final DateTime endDate = firstDayOfCurrentMonth.subtract(
+          const Duration(days: 1)); // Hasta el último día del mes anterior
 
-    // Imprime el rango de fechas para depuración
-    print('Rango de Fechas: Desde ${startDate.toIso8601String()} hasta ${endDate.toIso8601String()}');
+      // Imprime el rango de fechas para depuración
+      print(
+          'Rango de Fechas: Desde ${startDate.toIso8601String()} hasta ${endDate.toIso8601String()}');
 
-    try {
-      // Encuentra el nombre del usuario seleccionado
-      final userName = users.firstWhere((user) => user.id.toString() == selectedUser, orElse: () => UserData()).name ?? "Unknown";
-      print('Usuario seleccionado: $userName, ID: $selectedUser');
+      try {
+        // Encuentra el nombre del usuario seleccionado
+        final userName = users
+                .firstWhere((user) => user.id.toString() == selectedUser,
+                    orElse: () => UserData())
+                .name ??
+            "Unknown";
+        print('Usuario seleccionado: $userName, ID: $selectedUser');
 
-      // Obtiene y filtra los elementos por usuario y fecha
-      final Map<DateTime, Map<String, int>> countsByMonth = await elementService.getElementsByGraphicDate(selectedUser!, startDate, endDate);
+        // Obtiene y filtra los elementos por usuario y fecha
+        final Map<DateTime, Map<String, int>> countsByMonth =
+            await elementService.getElementsByGraphicDate(
+                selectedUser!, startDate, endDate);
 
-      if (countsByMonth.isNotEmpty) {
-        countsByMonth.forEach((monthStart, counts) {
-          print('Mes: ${monthStart.month}-${monthStart.year}, Elementos: $counts');
-        });
+        if (countsByMonth.isNotEmpty) {
+          countsByMonth.forEach((monthStart, counts) {
+            print(
+                'Mes: ${monthStart.month}-${monthStart.year}, Elementos: $counts');
+          });
 
-        final int totalElements = countsByMonth.values.map((counts) => counts.values.reduce((sum, elementCount) => sum + elementCount)).reduce((sum, monthSum) => sum + monthSum);
-        print('Número total de elementos en el rango de fechas: $totalElements');
-      } else {
-        print('No se encontraron elementos para el usuario seleccionado en el rango de fechas dado.');
+          final int totalElements = countsByMonth.values
+              .map((counts) => counts.values
+                  .reduce((sum, elementCount) => sum + elementCount))
+              .reduce((sum, monthSum) => sum + monthSum);
+          print(
+              'Número total de elementos en el rango de fechas: $totalElements');
+
+          processElementData(countsByMonth);
+        } else {
+          print(
+              'No se encontraron elementos para el usuario seleccionado en el rango de fechas dado.');
+        }
+      } catch (e) {
+        print('Error al obtener y contar los elementos: $e');
       }
-    } catch (e) {
-      print('Error al obtener y contar los elementos: $e');
     }
   }
+
+  void processElementData(Map<DateTime, Map<String, int>> countsByMonth) {
+  List<DateTime> sortedMonths = countsByMonth.keys.toList()
+    ..sort((a, b) => a.compareTo(b));
+
+  moodData.clear();
+  emotionData.clear();
+  eventData.clear();
+  monthStartDates.clear();
+
+  for (var month in sortedMonths) {
+    final counts = countsByMonth[month]!;
+    final index = sortedMonths.indexOf(month).toDouble();
+
+    monthStartDates.add(month);
+
+    moodData.add(FlSpot(index, counts['mood']?.toDouble() ?? 0.0));
+    emotionData.add(FlSpot(index, counts['emotion']?.toDouble() ?? 0.0));
+    eventData.add(FlSpot(index, counts['event']?.toDouble() ?? 0.0));
+  }
+
+  setState(() {});
 }
 }
