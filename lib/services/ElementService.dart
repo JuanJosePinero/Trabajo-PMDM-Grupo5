@@ -353,4 +353,6 @@ Future<Map<DateTime, Map<String, int>>> getElementsByGraphicDate(
 
     return countsByMonth;
   }
+
+  fetchElementsForUserByMonth(String userId, DateTime startDate, DateTime endDate) {}
 }
