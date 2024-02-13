@@ -18,16 +18,20 @@ class CustomLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Calcular el valor máximo en todos los conjuntos de datos
+    double maxDataValue = _calculateMaxValue();
+
     return LineChart(
       LineChartData(
+        minY: 0, // Establecer el mínimo del eje Y en 0
+        maxY: maxDataValue, // Establecer el máximo del eje Y en el valor máximo encontrado
         gridData: FlGridData(show: true),
         titlesData: FlTitlesData(
           topTitles: SideTitles(showTitles: false),
           bottomTitles: SideTitles(
             showTitles: true,
             reservedSize: 22,
-            interval:
-                1,
+            interval: 1,
             getTitles: (value) {
               int index = value.round();
               if (index % 1 == 0 && index < monthStartDates.length) {
@@ -48,8 +52,7 @@ class CustomLineChart extends StatelessWidget {
             barWidth: 5,
             isStrokeCapRound: true,
             dotData: FlDotData(show: true),
-            belowBarData:
-                BarAreaData(show: false, colors: [Colors.red.withOpacity(0.3)]),
+            belowBarData: BarAreaData(show: false, colors: [Colors.red.withOpacity(0.3)]),
           ),
           LineChartBarData(
             spots: emotionData,
@@ -58,8 +61,7 @@ class CustomLineChart extends StatelessWidget {
             barWidth: 5,
             isStrokeCapRound: true,
             dotData: FlDotData(show: true),
-            belowBarData: BarAreaData(
-                show: false, colors: [Colors.yellow.withOpacity(0.3)]),
+            belowBarData: BarAreaData(show: false, colors: [Colors.yellow.withOpacity(0.3)]),
           ),
           LineChartBarData(
             spots: eventData,
@@ -68,11 +70,18 @@ class CustomLineChart extends StatelessWidget {
             barWidth: 5,
             isStrokeCapRound: true,
             dotData: FlDotData(show: true),
-            belowBarData: BarAreaData(
-                show: false, colors: [Colors.green.withOpacity(0.3)]),
+            belowBarData: BarAreaData(show: false, colors: [Colors.green.withOpacity(0.3)]),
           ),
         ],
       ),
     );
+  }
+
+  double _calculateMaxValue() {
+    double maxMoodValue = moodData.isNotEmpty ? moodData.map((spot) => spot.y).reduce((max, y) => y > max ? y : max) : 0;
+    double maxEmotionValue = emotionData.isNotEmpty ? emotionData.map((spot) => spot.y).reduce((max, y) => y > max ? y : max) : 0;
+    double maxEventValue = eventData.isNotEmpty ? eventData.map((spot) => spot.y).reduce((max, y) => y > max ? y : max) : 0;
+
+    return [maxMoodValue, maxEmotionValue, maxEventValue].reduce((max, value) => value > max ? value : max);
   }
 }
