@@ -22,17 +22,22 @@ class CustomLineChart extends StatelessWidget {
       LineChartData(
         gridData: FlGridData(show: true),
         titlesData: FlTitlesData(
+          topTitles: SideTitles(showTitles: false),
           bottomTitles: SideTitles(
             showTitles: true,
+            reservedSize: 22,
+            interval:
+                1,
             getTitles: (value) {
-              int index = value.toInt();
-              if (index < monthStartDates.length) {
+              int index = value.round();
+              if (index % 1 == 0 && index < monthStartDates.length) {
                 return DateFormat.MMM().format(monthStartDates[index]);
               }
               return '';
             },
           ),
           leftTitles: SideTitles(showTitles: true),
+          rightTitles: SideTitles(showTitles: false),
         ),
         borderData: FlBorderData(show: true),
         lineBarsData: [

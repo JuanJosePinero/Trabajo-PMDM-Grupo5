@@ -1,12 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:mindcare_app/models/ElementModel.dart';
 import 'package:mindcare_app/models/UserModel.dart';
 import 'package:mindcare_app/screens/admin/line_chart.dart';
 import 'package:mindcare_app/services/ElementService.dart';
 import 'package:mindcare_app/services/UserService.dart';
 import 'package:mindcare_app/themes/themeColors.dart';
-import 'package:intl/intl.dart';
 
 class Graph extends StatefulWidget {
   @override
@@ -53,7 +51,7 @@ class _GraphState extends State<Graph> {
         child: Column(
           children: [
             const SizedBox(
-              height: 40,
+              height: 20,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -88,9 +86,11 @@ class _GraphState extends State<Graph> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
+            _buildLegend(),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(30.0),
                 child: AspectRatio(
                   aspectRatio: 1.7,
                   child: CustomLineChart(
@@ -112,17 +112,15 @@ class _GraphState extends State<Graph> {
     if (selectedUser != null) {
       final DateTime now = DateTime.now();
       final DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
-      final DateTime startDate = firstDayOfCurrentMonth
-          .subtract(Duration(days: 120)); // Últimos 4 meses
-      final DateTime endDate = firstDayOfCurrentMonth.subtract(
-          const Duration(days: 1)); // Hasta el último día del mes anterior
+      final DateTime startDate =
+          firstDayOfCurrentMonth.subtract(const Duration(days: 120));
+      final DateTime endDate =
+          firstDayOfCurrentMonth.subtract(const Duration(days: 1));
 
-      // Imprime el rango de fechas para depuración
       print(
           'Rango de Fechas: Desde ${startDate.toIso8601String()} hasta ${endDate.toIso8601String()}');
 
       try {
-        // Encuentra el nombre del usuario seleccionado
         final userName = users
                 .firstWhere((user) => user.id.toString() == selectedUser,
                     orElse: () => UserData())
@@ -130,7 +128,6 @@ class _GraphState extends State<Graph> {
             "Unknown";
         print('Usuario seleccionado: $userName, ID: $selectedUser');
 
-        // Obtiene y filtra los elementos por usuario y fecha
         final Map<DateTime, Map<String, int>> countsByMonth =
             await elementService.getElementsByGraphicDate(
                 selectedUser!, startDate, endDate);
@@ -160,25 +157,99 @@ class _GraphState extends State<Graph> {
   }
 
   void processElementData(Map<DateTime, Map<String, int>> countsByMonth) {
-  List<DateTime> sortedMonths = countsByMonth.keys.toList()
-    ..sort((a, b) => a.compareTo(b));
+    DateTime now = DateTime.now();
+    DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+    DateTime startDate = firstDayOfCurrentMonth.subtract(const Duration(days: 120));
+    DateTime endDate = firstDayOfCurrentMonth.subtract(const Duration(days: 1));
 
-  moodData.clear();
-  emotionData.clear();
-  eventData.clear();
-  monthStartDates.clear();
+    monthStartDates.clear();
+    DateTime current = startDate;
+    while (current.isBefore(endDate)) {
+      monthStartDates.add(DateTime(current.year, current.month));
+      current = DateTime(current.year, current.month + 1);
+    }
 
-  for (var month in sortedMonths) {
-    final counts = countsByMonth[month]!;
-    final index = sortedMonths.indexOf(month).toDouble();
+    moodData.clear();
+    emotionData.clear();
+    eventData.clear();
 
-    monthStartDates.add(month);
+    for (var monthDate in monthStartDates) {
+      var index = monthStartDates.indexOf(monthDate).toDouble();
 
-    moodData.add(FlSpot(index, counts['mood']?.toDouble() ?? 0.0));
-    emotionData.add(FlSpot(index, counts['emotion']?.toDouble() ?? 0.0));
-    eventData.add(FlSpot(index, counts['event']?.toDouble() ?? 0.0));
+      var counts = countsByMonth[DateTime(monthDate.year, monthDate.month)] ??
+          {'mood': 0, 'emotion': 0, 'event': 0};
+
+      moodData.add(FlSpot(index, counts['mood']?.toDouble() ?? 0.0));
+      emotionData.add(FlSpot(index, counts['emotion']?.toDouble() ?? 0.0));
+      eventData.add(FlSpot(index, counts['event']?.toDouble() ?? 0.0));
+    }
+
+    setState(() {});
   }
 
-  setState(() {});
+  Widget _buildLegend() {
+  return Container(
+    padding: const EdgeInsets.all(8),
+    margin: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey, width: 1), 
+      borderRadius: BorderRadius.circular(5), 
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "LineChart Legend",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Sans Serif',
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+           Row(
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              color: Colors.red,
+            ),
+            const SizedBox(width: 5),
+            const Text('Mood'),
+          ],
+        ),
+        const SizedBox(width: 20),
+        Row(
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              color: Colors.yellow,
+            ),
+            const SizedBox(width: 5),
+            const Text('Emotion'),
+          ],
+        ),
+        const SizedBox(width: 20),
+        Row(
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              color: Colors.green,
+            ),
+            const SizedBox(width: 5),
+            const Text('Event'),
+          ],
+        ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 }
