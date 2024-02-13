@@ -20,6 +20,7 @@ class _GraphState extends State<Graph> {
   List<FlSpot> emotionData = [];
   List<FlSpot> eventData = [];
   List<DateTime> monthStartDates = [];
+  bool dataAvailable = false;
 
   @override
   void initState() {
@@ -89,19 +90,30 @@ class _GraphState extends State<Graph> {
             const SizedBox(height: 10),
             _buildLegend(),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: AspectRatio(
-                  aspectRatio: 1.7,
-                  child: CustomLineChart(
-                    moodData: moodData,
-                    emotionData: emotionData,
-                    eventData: eventData,
-                    monthStartDates: monthStartDates,
-                  ),
-                ),
+  child: Padding(
+    padding: const EdgeInsets.all(30.0),
+    child: !dataAvailable
+        ? const Center(
+            child: Text(
+              "No data available",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
+          )
+        : AspectRatio(
+            aspectRatio: 1.7,
+            child: CustomLineChart(
+              moodData: moodData,
+              emotionData: emotionData,
+              eventData: eventData,
+              monthStartDates: monthStartDates,
+            ),
+          ),
+  ),
+),
+
           ],
         ),
       ),
@@ -109,52 +121,39 @@ class _GraphState extends State<Graph> {
   }
 
   void _fetchAndCountElements() async {
-    if (selectedUser != null) {
-      final DateTime now = DateTime.now();
-      final DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
-      final DateTime startDate =
-          firstDayOfCurrentMonth.subtract(const Duration(days: 120));
-      final DateTime endDate =
-          firstDayOfCurrentMonth.subtract(const Duration(days: 1));
+  if (selectedUser != null) {
+    final DateTime now = DateTime.now();
+    final DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+    final DateTime startDate = firstDayOfCurrentMonth.subtract(const Duration(days: 120));
+    final DateTime endDate = firstDayOfCurrentMonth.subtract(const Duration(days: 1));
 
-      print(
-          'Rango de Fechas: Desde ${startDate.toIso8601String()} hasta ${endDate.toIso8601String()}');
+    try {
+      final Map<DateTime, Map<String, int>> countsByMonth = await elementService.getElementsByGraphicDate(selectedUser!, startDate, endDate);
 
-      try {
-        final userName = users
-                .firstWhere((user) => user.id.toString() == selectedUser,
-                    orElse: () => UserData())
-                .name ??
-            "Unknown";
-        print('Usuario seleccionado: $userName, ID: $selectedUser');
+      bool hasData = countsByMonth.isNotEmpty && countsByMonth.values.any((counts) => counts.values.any((count) => count > 0));
 
-        final Map<DateTime, Map<String, int>> countsByMonth =
-            await elementService.getElementsByGraphicDate(
-                selectedUser!, startDate, endDate);
-
-        if (countsByMonth.isNotEmpty) {
-          countsByMonth.forEach((monthStart, counts) {
-            print(
-                'Mes: ${monthStart.month}-${monthStart.year}, Elementos: $counts');
-          });
-
-          final int totalElements = countsByMonth.values
-              .map((counts) => counts.values
-                  .reduce((sum, elementCount) => sum + elementCount))
-              .reduce((sum, monthSum) => sum + monthSum);
-          print(
-              'Número total de elementos en el rango de fechas: $totalElements');
-
-          processElementData(countsByMonth);
-        } else {
-          print(
-              'No se encontraron elementos para el usuario seleccionado en el rango de fechas dado.');
-        }
-      } catch (e) {
-        print('Error al obtener y contar los elementos: $e');
+      if (hasData) {
+        processElementData(countsByMonth);
+        setState(() {
+          dataAvailable = true;
+        });
+      } else {
+        setState(() {
+          dataAvailable = false;
+        });
       }
+    } catch (e) {
+      setState(() {
+        dataAvailable = false;
+      });
     }
+  } else {
+    setState(() {
+      dataAvailable = false;
+    });
   }
+}
+
 
   void processElementData(Map<DateTime, Map<String, int>> countsByMonth) {
     DateTime now = DateTime.now();
