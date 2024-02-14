@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindcare_app/models/UserModel.dart';
 import 'package:mindcare_app/screens/admin/line_chart.dart';
 import 'package:mindcare_app/services/ElementService.dart';
@@ -26,6 +27,7 @@ class _GraphState extends State<Graph> {
   void initState() {
     super.initState();
     _fetchUsers();
+   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   Future<void> _fetchUsers() async {
@@ -37,6 +39,7 @@ class _GraphState extends State<Graph> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Graph Page'),
